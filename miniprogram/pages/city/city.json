@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "city-selector": "/components/city-selector/city-selector",
+    "confirm-modal": "/components/confirm-modal/confirm-modal"
+  }
+}

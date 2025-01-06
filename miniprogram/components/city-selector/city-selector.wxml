@@ -1,0 +1,49 @@
+<view class="city-selector {{ visible ? 'visible' : '' }}">
+  <view class="mask" bindtap="close"></view>
+  <view class="content">
+    <view class="header">
+      <text class="title">选择城市</text>
+      <view class="close" bindtap="close">×</view>
+    </view>
+
+    <!-- 省份列表 -->
+    <scroll-view scroll-y class="province-list">
+      <block wx:for="{{provinces}}" wx:key="id">
+        <view class="province-item">
+          <!-- 单城市省份直接选择 -->
+          <block wx:if="{{item.id === 'BJ' || item.id === 'SH' || item.id === 'TJ' || item.id === 'CQ' || item.id === 'HK' || item.id === 'MO'}}">
+            <view class="province-name single" 
+                  data-city="{{item.name}}" 
+                  bindtap="selectCity">
+              {{item.name}}
+            </view>
+          </block>
+          <!-- 多城市省份可展开 -->
+          <block wx:else>
+            <view class="province-name" 
+                  data-province="{{item.id}}" 
+                  bindtap="toggleProvince">
+              {{item.name}}
+              <text class="arrow {{expandedProvince === item.id ? 'up' : ''}}">▼</text>
+            </view>
+            <!-- 城市列表 -->
+            <view class="city-list {{expandedProvince === item.id ? 'expanded' : ''}}">
+              <block wx:if="{{expandedProvince === item.id}}">
+                <view class="city-item"
+                      wx:for="{{cities}}"
+                      wx:key="index"
+                      wx:for-item="city"
+                      wx:for-index="cityName"
+                      wx:if="{{city.province === item.id}}"
+                      data-city="{{cityName}}"
+                      bindtap="selectCity">
+                  {{cityName}}
+                </view>
+              </block>
+            </view>
+          </block>
+        </view>
+      </block>
+    </scroll-view>
+  </view>
+</view> 

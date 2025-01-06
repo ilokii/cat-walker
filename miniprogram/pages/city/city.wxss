@@ -1,0 +1,191 @@
+/* pages/city/city.wxss */
+.container {
+  padding: 30rpx;
+  min-height: 100vh;
+  background: #f8f8f8;
+  padding-top: 180rpx;
+}
+
+.section {
+  margin-bottom: 40rpx;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+  color: #333;
+  position: relative;
+  padding-left: 20rpx;
+}
+
+.section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6rpx;
+  height: 24rpx;
+  background: var(--primary-color);
+  border-radius: 3rpx;
+}
+
+/* 当前城市样式 */
+.current-city {
+  background: #fff;
+  padding: 30rpx;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.current-city:active {
+  transform: scale(0.98);
+  box-shadow: 0 1rpx 5rpx rgba(0, 0, 0, 0.1);
+}
+
+.current-city::after {
+  content: '';
+  position: absolute;
+  right: 20rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16rpx;
+  height: 16rpx;
+  border-top: 4rpx solid #999;
+  border-right: 4rpx solid #999;
+  transform: rotate(45deg);
+}
+
+.city-icon {
+  width: 80rpx;
+  height: 80rpx;
+  margin-right: 20rpx;
+  border-radius: 50%;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.city-info {
+  flex: 1;
+  padding-right: 40rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.city-name {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.province-name {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.placeholder {
+  color: #999;
+  font-size: 28rpx;
+  text-align: center;
+  width: 100%;
+}
+
+/* 目标城市列表样式 */
+.target-cities {
+  background: #fff;
+  border-radius: 12rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.target-city {
+  padding: 30rpx;
+  display: flex;
+  align-items: center;
+  border-bottom: 1rpx solid #eee;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.target-city:last-child {
+  border-bottom: none;
+}
+
+.target-city.visited {
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.target-city:active {
+  background: #f5f5f5;
+}
+
+.target-city.visited:active {
+  background: rgba(76, 175, 80, 0.2);
+}
+
+.distance-info {
+  text-align: right;
+  min-width: 120rpx;
+}
+
+.steps {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 8rpx;
+  display: block;
+  font-weight: 500;
+}
+
+.distance {
+  font-size: 24rpx;
+  color: #999;
+  display: block;
+}
+
+.target-city .city-icon {
+  width: 60rpx;
+  height: 60rpx;
+  margin-right: 20rpx;
+  border-radius: 50%;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.target-city .city-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+/* 动画 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 空状态样式 */
+.empty-state {
+  text-align: center;
+  padding: 60rpx 0;
+  color: #999;
+}
+
+/* 加载状态 */
+.loading {
+  text-align: center;
+  padding: 30rpx;
+  color: #999;
+}

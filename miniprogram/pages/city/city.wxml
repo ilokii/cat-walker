@@ -1,0 +1,58 @@
+<view class="container">
+  <!-- 当前城市 -->
+  <view class="section">
+    <view class="section-title">当前城市</view>
+    <view class="current-city" bindtap="showCitySelector">
+      <block wx:if="{{currentCity}}">
+        <image class="city-icon" src="/images/cities/{{currentCity.icon}}" />
+        <view class="city-info">
+          <text class="city-name">{{currentCity.name}}</text>
+          <text class="province-name">{{provinces[currentCity.province].name}}</text>
+        </view>
+      </block>
+      <block wx:else>
+        <text class="placeholder">请确认您将从哪出发？</text>
+      </block>
+    </view>
+  </view>
+
+  <!-- 目标城市列表 -->
+  <view class="section" wx:if="{{currentCity}}">
+    <view class="section-title">目标城市</view>
+    <view class="target-cities">
+      <view class="target-city {{item.visited ? 'visited' : ''}}"
+            wx:for="{{targetCities}}"
+            wx:key="name"
+            bindtap="selectTarget"
+            data-city="{{item}}">
+        <image class="city-icon" src="/images/cities/{{item.icon}}" />
+        <view class="city-info">
+          <text class="city-name">{{item.name}}{{item.visited ? '（已造访）' : ''}}</text>
+          <text class="province-name">{{provinces[item.province].name}}</text>
+        </view>
+        <view class="distance-info">
+          <text class="steps">{{item.steps}} 步</text>
+          <text class="distance">{{item.distance}} 公里</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 城市选择器组件 -->
+  <city-selector
+    visible="{{selectorVisible}}"
+    currentCity="{{currentCity}}"
+    bind:select="onCitySelect"
+    bind:close="onSelectorClose"
+  />
+
+  <!-- 确认弹窗组件 -->
+  <confirm-modal
+    visible="{{confirmModal.visible}}"
+    type="{{confirmModal.type}}"
+    cityName="{{confirmModal.cityName}}"
+    bind:cancel="handleConfirmCancel"
+    bind:confirm="handleConfirmConfirm"
+    bind:teleport="handleConfirmTeleport"
+  />
+</view> 

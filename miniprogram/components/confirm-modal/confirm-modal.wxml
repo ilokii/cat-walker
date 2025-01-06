@@ -1,0 +1,28 @@
+<view class="modal {{ visible ? 'visible' : '' }}">
+  <view class="mask" 
+        animation="{{ maskAnimation }}"
+        bindtap="onCancel"></view>
+  <view class="content" 
+        animation="{{ animationData }}"
+        catchtap="preventBubble">
+    <!-- 普通确认 -->
+    <block wx:if="{{ type === 'normal' }}">
+      <view class="title">确认前往</view>
+      <view class="message">您是否出发前往{{ cityName }}？</view>
+      <view class="buttons">
+        <button class="btn cancel" bindtap="onCancel">取消</button>
+        <button class="btn confirm" bindtap="onConfirm">确认</button>
+      </view>
+    </block>
+
+    <!-- 已访问城市确认 -->
+    <block wx:else>
+      <view class="title">选择前往方式</view>
+      <view class="message">您已造访过{{ cityName }}，请确认前往方式</view>
+      <view class="buttons visited">
+        <button class="btn walk" bindtap="onConfirm">依旧步行</button>
+        <button class="btn teleport" bindtap="onTeleport">直接传送</button>
+      </view>
+    </block>
+  </view>
+</view> 
