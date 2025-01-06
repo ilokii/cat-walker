@@ -91,10 +91,6 @@
   align-items: center;
 }
 
-.province-name.single {
-  color: var(--primary-color);
-}
-
 .arrow {
   font-size: 24rpx;
   transition: transform 0.3s;

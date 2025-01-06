@@ -41,8 +41,8 @@ App({
           this.globalData.userInfo = userResult.data[0]
           this.globalData.hasUserInfo = true
 
-          // 检查是否有当前城市
-          if (!userResult.data[0].currentCity) {
+          // 检查是否有当前城市和目标城市
+          if (!userResult.data[0].currentCity || !userResult.data[0].targetCity) {
             // 没有当前城市，跳转到城市选择页面
             wx.redirectTo({
               url: '/pages/city/city'

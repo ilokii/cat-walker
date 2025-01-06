@@ -5,6 +5,7 @@ const syncManager = require('../../utils/sync-manager.js')
 Page({
   data: {
     provinces: provincesData,
+    cities: citiesData,
     currentCity: null,        // 当前城市
     targetCities: [],         // 目标城市列表
     selectorVisible: false,   // 城市选择器显示状态
@@ -19,11 +20,12 @@ Page({
 
   onLoad() {
     // 加载用户数据
-    this.loadUserData()
-    // 如果没有当前城市，尝试获取地理位置
-    if (!this.data.currentCity) {
-      this.checkAndGetLocation()
-    }
+    this.loadUserData().then(() => {
+      // 只有在没有当前城市时才尝试获取地理位置
+      if (!this.data.currentCity) {
+        this.checkAndGetLocation()
+      }
+    })
   },
 
   // 加载用户数据
@@ -34,7 +36,11 @@ Page({
       if (userData) {
         // 设置当前城市
         if (userData.currentCity) {
-          this.setCurrentCity(userData.currentCity)
+          const cityInfo = citiesData[userData.currentCity]
+          this.setCurrentCity({
+            name: userData.currentCity,
+            ...cityInfo
+          })
         }
         // 设置已访问城市
         if (userData.visitedCities) {
@@ -102,26 +108,27 @@ Page({
     }
   },
 
-  // 设置当前城市并更新目标城市列表
-  setCurrentCity(cityName) {
-    const cityInfo = citiesData[cityName]
-    if (!cityInfo) return
-
+  // 设置当前城市
+  setCurrentCity(city) {
+    if (!city) return
+    
     // 获取相邻城市列表
-    const neighbors = Object.entries(cityInfo.neighbors).map(([name, info]) => ({
-      name,
-      ...citiesData[name],
-      distance: info.distance,
-      steps: info.steps,
-      visited: this.data.visitedCities.includes(name)
-    }))
+    const targetCities = []
+    const neighbors = citiesData[city.name]?.neighbors || {}
+    
+    for (const [cityName, info] of Object.entries(neighbors)) {
+      targetCities.push({
+        name: cityName,
+        ...citiesData[cityName],
+        distance: info.distance,
+        steps: info.steps,
+        visited: this.data.visitedCities.includes(cityName)
+      })
+    }
 
     this.setData({
-      currentCity: {
-        name: cityName,
-        ...cityInfo
-      },
-      targetCities: neighbors
+      currentCity: city,
+      targetCities: targetCities
     })
   },
 
@@ -199,7 +206,7 @@ Page({
           success: resolve,
           fail: (err) => {
             // 如果是用户拒绝授权导致的失败
-            if (err.errMsg.indexOf('auth deny') !== -1) {
+            if (err.errMsg.indexOf('auth deny') !== -1 && !userData.currentCity) {
               wx.showToast({
                 title: '授权失败，请手动选择城市',
                 icon: 'none',

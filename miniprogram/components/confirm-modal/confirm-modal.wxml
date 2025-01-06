@@ -7,7 +7,7 @@
         catchtap="preventBubble">
     <!-- 普通确认 -->
     <block wx:if="{{ type === 'normal' }}">
-      <view class="title">确认前往</view>
+      <view class="title">目标城市</view>
       <view class="message">您是否出发前往{{ cityName }}？</view>
       <view class="buttons">
         <button class="btn cancel" bindtap="onCancel">取消</button>

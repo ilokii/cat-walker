@@ -12,7 +12,7 @@
         <view class="province-item">
           <!-- 单城市省份直接选择 -->
           <block wx:if="{{item.id === 'BJ' || item.id === 'SH' || item.id === 'TJ' || item.id === 'CQ' || item.id === 'HK' || item.id === 'MO'}}">
-            <view class="province-name single" 
+            <view class="province-name" 
                   data-city="{{item.name}}" 
                   bindtap="selectCity">
               {{item.name}}
