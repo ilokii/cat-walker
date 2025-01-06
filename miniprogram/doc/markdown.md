@@ -1,3 +1,0 @@
-appid: wxf9c8052ea783be1c
-secret: 2a04354b6aa9cbd0efb660c40bf78b86
-env: cat-walker-1gnvj0y102f12cab
