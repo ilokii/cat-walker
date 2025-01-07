@@ -161,6 +161,16 @@ Page({
   // 设置目标城市
   async setTargetCity(cityName) {
     try {
+      // 获取当前用户数据
+      const userData = await syncManager.getUserData()
+      
+      // 如果当前城市不在已访问列表中，添加进去
+      if (userData && userData.currentCity && 
+          (!userData.visitedCities || !userData.visitedCities.includes(userData.currentCity))) {
+        await syncManager.addVisitedCity(userData.currentCity)
+      }
+
+      // 设置目标城市
       await syncManager.updateTargetCity(cityName, 0)
 
       wx.showToast({
@@ -172,7 +182,7 @@ Page({
         url: '/pages/index/index'
       })
     } catch (err) {
-      console.error('设置目标城市失败:', err)
+      console.error('设置目标城市或更新已访问城市失败:', err)
       wx.showToast({
         title: '设置目标失败，请重试',
         icon: 'none'

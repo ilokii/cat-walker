@@ -30,7 +30,6 @@ Component({
       
       // 检查位置权限
       this.checkLocationAuth()
-      console.log('Loaded data:', this.data.provinces, this.data.cities) // 添加调试日志
     }
   },
 
