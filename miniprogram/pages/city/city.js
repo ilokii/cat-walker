@@ -206,7 +206,7 @@ Page({
           success: resolve,
           fail: (err) => {
             // 如果是用户拒绝授权导致的失败
-            if (err.errMsg.indexOf('auth deny') !== -1 && !userData.currentCity) {
+            if (err.errMsg.indexOf('auth deny') !== -1) {
               wx.showToast({
                 title: '授权失败，请手动选择城市',
                 icon: 'none',
@@ -224,6 +224,11 @@ Page({
       if (nearestCity) {
         // 更新当前城市
         await this.updateCurrentCity(nearestCity.name)
+        // 在本地也更新城市信息
+        this.setCurrentCity({
+          name: nearestCity.name,
+          ...citiesData[nearestCity.name]
+        })
       } else {
         wx.showToast({
           title: '定位异常，请手动选择城市',

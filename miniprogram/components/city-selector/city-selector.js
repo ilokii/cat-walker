@@ -5,7 +5,7 @@ Component({
       value: false
     },
     currentCity: {
-      type: Object,
+      type: null,
       value: null
     }
   },
