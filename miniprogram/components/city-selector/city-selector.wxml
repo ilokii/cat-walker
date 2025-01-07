@@ -2,7 +2,7 @@
   <view class="mask" bindtap="close"></view>
   <view class="content">
     <view class="header">
-      <text class="title">选择城市</text>
+      <text class="title">选择起点城市</text>
       <view class="close" bindtap="close">×</view>
     </view>
 

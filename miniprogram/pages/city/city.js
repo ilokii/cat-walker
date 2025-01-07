@@ -6,10 +6,7 @@ Page({
   data: {
     provinces: provincesData,
     cities: citiesData,
-    currentCity: null,        // 当前城市
-    targetCities: [],         // 目标城市列表
-    selectorVisible: false,   // 城市选择器显示状态
-    visitedCities: [],         // 已访问城市列表
+    selectorVisible: false,   // 只保留 UI 状态相关的数据
     confirmModal: {
       visible: false,
       type: 'normal',
@@ -37,15 +34,13 @@ Page({
         // 设置当前城市
         if (userData.currentCity) {
           const cityInfo = citiesData[userData.currentCity]
-          this.setCurrentCity({
-            name: userData.currentCity,
-            ...cityInfo
-          })
-        }
-        // 设置已访问城市
-        if (userData.visitedCities) {
+          // 直接使用云端数据更新界面
           this.setData({
-            visitedCities: userData.visitedCities
+            currentCity: {
+              name: userData.currentCity,
+              ...cityInfo
+            },
+            targetCities: this.getTargetCities(userData.currentCity, userData.visitedCities || [])
           })
         }
       }
@@ -56,6 +51,23 @@ Page({
         icon: 'none'
       })
     }
+  },
+
+  // 获取目标城市列表
+  getTargetCities(currentCityName, visitedCities) {
+    const targetCities = []
+    const neighbors = citiesData[currentCityName]?.neighbors || {}
+    
+    for (const [cityName, info] of Object.entries(neighbors)) {
+      targetCities.push({
+        name: cityName,
+        ...citiesData[cityName],
+        distance: info.distance,
+        steps: info.steps,
+        visited: visitedCities.includes(cityName)
+      })
+    }
+    return targetCities
   },
 
   // 显示城市选择器
@@ -94,42 +106,14 @@ Page({
 
   // 更新当前城市
   async updateCurrentCity(cityName) {
-    const cityInfo = citiesData[cityName]
-    if (!cityInfo) return
-
     try {
       await syncManager.updateCurrentCity(cityName)
-
-      // 更新本地数据
-      this.setCurrentCity(cityName)
+      // 重新加载用户数据以更新界面
+      await this.loadUserData()
     } catch (err) {
       console.error('更新当前城市失败:', err)
       throw err
     }
-  },
-
-  // 设置当前城市
-  setCurrentCity(city) {
-    if (!city) return
-    
-    // 获取相邻城市列表
-    const targetCities = []
-    const neighbors = citiesData[city.name]?.neighbors || {}
-    
-    for (const [cityName, info] of Object.entries(neighbors)) {
-      targetCities.push({
-        name: cityName,
-        ...citiesData[cityName],
-        distance: info.distance,
-        steps: info.steps,
-        visited: this.data.visitedCities.includes(cityName)
-      })
-    }
-
-    this.setData({
-      currentCity: city,
-      targetCities: targetCities
-    })
   },
 
   // 选择目标城市
@@ -212,6 +196,9 @@ Page({
                 icon: 'none',
                 duration: 3000
               })
+              setTimeout(() => {
+                this.showCitySelector()
+              }, 3000)
             } else {
               reject(err)
             }
@@ -224,11 +211,6 @@ Page({
       if (nearestCity) {
         // 更新当前城市
         await this.updateCurrentCity(nearestCity.name)
-        // 在本地也更新城市信息
-        this.setCurrentCity({
-          name: nearestCity.name,
-          ...citiesData[nearestCity.name]
-        })
       } else {
         wx.showToast({
           title: '定位异常，请手动选择城市',

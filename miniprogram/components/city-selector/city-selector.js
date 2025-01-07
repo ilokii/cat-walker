@@ -142,6 +142,7 @@ Component({
           ...this.data.cities[city]
         }
       })
+      this.close()  // 选择后直接关闭选择器
     },
 
     // 关闭选择器

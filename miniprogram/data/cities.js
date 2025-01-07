@@ -1351,7 +1351,7 @@ const citiesData = {
       "襄阳市": { distance: 245, steps: 326670 },     // 北面接壤
       "荆门市": { distance: 165, steps: 220000 },     // 东北面接壤
       "荆州市": { distance: 145, steps: 193330 },     // 东面接壤
-      "恩施州": { distance: 265, steps: 353330 },     // 西南面接壤
+      "恩施土家族苗族自治州": { distance: 265, steps: 353330 },     // 西南面接壤
       // 重庆市
       "重庆市": { distance: 485, steps: 646670 }      // 西面接壤
     }
@@ -1477,7 +1477,7 @@ const citiesData = {
     }
   },
 
-  "恩施州": {
+  "恩施土家族苗族自治州": {
     province: 'HUB',
     location: { lat: 30.2720, lon: 109.4881 },
     icon: 'enshi.png',
@@ -1648,9 +1648,9 @@ const citiesData = {
       // 湖南省内
       "常德市": { distance: 145, steps: 193330 },     // 东面接壤
       "怀化市": { distance: 185, steps: 246670 },     // 南面接壤
-      "湘西州": { distance: 125, steps: 166670 },     // 西面接壤
+      "湘西土家族苗族自治州": { distance: 125, steps: 166670 },     // 西面接壤
       // 湖北省
-      "恩施州": { distance: 245, steps: 326670 }      // 北面接壤
+      "恩施土家族苗族自治州": { distance: 245, steps: 326670 }      // 北面接壤
     }
   },
 
@@ -1706,7 +1706,7 @@ const citiesData = {
       "常德市": { distance: 215, steps: 286670 },     // 东北面接壤
       "娄底市": { distance: 185, steps: 246670 },     // 东面接壤
       "邵阳市": { distance: 185, steps: 246670 },     // 东南面接壤
-      "湘西州": { distance: 145, steps: 193330 },     // 西北面接壤
+      "湘西土家族苗族自治州": { distance: 145, steps: 193330 },     // 西北面接壤
       // 贵州省
       "铜仁市": { distance: 165, steps: 220000 }      // 西南面接壤
     }
@@ -1728,7 +1728,7 @@ const citiesData = {
     }
   },
 
-  "湘西州": {
+  "湘西土家族苗族自治州": {
     province: 'HUN',
     location: { lat: 28.3112, lon: 109.7389 },
     icon: 'xiangxi.png',
