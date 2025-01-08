@@ -176,8 +176,8 @@ Page({
         icon: 'success'
       })
 
-      wx.reLaunch({
-        url: '/pages/index/index'
+      wx.redirectTo({
+        url: '/pages/loading/loading'
       })
     } catch (err) {
       console.error('设置目标城市或更新已访问城市失败:', err)

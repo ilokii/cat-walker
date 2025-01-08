@@ -25,20 +25,11 @@ Page({
 
       // 初始化数据管理器
       await syncManager.initialize()
-      const userData = syncManager.getLocalData()
-
-      // 判断用户数据
-      if (userData.currentCity && userData.targetCity) {
-        // 如果有当前城市和目标城市，直接进入主页
-        wx.redirectTo({
-          url: '/pages/index/index'
-        })
-      } else {
-        // 否则进入城市选择页面
-        wx.redirectTo({
-          url: '/pages/city/city'
-        })
-      }
+      
+      // 跳转到loading页面
+      wx.redirectTo({
+        url: '/pages/loading/loading'
+      })
 
     } catch (err) {
       console.error('登录失败：', err)
