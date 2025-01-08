@@ -1,0 +1,5 @@
+<view class="container">
+  <view class="title">猫咪漫游记</view>
+  <button class="login-btn" bindtap="onLogin">登录</button>
+  <loading wx:if="{{isLoading}}" title="数据加载中" />
+</view> 

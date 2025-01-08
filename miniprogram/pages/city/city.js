@@ -16,41 +16,32 @@ Page({
   },
 
   onLoad() {
-    // 加载用户数据
-    this.loadUserData().then(() => {
+    // 确保 syncManager 已初始化
+    syncManager.initialize().then(() => {
+      // 从 syncManager 获取本地数据
+      const userData = syncManager.getLocalData()
+      if (userData.currentCity) {
+        const cityInfo = citiesData[userData.currentCity]
+        this.setData({
+          currentCity: {
+            name: userData.currentCity,
+            ...cityInfo
+          },
+          targetCities: this.getTargetCities(userData.currentCity, userData.visitedCities || [])
+        })
+      }
+
       // 只有在没有当前城市时才尝试获取地理位置
-      if (!this.data.currentCity) {
+      if (!userData.currentCity) {
         this.checkAndGetLocation()
       }
-    })
-  },
-
-  // 加载用户数据
-  async loadUserData() {
-    try {
-      const userData = await syncManager.getUserData()
-
-      if (userData) {
-        // 设置当前城市
-        if (userData.currentCity) {
-          const cityInfo = citiesData[userData.currentCity]
-          // 直接使用云端数据更新界面
-          this.setData({
-            currentCity: {
-              name: userData.currentCity,
-              ...cityInfo
-            },
-            targetCities: this.getTargetCities(userData.currentCity, userData.visitedCities || [])
-          })
-        }
-      }
-    } catch (err) {
-      console.error('加载用户数据失败:', err)
+    }).catch(err => {
+      console.error('初始化数据管理器失败:', err)
       wx.showToast({
         title: '加载数据失败，请重试',
         icon: 'none'
       })
-    }
+    })
   },
 
   // 获取目标城市列表
@@ -108,8 +99,16 @@ Page({
   async updateCurrentCity(cityName) {
     try {
       await syncManager.updateCurrentCity(cityName)
-      // 重新加载用户数据以更新界面
-      await this.loadUserData()
+      // 直接使用本地数据更新界面
+      const userData = syncManager.getLocalData()
+      const cityInfo = citiesData[cityName]
+      this.setData({
+        currentCity: {
+          name: cityName,
+          ...cityInfo
+        },
+        targetCities: this.getTargetCities(cityName, userData.visitedCities || [])
+      })
     } catch (err) {
       console.error('更新当前城市失败:', err)
       throw err
@@ -161,8 +160,8 @@ Page({
   // 设置目标城市
   async setTargetCity(cityName) {
     try {
-      // 获取当前用户数据
-      const userData = await syncManager.getUserData()
+      // 获取本地数据
+      const userData = syncManager.getLocalData()
       
       // 如果当前城市不在已访问列表中，添加进去
       if (userData && userData.currentCity && 
@@ -170,7 +169,6 @@ Page({
         await syncManager.addVisitedCity(userData.currentCity)
       }
 
-      // 设置目标城市
       await syncManager.updateTargetCity(cityName, 0)
 
       wx.showToast({

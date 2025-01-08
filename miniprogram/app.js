@@ -15,58 +15,6 @@ App({
       openid: '',
       isLogin: false
     }
-
-    // 初始化登录
-    this.initLogin()
-  },
-
-  // 初始化登录
-  async initLogin() {
-    try {
-      const loginResult = await wx.cloud.callFunction({
-        name: 'login'
-      })
-
-      if (loginResult.result) {
-        this.globalData.openid = loginResult.result.openid
-        this.globalData.isLogin = true
-
-        // 获取用户信息
-        const db = wx.cloud.database()
-        const userResult = await db.collection('users').where({
-          _openid: loginResult.result.openid
-        }).get()
-
-        if (userResult.data.length > 0) {
-          this.globalData.userInfo = userResult.data[0]
-          this.globalData.hasUserInfo = true
-
-          // 检查是否有当前城市和目标城市
-          if (!userResult.data[0].currentCity || !userResult.data[0].targetCity) {
-            // 没有当前城市，跳转到城市选择页面
-            wx.redirectTo({
-              url: '/pages/city/city'
-            })
-          }
-        }
-        else {
-          // 新用户，跳转到城市选择页面
-          wx.redirectTo({
-            url: '/pages/city/city'
-          })
-        }
-      }
-    } catch (err) {
-      console.error('初始化登录失败：', err)
-      wx.showToast({
-        title: '登录失败，请重试',
-        icon: 'none'
-      })
-      // 登录失败也跳转到城市选择页面
-      wx.redirectTo({
-        url: '/pages/city/city'
-      })
-    }
   },
 
   // 检查用户是否授权微信运动
