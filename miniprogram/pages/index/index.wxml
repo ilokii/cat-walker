@@ -1,3 +1,73 @@
 <view class="container">
-  <text class="message">{{message}}</text>
+  <!-- 统计区域 -->
+  <view class="stats-section">
+    <text class="section-title">千山万水</text>
+    <view class="stats-content">
+      <!-- 上半部分 -->
+      <view class="stats-row">
+        <!-- 总公里数 -->
+        <view class="stats-item">
+          <text class="stats-label">您已走过</text>
+          <text class="stats-value">{{totalKilometers}} km</text>
+        </view>
+        <!-- 总步数 -->
+        <view class="stats-item">
+          <text class="stats-label">您已走了</text>
+          <text class="stats-value">{{totalSteps}} 步</text>
+        </view>
+      </view>
+      <!-- 下半部分 -->
+      <view class="stats-row">
+        <!-- 已解锁省份数 -->
+        <view class="stats-item">
+          <text class="stats-label">走过的省份</text>
+          <text class="stats-value">{{visitedProvinces}}/{{totalProvinces}}</text>
+        </view>
+        <!-- 已解锁城市数 -->
+        <view class="stats-item">
+          <text class="stats-label">走过的城市</text>
+          <text class="stats-value">{{visitedCities}}/{{totalCities}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 当前旅行区域 -->
+  <view class="travel-section">
+    <text class="section-title">漫漫旅途</text>
+    <!-- 城市信息区域 -->
+    <view class="cities-info">
+      <!-- 当前城市 -->
+      <view class="city-item">
+        <block wx:if="{{currentCity}}">
+          <image class="city-icon" src="/images/cities/{{currentCity.icon}}" mode="aspectFit"></image>
+          <view class="city-text">
+            <text class="city-name">{{currentCity.name}}</text>
+            <text class="province-name">{{currentProvince.name}}</text>
+          </view>
+        </block>
+        <text wx:else class="no-city">未选择</text>
+      </view>
+      <!-- 目标城市 -->
+      <view class="city-item">
+        <block wx:if="{{targetCity}}">
+          <image class="city-icon" src="/images/cities/{{targetCity.icon}}" mode="aspectFit"></image>
+          <view class="city-text">
+            <text class="city-name">{{targetCity.name}}</text>
+            <text class="province-name">{{targetProvince.name}}</text>
+          </view>
+        </block>
+        <text wx:else class="no-city">未选择</text>
+      </view>
+    </view>
+    <!-- 进度条区域 -->
+    <view class="progress-area">
+      <view class="progress-bar-container">
+        <view class="progress-bar" style="width: {{progress}}%">
+          <text class="progress-text">{{progress}}%</text>
+        </view>
+      </view>
+      <text class="progress-steps">{{progressSteps}}/{{totalRequiredSteps}}</text>
+    </view>
+  </view>
 </view> 
