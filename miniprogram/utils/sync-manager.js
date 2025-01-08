@@ -6,7 +6,12 @@ class SyncManager {
       targetCity: null,
       startSteps: 0,
       visitedCities: [],
-      totalSteps: 0
+      totalSteps: 0,
+      isInitStepInfo: false,
+      lastUpdateStepInfo: {
+        date: null,
+        steps: 0
+      }
     }
     this.isInitialized = false
   }
@@ -23,7 +28,12 @@ class SyncManager {
           targetCity: userData.targetCity || null,
           startSteps: userData.startSteps || 0,
           visitedCities: userData.visitedCities || [],
-          totalSteps: userData.totalSteps || 0
+          totalSteps: userData.totalSteps || 0,
+          isInitStepInfo: userData.isInitStepInfo || false,
+          lastUpdateStepInfo: {
+            date: userData.lastUpdateStepInfo?.date || null,
+            steps: userData.lastUpdateStepInfo?.steps || 0
+          }
         }
       } else {
         // 如果云端没有数据，创建新用户数据
@@ -70,7 +80,12 @@ class SyncManager {
           targetCity: userData.targetCity || null,
           startSteps: userData.startSteps || 0,
           visitedCities: userData.visitedCities || [],
-          totalSteps: userData.totalSteps || 0
+          totalSteps: userData.totalSteps || 0,
+          isInitStepInfo: userData.isInitStepInfo || false,
+          lastUpdateStepInfo: {
+            date: userData.lastUpdateStepInfo?.date || null,
+            steps: userData.lastUpdateStepInfo?.steps || 0
+          }
         }
       }
       return this.localData
@@ -169,6 +184,48 @@ class SyncManager {
       this.localData.totalSteps = steps
     } catch (err) {
       console.error('更新总步数失败：', err)
+      throw err
+    }
+  }
+
+  // 更新步数初始化状态
+  async updateStepInfoInitStatus(isInit) {
+    try {
+      await this.db.collection('users').where({
+        _openid: getApp().globalData.openid
+      }).update({
+        data: {
+          isInitStepInfo: isInit,
+          updateTime: this.db.serverDate()
+        }
+      })
+      this.localData.isInitStepInfo = isInit
+    } catch (err) {
+      console.error('更新步数初始化状态失败：', err)
+      throw err
+    }
+  }
+
+  // 更新最后步数信息
+  async updateLastStepInfo(date, steps) {
+    try {
+      await this.db.collection('users').where({
+        _openid: getApp().globalData.openid
+      }).update({
+        data: {
+          lastUpdateStepInfo: {
+            date: date,
+            steps: steps
+          },
+          updateTime: this.db.serverDate()
+        }
+      })
+      this.localData.lastUpdateStepInfo = {
+        date: date,
+        steps: steps
+      }
+    } catch (err) {
+      console.error('更新最后步数信息失败：', err)
       throw err
     }
   }

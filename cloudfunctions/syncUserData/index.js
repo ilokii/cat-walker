@@ -8,7 +8,15 @@ exports.main = async (event, context) => {
   const db = cloud.database()
 
   try {
-    const { currentCity, targetCity, visitedCities, totalSteps, startSteps } = event
+    const { 
+      currentCity, 
+      targetCity, 
+      visitedCities, 
+      totalSteps, 
+      startSteps,
+      isInitStepInfo,
+      lastUpdateStepInfo
+    } = event
 
     // 更新用户数据
     const result = await db.collection('users').where({
@@ -20,6 +28,8 @@ exports.main = async (event, context) => {
         visitedCities,
         totalSteps,
         startSteps,
+        isInitStepInfo,
+        lastUpdateStepInfo,
         updateTime: db.serverDate()
       }
     })

@@ -5,7 +5,7 @@ const { citiesData } = require('../../data/cities')
 Page({
   data: {
     // 统计数据
-    totalKilometers: 0,
+    totalKilometers: '0.00',
     totalSteps: 0,
     visitedProvinces: 0,
     totalProvinces: Object.keys(provincesData).length,
@@ -50,9 +50,9 @@ Page({
     const totalKilometers = (localData.totalSteps * 0.75 / 1000).toFixed(2)
     
     // 计算已访问省份数（去重）
-    const visitedProvinces = new Set(
-      localData.visitedCities.map(city => citiesData[city].province)
-    ).size
+    const visitedProvinces = localData.visitedCities 
+      ? new Set(localData.visitedCities.map(city => citiesData[city].province)).size
+      : 0
     
     // 获取当前城市和目标城市信息
     const currentCity = localData.currentCity ? {
@@ -77,7 +77,7 @@ Page({
       if (distance) {
         progressSteps = localData.totalSteps - localData.startSteps
         totalRequiredSteps = distance.steps
-        progress = ((progressSteps / totalRequiredSteps) * 100).toFixed(2)
+        progress = progressSteps > 0 ? ((progressSteps / totalRequiredSteps) * 100).toFixed(2) : 0
       }
     }
     
@@ -85,7 +85,7 @@ Page({
       totalKilometers,
       totalSteps: localData.totalSteps,
       visitedProvinces,
-      visitedCities: localData.visitedCities.length,
+      visitedCities: localData.visitedCities ? localData.visitedCities.length : 0,
       currentCity,
       currentProvince: currentCity ? provincesData[currentCity.province] : null,
       targetCity,
