@@ -9,7 +9,7 @@ class SyncManager {
       totalSteps: 0,
       isInitStepInfo: false,
       lastUpdateStepInfo: {
-        date: null,
+        date: new Date(1900, 0, 1, 0, 0, 0),
         steps: 0
       }
     }
@@ -31,7 +31,7 @@ class SyncManager {
           totalSteps: userData.totalSteps || 0,
           isInitStepInfo: userData.isInitStepInfo || false,
           lastUpdateStepInfo: {
-            date: userData.lastUpdateStepInfo?.date || null,
+            date: userData.lastUpdateStepInfo?.date || new Date(1900, 0, 1, 0, 0, 0),
             steps: userData.lastUpdateStepInfo?.steps || 0
           }
         }
@@ -83,7 +83,7 @@ class SyncManager {
           totalSteps: userData.totalSteps || 0,
           isInitStepInfo: userData.isInitStepInfo || false,
           lastUpdateStepInfo: {
-            date: userData.lastUpdateStepInfo?.date || null,
+            date: userData.lastUpdateStepInfo?.date || new Date(1900, 0, 1, 0, 0, 0),
             steps: userData.lastUpdateStepInfo?.steps || 0
           }
         }

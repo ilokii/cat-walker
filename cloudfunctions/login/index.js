@@ -26,7 +26,7 @@ exports.main = async (event, context) => {
           visitedCities: [],
           isInitStepInfo: false,
           lastUpdateStepInfo: {
-            date: null,
+            date: new Date(1900, 0, 1, 0, 0, 0),
             steps: 0
           },
           updateTime: db.serverDate()
