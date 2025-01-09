@@ -1,3 +1,5 @@
+const { citiesData } = require('../data/cities')
+
 class SyncManager {
   constructor() {
     this.db = wx.cloud.database()
@@ -49,6 +51,29 @@ class SyncManager {
   // 创建新用户数据
   async createNewUser() {
     try {
+      // 先检查是否已存在该用户的数据
+      const existingUser = await this.db.collection('users').where({
+        _openid: getApp().globalData.openid
+      }).get()
+
+      if (existingUser.data.length > 0) {
+        // 如果已存在用户数据，则使用已有数据
+        this.localData = {
+          currentCity: existingUser.data[0].currentCity || null,
+          targetCity: existingUser.data[0].targetCity || null,
+          startSteps: existingUser.data[0].startSteps || 0,
+          visitedCities: existingUser.data[0].visitedCities || [],
+          totalSteps: existingUser.data[0].totalSteps || 0,
+          isInitStepInfo: existingUser.data[0].isInitStepInfo || false,
+          lastUpdateStepInfo: {
+            date: existingUser.data[0].lastUpdateStepInfo?.date || new Date(1900, 0, 1, 0, 0, 0),
+            steps: existingUser.data[0].lastUpdateStepInfo?.steps || 0
+          }
+        }
+        return
+      }
+
+      // 如果不存在，则创建新用户数据
       await this.db.collection('users').add({
         data: {
           ...this.localData,
@@ -228,6 +253,120 @@ class SyncManager {
       console.error('更新最后步数信息失败：', err)
       throw err
     }
+  }
+
+  // 处理微信运动数据
+  async handleWeRunData() {
+    try {
+      // 获取微信运动数据
+      const weRunData = await this.getWeRunData()
+      if (!weRunData) {
+        console.error('未获取到微信运动数据')
+        return false
+      }
+
+      const serverDate = this.db.serverDate()
+
+      if (!this.localData.isInitStepInfo) {
+        console.log('首次初始化步数信息')
+        // 首次初始化
+        const todaySteps = this.getTodaySteps(weRunData)
+        console.log('今日步数：', todaySteps)
+        await this.updateLastStepInfo(serverDate, todaySteps)
+        await this.updateStepInfoInitStatus(true)
+      } else {
+        // 计算需要增加的步数
+        let additionalSteps = 0
+        const lastUpdateDate = new Date(this.localData.lastUpdateStepInfo.date)
+        lastUpdateDate.setHours(0, 0, 0, 0)
+
+        weRunData.forEach(item => {
+          const itemDate = new Date(item.timestamp * 1000)
+          itemDate.setHours(0, 0, 0, 0)
+
+          if (itemDate < lastUpdateDate) return
+
+          if (itemDate.getTime() === lastUpdateDate.getTime()) {
+            const diff = Math.max(0, item.step - this.localData.lastUpdateStepInfo.steps)
+            additionalSteps += diff
+          } else if (itemDate > lastUpdateDate) {
+            additionalSteps += item.step
+          }
+        })
+
+        if (additionalSteps > 0) {
+          console.log('新增步数：', additionalSteps)
+          // 计算可增加步数的上限
+          const currentSteps = this.localData.totalSteps - this.localData.startSteps
+          const targetDistance = this.getTargetDistance()
+          const maxAdditionalSteps = Math.max(0, targetDistance - currentSteps)
+
+          // 更新总步数
+          const stepsToAdd = Math.min(additionalSteps, maxAdditionalSteps)
+          if (stepsToAdd > 0) {
+            await this.updateTotalSteps(this.localData.totalSteps + stepsToAdd)
+          }
+
+          // 更新最后步数信息
+          const todaySteps = this.getTodaySteps(weRunData)
+          await this.updateLastStepInfo(serverDate, todaySteps)
+        }
+      }
+
+      return true
+    } catch (err) {
+      console.error('处理微信运动数据失败：', err)
+      throw err
+    }
+  }
+
+  // 获取微信运动数据
+  async getWeRunData() {
+    try {
+      const res = await wx.getWeRunData()
+      const result = await wx.cloud.callFunction({
+        name: 'getWeRunData',
+        data: {
+          weRunData: wx.cloud.CloudID(res.cloudID)
+        }
+      })
+      return result.result.event.weRunData.data.stepInfoList
+    } catch (err) {
+      console.error('获取微信运动数据失败：', err)
+      throw err
+    }
+  }
+
+  // 获取今日步数
+  getTodaySteps(weRunData) {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    const todayData = weRunData.find(item => {
+      const itemDate = new Date(item.timestamp * 1000)
+      itemDate.setHours(0, 0, 0, 0)
+      return itemDate.getTime() === today.getTime()
+    })
+    return todayData ? todayData.step : 0
+  }
+
+  // 获取目标距离
+  getTargetDistance() {
+    const currentCity = this.localData.currentCity
+    const targetCity = this.localData.targetCity
+
+    if (!currentCity || !targetCity) {
+      console.error('当前城市或目标城市未设置')
+      return 0
+    }
+
+    const cityInfo = citiesData[currentCity]
+    if (!cityInfo || !cityInfo.neighbors || !cityInfo.neighbors[targetCity]) {
+      console.error('找不到城市间距离信息')
+      return 0
+    }
+
+    return cityInfo.neighbors[targetCity].steps
   }
 }
 
