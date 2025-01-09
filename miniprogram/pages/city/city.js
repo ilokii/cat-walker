@@ -283,5 +283,36 @@ Page({
 
   deg2rad(deg) {
     return deg * (Math.PI/180)
+  },
+
+  // 处理城市选择完成
+  async handleCitySelectComplete() {
+    try {
+      wx.showLoading({
+        title: '加载中',
+        mask: true
+      })
+
+      // 检查微信运动授权
+      const setting = await wx.getSetting()
+      if (setting.authSetting['scope.werun']) {
+        // 已授权，跳转到loading页面
+        wx.redirectTo({
+          url: '/pages/loading/loading'
+        })
+      } else {
+        // 未授权，跳转到授权页面
+        wx.redirectTo({
+          url: '/pages/werun-auth/werun-auth'
+        })
+      }
+    } catch (err) {
+      console.error('处理城市选择完成失败：', err)
+      wx.hideLoading()
+      wx.showToast({
+        title: '操作失败，请重试',
+        icon: 'none'
+      })
+    }
   }
 }) 

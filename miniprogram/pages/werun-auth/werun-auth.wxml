@@ -1,0 +1,5 @@
+<view class="container">
+  <view class="title">请您授权微信运动权限</view>
+  <view class="content">猫咪需要您的步数才可以漫游全国~</view>
+  <button class="auth-btn" bindtap="handleAuthClick">前往授权</button>
+</view> 

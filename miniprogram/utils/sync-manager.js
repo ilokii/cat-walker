@@ -221,7 +221,7 @@ class SyncManager {
         }
       })
       this.localData.lastUpdateStepInfo = {
-        date: date,
+        date: new Date(date),
         steps: steps
       }
     } catch (err) {

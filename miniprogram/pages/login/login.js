@@ -49,5 +49,38 @@ Page({
     } finally {
       this.setData({ isLoading: false })
     }
+  },
+
+  // 检查用户数据
+  async checkUserData() {
+    try {
+      const userData = await syncManager.getUserData()
+      if (userData && userData.currentCity && userData.targetCity) {
+        // 检查微信运动授权
+        const setting = await wx.getSetting()
+        if (setting.authSetting['scope.werun']) {
+          // 已授权，跳转到loading页面
+          wx.redirectTo({
+            url: '/pages/loading/loading'
+          })
+        } else {
+          // 未授权，跳转到授权页面
+          wx.redirectTo({
+            url: '/pages/werun-auth/werun-auth'
+          })
+        }
+      } else {
+        // 跳转到城市选择页面
+        wx.redirectTo({
+          url: '/pages/city/city'
+        })
+      }
+    } catch (err) {
+      console.error('检查用户数据失败：', err)
+      wx.showToast({
+        title: '数据加载失败，请重试',
+        icon: 'none'
+      })
+    }
   }
 }) 
