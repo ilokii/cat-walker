@@ -45,12 +45,16 @@
   overflow: hidden;
 }
 
-.current-city:active {
+.current-city.clickable {
+  cursor: pointer;
+}
+
+.current-city.clickable:active {
   transform: scale(0.98);
   box-shadow: 0 1rpx 5rpx rgba(0, 0, 0, 0.1);
 }
 
-.current-city::after {
+.current-city.clickable::after {
   content: '';
   position: absolute;
   right: 20rpx;

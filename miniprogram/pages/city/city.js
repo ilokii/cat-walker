@@ -63,6 +63,14 @@ Page({
 
   // 显示城市选择器
   showCitySelector() {
+    const userData = syncManager.getLocalData()
+    console.log('显示城市选择器, isInitStepInfo:', userData.isInitStepInfo)
+    
+    if (userData.isInitStepInfo) {
+      console.log('步数已初始化，不允许选择城市')
+      return
+    }
+    
     this.setData({
       selectorVisible: true
     })
@@ -79,6 +87,14 @@ Page({
   async onCitySelect(e) {
     const { city } = e.detail
     if (!city) return
+
+    const userData = syncManager.getLocalData()
+    console.log('选择城市, isInitStepInfo:', userData.isInitStepInfo)
+    
+    if (userData.isInitStepInfo) {
+      console.log('步数已初始化，不允许选择城市')
+      return
+    }
 
     try {
       // 更新当前城市

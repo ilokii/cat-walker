@@ -2,7 +2,8 @@
   <!-- 当前城市 -->
   <view class="section">
     <view class="section-title">当前城市</view>
-    <view class="current-city" bindtap="showCitySelector">
+    <view class="current-city {{!syncManager.getLocalData().isInitStepInfo ? 'clickable' : ''}}" 
+          bindtap="{{syncManager.getLocalData().isInitStepInfo ? '' : 'showCitySelector'}}">
       <block wx:if="{{currentCity}}">
         <image class="city-icon" src="/images/cities/{{currentCity.icon}}" />
         <view class="city-info">
