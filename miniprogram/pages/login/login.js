@@ -6,7 +6,12 @@ Page({
   },
 
   async onLogin() {
-    this.setData({ isLoading: true })
+    // 显示登录提示
+    wx.showLoading({
+      title: '登录中......',
+      mask: true
+    })
+
     try {
       // 获取用户openid
       const { result } = await wx.cloud.callFunction({
@@ -14,6 +19,7 @@ Page({
       })
       
       if (!result || !result.openid) {
+        wx.hideLoading()
         wx.showToast({
           title: '登录失败，请重试',
           icon: 'none'
@@ -26,6 +32,9 @@ Page({
       // 初始化数据管理器
       await syncManager.initialize()
       const userData = syncManager.getLocalData()
+      
+      // 隐藏登录提示
+      wx.hideLoading()
       
       // 根据用户数据状态决定跳转目标
       if (userData.currentCity && userData.targetCity) {
@@ -42,12 +51,11 @@ Page({
 
     } catch (err) {
       console.error('登录失败：', err)
+      wx.hideLoading()
       wx.showToast({
         title: '登录失败，请重试',
         icon: 'none'
       })
-    } finally {
-      this.setData({ isLoading: false })
     }
   },
 
