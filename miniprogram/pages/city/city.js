@@ -185,7 +185,8 @@ Page({
         await syncManager.addVisitedCity(userData.currentCity)
       }
 
-      await syncManager.updateTargetCity(cityName, 0)
+      // 使用当前的 totalSteps 作为新的 startSteps
+      await syncManager.updateTargetCity(cityName, userData.totalSteps)
 
       wx.showToast({
         title: '目标设置成功',

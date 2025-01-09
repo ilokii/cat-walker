@@ -368,6 +368,11 @@ class SyncManager {
 
     return cityInfo.neighbors[targetCity].steps
   }
+
+  // 获取服务器时间
+  getServerDate() {
+    return this.db.serverDate()
+  }
 }
 
 module.exports = new SyncManager() 
