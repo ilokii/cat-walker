@@ -1,4 +1,9 @@
 <view class="container">
+  <!-- 自定义导航栏 -->
+  <view class="custom-nav">
+    <view class="nav-title">猫咪漫游记</view>
+  </view>
+
   <!-- 统计区域 -->
   <view class="stats-section">
     <text class="section-title">千山万水</text>
