@@ -24,8 +24,23 @@ class SyncManager {
     if (this.isInitialized) return
     
     try {
-      const userData = await this.getUserData()
-      if (userData) {
+      // 获取用户数据，如果有多条记录，只使用第一条
+      const result = await this.db.collection('users').where({
+        _openid: getApp().globalData.openid
+      }).get()
+
+      if (result.data.length > 0) {
+        // 如果找到多条记录，删除多余的记录
+        if (result.data.length > 1) {
+          console.warn('发现多条用户记录，正在清理...')
+          const keepId = result.data[0]._id
+          for (let i = 1; i < result.data.length; i++) {
+            await this.db.collection('users').doc(result.data[i]._id).remove()
+          }
+        }
+
+        // 使用第一条记录的数据
+        const userData = result.data[0]
         this.localData = {
           currentCity: userData.currentCity || null,
           targetCity: userData.targetCity || null,
@@ -40,7 +55,7 @@ class SyncManager {
           startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0)
         }
       } else {
-        // 如果云端没有数据，创建新用户数据
+        // 如果没有找到用户数据，创建新用户
         await this.createNewUser()
       }
       this.isInitialized = true
@@ -53,30 +68,31 @@ class SyncManager {
   // 创建新用户数据
   async createNewUser() {
     try {
-      // 先检查是否已存在该用户的数据
+      // 再次检查是否已存在用户数据（双重检查）
       const existingUser = await this.db.collection('users').where({
         _openid: getApp().globalData.openid
       }).get()
 
       if (existingUser.data.length > 0) {
-        // 如果已存在用户数据，则使用已有数据
+        // 如果已存在用户数据，使用已有数据
+        const userData = existingUser.data[0]
         this.localData = {
-          currentCity: existingUser.data[0].currentCity || null,
-          targetCity: existingUser.data[0].targetCity || null,
-          startSteps: existingUser.data[0].startSteps || 0,
-          visitedCities: existingUser.data[0].visitedCities || [],
-          totalSteps: existingUser.data[0].totalSteps || 0,
-          isInitStepInfo: existingUser.data[0].isInitStepInfo || false,
+          currentCity: userData.currentCity || null,
+          targetCity: userData.targetCity || null,
+          startSteps: userData.startSteps || 0,
+          visitedCities: userData.visitedCities || [],
+          totalSteps: userData.totalSteps || 0,
+          isInitStepInfo: userData.isInitStepInfo || false,
           lastUpdateStepInfo: {
-            date: existingUser.data[0].lastUpdateStepInfo?.date || new Date(1900, 0, 1, 0, 0, 0),
-            steps: existingUser.data[0].lastUpdateStepInfo?.steps || 0
+            date: userData.lastUpdateStepInfo?.date || new Date(1900, 0, 1, 0, 0, 0),
+            steps: userData.lastUpdateStepInfo?.steps || 0
           },
-          startDate: existingUser.data[0].startDate || new Date(1900, 0, 1, 0, 0, 0)
+          startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0)
         }
         return
       }
 
-      // 如果不存在，则创建新用户数据
+      // 如果确实不存在，则创建新用户数据
       await this.db.collection('users').add({
         data: {
           ...this.localData,
