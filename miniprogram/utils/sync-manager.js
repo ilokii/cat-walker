@@ -13,7 +13,8 @@ class SyncManager {
       lastUpdateStepInfo: {
         date: new Date(1900, 0, 1, 0, 0, 0),
         steps: 0
-      }
+      },
+      startDate: new Date(1900, 0, 1, 0, 0, 0)
     }
     this.isInitialized = false
   }
@@ -35,7 +36,8 @@ class SyncManager {
           lastUpdateStepInfo: {
             date: userData.lastUpdateStepInfo?.date || new Date(1900, 0, 1, 0, 0, 0),
             steps: userData.lastUpdateStepInfo?.steps || 0
-          }
+          },
+          startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0)
         }
       } else {
         // 如果云端没有数据，创建新用户数据
@@ -68,7 +70,8 @@ class SyncManager {
           lastUpdateStepInfo: {
             date: existingUser.data[0].lastUpdateStepInfo?.date || new Date(1900, 0, 1, 0, 0, 0),
             steps: existingUser.data[0].lastUpdateStepInfo?.steps || 0
-          }
+          },
+          startDate: existingUser.data[0].startDate || new Date(1900, 0, 1, 0, 0, 0)
         }
         return
       }
@@ -110,7 +113,8 @@ class SyncManager {
           lastUpdateStepInfo: {
             date: userData.lastUpdateStepInfo?.date || new Date(1900, 0, 1, 0, 0, 0),
             steps: userData.lastUpdateStepInfo?.steps || 0
-          }
+          },
+          startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0)
         }
       }
       return this.localData
@@ -156,19 +160,22 @@ class SyncManager {
   }
 
   // 更新目标城市
-  async updateTargetCity(cityName, startSteps) {
+  async updateTargetCity(cityName, startSteps, startDate) {
     try {
+      const serverDate = this.db.serverDate()
       await this.db.collection('users').where({
         _openid: getApp().globalData.openid
       }).update({
         data: {
           targetCity: cityName,
           startSteps,
+          startDate: startDate || serverDate,
           updateTime: this.db.serverDate()
         }
       })
       this.localData.targetCity = cityName
       this.localData.startSteps = startSteps
+      this.localData.startDate = startDate ? new Date(startDate) : new Date(serverDate)
     } catch (err) {
       console.error('更新目标城市失败：', err)
       throw err

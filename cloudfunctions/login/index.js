@@ -29,6 +29,7 @@ exports.main = async (event, context) => {
             date: new Date(1900, 0, 1, 0, 0, 0),
             steps: 0
           },
+          startDate: new Date(1900, 0, 1, 0, 0, 0),
           updateTime: db.serverDate()
         }
       })

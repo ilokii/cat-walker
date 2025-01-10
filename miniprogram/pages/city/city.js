@@ -185,8 +185,9 @@ Page({
         await syncManager.addVisitedCity(userData.currentCity)
       }
 
-      // 使用当前的 totalSteps 作为新的 startSteps
-      await syncManager.updateTargetCity(cityName, userData.totalSteps)
+      // 使用当前的 totalSteps 作为新的 startSteps，并设置开始日期为当前日期
+      const serverDate = syncManager.getServerDate()
+      await syncManager.updateTargetCity(cityName, userData.totalSteps, serverDate)
 
       wx.showToast({
         title: '目标设置成功',

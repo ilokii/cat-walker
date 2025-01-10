@@ -75,7 +75,7 @@
   <view class="arrival-modal" wx:if="{{showArrivalModal}}">
     <view class="modal-content">
       <text class="modal-title">恭喜！</text>
-      <text class="modal-text">小猫成功抵达{{targetCity.name}}！</text>
+      <text class="modal-text">小猫历时{{travelDays}}天成功抵达{{targetCity.name}}！</text>
       <text class="modal-subtext">小猫正在期待下一场旅行</text>
       <button class="modal-button" bindtap="onPlanNextTravel">旅行计划</button>
     </view>

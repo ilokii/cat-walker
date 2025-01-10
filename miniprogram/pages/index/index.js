@@ -102,6 +102,7 @@ Page({
     let progressSteps = 0
     let totalRequiredSteps = 0
     let hasArrived = false
+    let travelDays = 0
     
     if (currentCity && targetCity) {
       const distance = citiesData[currentCity.name]?.neighbors?.[targetCity.name]
@@ -123,6 +124,19 @@ Page({
         // 检查是否到达目标城市
         if (progressSteps >= totalRequiredSteps) {
           hasArrived = true
+          // 计算旅行天数
+          const startDate = new Date(localData.startDate)
+          const currentDate = new Date()
+          const startDay = Math.floor(startDate.getTime() / (24 * 60 * 60 * 1000))
+          const currentDay = Math.floor(currentDate.getTime() / (24 * 60 * 60 * 1000))
+          travelDays = currentDay - startDay
+          console.log('旅行天数计算：', {
+            startDate,
+            currentDate,
+            startDay,
+            currentDay,
+            travelDays
+          })
           console.log('已到达目标城市！hasArrived =', hasArrived)
         }
       } else {
@@ -149,7 +163,8 @@ Page({
       progress,
       progressSteps,
       totalRequiredSteps,
-      showArrivalModal: hasArrived
+      showArrivalModal: hasArrived,
+      travelDays
     }, () => {
       console.log('setData 完成后的 showArrivalModal:', this.data.showArrivalModal)
     })
