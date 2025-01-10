@@ -6,7 +6,16 @@ Page({
 
   onShow: function() {
     // 检查是否已获得授权
-    this.checkWeRunAuth()
+    wx.getSetting({
+      success: (res) => {
+        if (res.authSetting['scope.werun']) {
+          // 已授权，关闭当前页面并跳转到loading页面
+          wx.redirectTo({
+            url: '/pages/loading/loading'
+          })
+        }
+      }
+    })
   },
 
   // 检查微信运动权限

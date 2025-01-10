@@ -1,5 +1,4 @@
 {
-  "navigationBarTitleText": "微信运动授权",
-  "navigationBarBackgroundColor": "#ffffff",
-  "navigationBarTextStyle": "black"
+  "usingComponents": {},
+  "navigationStyle": "custom"
 } 
