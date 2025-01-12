@@ -122,11 +122,13 @@ Page({
         // 检查是否需要播放动画
         if (tempSteps !== finalSteps && !this.data.animatingProgress) {
           this.playProgressAnimation(progressSteps, finalProgressSteps, totalRequiredSteps)
+        } else if (finalProgressSteps >= totalRequiredSteps && !this.data.animatingProgress) {
+          // 如果已经到达目标城市，且不在动画中，直接显示到达弹窗
+          hasArrived = true
         }
         
         // 检查是否到达目标城市
         if (finalProgressSteps >= totalRequiredSteps) {
-          hasArrived = true
           // 计算旅行天数
           const startDate = new Date(localData.startDate)
           const currentDate = new Date()
@@ -142,7 +144,8 @@ Page({
       }
     }
     
-    this.setData({
+    // 只在非动画状态下更新showArrivalModal
+    const updates = {
       totalKilometers,
       totalSteps: localData.totalSteps,
       visitedProvinces,
@@ -152,12 +155,18 @@ Page({
       currentProvince: currentCity ? provincesData[currentCity.province] : null,
       targetCity,
       targetProvince: targetCity ? provincesData[targetCity.province] : null,
-      progress: progress || 0,  // 确保不会显示NaN
-      progressSteps: progressSteps || 0,  // 确保不会显示null
+      progress: progress || 0,
+      progressSteps: progressSteps || 0,
       totalRequiredSteps: totalRequiredSteps || 0,
-      showArrivalModal: false,  // 初始不显示到达弹窗
       travelDays: travelDays || 0
-    })
+    }
+
+    // 只在非动画状态下更新showArrivalModal
+    if (!this.data.animatingProgress) {
+      updates.showArrivalModal = hasArrived
+    }
+    
+    this.setData(updates)
   },
 
   // 播放进度条动画
