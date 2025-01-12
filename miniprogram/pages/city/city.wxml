@@ -5,7 +5,6 @@
     <view class="current-city {{!syncManager.getLocalData().isInitStepInfo ? 'clickable' : ''}}" 
           bindtap="{{syncManager.getLocalData().isInitStepInfo ? '' : 'showCitySelector'}}">
       <block wx:if="{{currentCity}}">
-        <image class="city-icon" src="/images/cities/{{currentCity.icon}}" />
         <view class="city-info">
           <text class="city-name">{{currentCity.name}}</text>
           <text class="province-name">{{provinces[currentCity.province].name}}</text>

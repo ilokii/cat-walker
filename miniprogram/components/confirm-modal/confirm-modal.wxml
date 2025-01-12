@@ -9,7 +9,7 @@
     <block wx:if="{{ type === 'normal' }}">
       <view class="title">目标城市</view>
       <view class="message">您是否出发前往{{ cityName }}？</view>
-      <view class="buttons">
+      <view class="buttons horizontal">
         <button class="btn cancel" bindtap="onCancel">取消</button>
         <button class="btn confirm" bindtap="onConfirm">确认</button>
       </view>
@@ -19,7 +19,7 @@
     <block wx:else>
       <view class="title">选择前往方式</view>
       <view class="message">您已造访过{{ cityName }}，请确认前往方式</view>
-      <view class="buttons visited">
+      <view class="buttons horizontal">
         <button class="btn walk" bindtap="onConfirm">依旧步行</button>
         <button class="btn teleport" bindtap="onTeleport">直接传送</button>
       </view>

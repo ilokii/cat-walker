@@ -52,13 +52,14 @@
 .stats-content {
   display: flex;
   flex-direction: column;
-  gap: 50rpx;
+  gap: 30rpx;
 }
 
 .stats-row {
   display: flex;
   justify-content: space-between;
   gap: 40rpx;
+  min-height: 100rpx;
 }
 
 .stats-item {
@@ -66,19 +67,24 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16rpx;
+  gap: 8rpx;
+  min-height: 100rpx;
+  justify-content: center;
 }
 
 .stats-label {
   font-size: 28rpx;
   color: #666;
   font-weight: 500;
+  flex-shrink: 0;
 }
 
 .stats-value {
   font-size: 36rpx;
   color: #333;
   font-weight: bold;
+  flex-shrink: 0;
+  margin-top: 4rpx;
 }
 
 /* 城市信息区域样式 */
@@ -98,6 +104,7 @@
   padding: 20rpx;
   border-radius: 16rpx;
   gap: 16rpx;
+  width: 0;
 }
 
 .city-label {
@@ -111,17 +118,28 @@
   flex-direction: column;
   align-items: center;
   gap: 8rpx;
+  width: 100%;
 }
 
 .city-name {
   font-size: 34rpx;
   color: #333;
   font-weight: bold;
+  text-align: center;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .province-name {
   font-size: 26rpx;
   color: #666;
+  text-align: center;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .no-city {

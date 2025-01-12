@@ -54,8 +54,8 @@
   gap: 20rpx;
 }
 
-.buttons.visited {
-  flex-direction: column;
+.buttons.horizontal {
+  flex-direction: row;
 }
 
 .btn {
