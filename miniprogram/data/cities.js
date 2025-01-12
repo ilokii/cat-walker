@@ -36,7 +36,7 @@ const citiesData = {
     icon: 'wuxi.png',
     neighbors: {
       // 江苏省内
-      "常州市": { distance: 75, steps: 100000 },      // 西面接壤
+      "常州市": { distance: 75, steps: 100000 },      // 东面接壤
       "苏州市": { distance: 85, steps: 113330 },      // 东面接壤
       // 浙江省
       "湖州市": { distance: 125, steps: 166670 }      // 南面接壤
@@ -597,8 +597,8 @@ const citiesData = {
     neighbors: {
       // 福建省内
       "南平市": { distance: 165, steps: 220000 },     // 北面接壤
-      "福州市": { distance: 225, steps: 300000 },     // 东面接壤
-      "莆田市": { distance: 185, steps: 246670 },     // 东南面接壤
+      "福州市": { distance: 225, steps: 300000 },     // 东北面接壤
+      "莆田市": { distance: 185, steps: 246670 },     // 东面接壤
       "泉州市": { distance: 215, steps: 286670 },     // 东南面接壤
       "龙岩市": { distance: 155, steps: 206670 },     // 南面接壤
       // 江西省
@@ -783,7 +783,7 @@ const citiesData = {
     neighbors: {
       // 江西省内
       "新余市": { distance: 125, steps: 166670 },     // 北面接壤
-      "南昌市": { distance: 175, steps: 233330 },     // 北面接壤
+      "南昌市": { distance: 175, steps: 233330 },     // 东北面接壤
       "抚州市": { distance: 165, steps: 220000 },     // 东面接壤
       "赣州市": { distance: 165, steps: 220000 },     // 南面接壤
       // 湖南省
@@ -833,6 +833,7 @@ const citiesData = {
       "抚州市": { distance: 165, steps: 220000 },     // 南面接壤
       // 安徽省
       "黄山市": { distance: 165, steps: 220000 },     // 北面接壤
+      "宣城市": { distance: 215, steps: 286670 },     // 西北面接壤
       // 浙江省
       "衢州市": { distance: 165, steps: 220000 },     // 东面接壤
       // 福建省
@@ -955,8 +956,7 @@ const citiesData = {
       "济南市": { distance: 65, steps: 86670 },       // 北面接壤
       "淄博市": { distance: 135, steps: 180000 },     // 东北面接壤
       "临沂市": { distance: 185, steps: 246670 },     // 东南面接壤
-      "济宁市": { distance: 145, steps: 193330 },     // 南面接壤
-      "莱芜市": { distance: 75, steps: 100000 }       // 东面接壤
+      "济宁市": { distance: 145, steps: 193330 }      // 南面接壤
     }
   },
 
@@ -1021,6 +1021,7 @@ const citiesData = {
       // 山东省内
       "德州市": { distance: 115, steps: 153330 },     // 北面接壤
       "济南市": { distance: 165, steps: 220000 },     // 东面接壤
+      "菏泽市": { distance: 185, steps: 246670 },     // 南面接壤
       // 河北省
       "衡水市": { distance: 145, steps: 193330 },     // 西面接壤
       // 河南省
