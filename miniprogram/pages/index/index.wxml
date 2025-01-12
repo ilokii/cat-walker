@@ -68,8 +68,8 @@
     <!-- 进度条区域 -->
     <view class="progress-area">
       <view class="progress-bar-container">
+        <text class="progress-text">{{progress}}%</text>
         <view class="progress-bar" style="width: {{progress}}%">
-          <text class="progress-text">{{progress}}%</text>
         </view>
       </view>
       <text class="progress-steps">{{progressSteps}}/{{totalRequiredSteps}}</text>

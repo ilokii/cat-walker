@@ -46,7 +46,6 @@ Page({
 
   refreshData() {
     const localData = syncManager.getLocalData()
-    console.log('当前本地数据：', localData)
     
     // 计算总公里数（1步 = 0.75米）
     const totalKilometers = (localData.totalSteps * 0.75 / 1000).toFixed(2)
@@ -54,7 +53,6 @@ Page({
     // 计算已访问省份数（去重）
     let visitedProvinces = 0
     if (localData.visitedCities && Array.isArray(localData.visitedCities)) {
-      console.log('已访问城市列表：', localData.visitedCities)
       const validCities = localData.visitedCities.filter(city => {
         const isValid = citiesData[city] && citiesData[city].province
         if (!isValid) {
@@ -93,9 +91,6 @@ Page({
         console.warn('目标城市数据无效：', localData.targetCity)
       }
     }
-
-    console.log('当前城市：', currentCity)
-    console.log('目标城市：', targetCity)
     
     // 计算进度
     let progress = 0
@@ -106,20 +101,11 @@ Page({
     
     if (currentCity && targetCity) {
       const distance = citiesData[currentCity.name]?.neighbors?.[targetCity.name]
-      console.log('城市间距离信息：', distance)
       
       if (distance) {
         progressSteps = localData.totalSteps - localData.startSteps
         totalRequiredSteps = distance.steps
         progress = progressSteps > 0 ? ((progressSteps / totalRequiredSteps) * 100).toFixed(2) : 0
-        
-        console.log('进度计算：', {
-          totalSteps: localData.totalSteps,
-          startSteps: localData.startSteps,
-          progressSteps,
-          totalRequiredSteps,
-          progress
-        })
         
         // 检查是否到达目标城市
         if (progressSteps >= totalRequiredSteps) {
@@ -130,14 +116,6 @@ Page({
           const startDay = Math.floor(startDate.getTime() / (24 * 60 * 60 * 1000))
           const currentDay = Math.floor(currentDate.getTime() / (24 * 60 * 60 * 1000))
           travelDays = currentDay - startDay
-          console.log('旅行天数计算：', {
-            startDate,
-            currentDate,
-            startDay,
-            currentDay,
-            travelDays
-          })
-          console.log('已到达目标城市！hasArrived =', hasArrived)
         }
       } else {
         console.warn('找不到城市间距离信息：', {
@@ -146,9 +124,6 @@ Page({
         })
       }
     }
-    
-    console.log('更新前的 showArrivalModal:', this.data.showArrivalModal)
-    console.log('即将设置 showArrivalModal:', hasArrived)
     
     this.setData({
       totalKilometers,
@@ -165,11 +140,7 @@ Page({
       totalRequiredSteps,
       showArrivalModal: hasArrived,
       travelDays
-    }, () => {
-      console.log('setData 完成后的 showArrivalModal:', this.data.showArrivalModal)
     })
-
-    console.log('更新后的数据：', this.data)
   },
 
   async onPlanNextTravel() {
