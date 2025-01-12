@@ -2,6 +2,10 @@ const syncManager = require('../../utils/sync-manager')
 const { provincesData } = require('../../data/provinces')
 const { citiesData } = require('../../data/cities')
 
+const PROGRESS_ANIMATION_DURATION = 1000 // 进度条动画持续时间（毫秒）
+const ARRIVAL_MODAL_DELAY = 500 // 到达弹窗延迟时间（毫秒）
+const ANIMATION_STEPS = 30 // 动画的步骤数
+
 Page({
   data: {
     // 统计数据
@@ -20,7 +24,8 @@ Page({
     progress: 0,
     progressSteps: 0,
     totalRequiredSteps: 0,
-    showArrivalModal: false
+    showArrivalModal: false,
+    animatingProgress: false
   },
 
   onLoad() {
@@ -103,12 +108,24 @@ Page({
       const distance = citiesData[currentCity.name]?.neighbors?.[targetCity.name]
       
       if (distance) {
-        progressSteps = localData.totalSteps - localData.startSteps
         totalRequiredSteps = distance.steps
-        progress = progressSteps > 0 ? ((progressSteps / totalRequiredSteps) * 100).toFixed(2) : 0
+        const tempSteps = syncManager.getTotalStepsTemp()
+        const finalSteps = localData.totalSteps
+        
+        // 计算当前显示的进度
+        progressSteps = Math.max(0, tempSteps - localData.startSteps)
+        progress = ((progressSteps / totalRequiredSteps) * 100).toFixed(2)
+        
+        // 计算最终进度
+        const finalProgressSteps = Math.max(0, finalSteps - localData.startSteps)
+        
+        // 检查是否需要播放动画
+        if (tempSteps !== finalSteps && !this.data.animatingProgress) {
+          this.playProgressAnimation(progressSteps, finalProgressSteps, totalRequiredSteps)
+        }
         
         // 检查是否到达目标城市
-        if (progressSteps >= totalRequiredSteps) {
+        if (finalProgressSteps >= totalRequiredSteps) {
           hasArrived = true
           // 计算旅行天数
           const startDate = new Date(localData.startDate)
@@ -135,12 +152,61 @@ Page({
       currentProvince: currentCity ? provincesData[currentCity.province] : null,
       targetCity,
       targetProvince: targetCity ? provincesData[targetCity.province] : null,
-      progress,
-      progressSteps,
-      totalRequiredSteps,
-      showArrivalModal: hasArrived,
-      travelDays
+      progress: progress || 0,  // 确保不会显示NaN
+      progressSteps: progressSteps || 0,  // 确保不会显示null
+      totalRequiredSteps: totalRequiredSteps || 0,
+      showArrivalModal: false,  // 初始不显示到达弹窗
+      travelDays: travelDays || 0
     })
+  },
+
+  // 播放进度条动画
+  playProgressAnimation(startSteps, endSteps, totalRequiredSteps) {
+    this.setData({ animatingProgress: true })
+    
+    const stepDuration = PROGRESS_ANIMATION_DURATION / ANIMATION_STEPS
+    let currentStep = 0
+    
+    const updateProgress = () => {
+      if (currentStep >= ANIMATION_STEPS) {
+        // 动画结束
+        this.setData({ 
+          progressSteps: endSteps,
+          progress: ((endSteps / totalRequiredSteps) * 100).toFixed(2),
+          animatingProgress: false 
+        })
+        syncManager.setTotalStepsTemp(syncManager.getLocalData().totalSteps)
+        
+        // 检查是否需要显示到达弹窗
+        if (endSteps >= totalRequiredSteps) {
+          setTimeout(() => {
+            this.setData({ showArrivalModal: true })
+          }, ARRIVAL_MODAL_DELAY)
+        }
+        return
+      }
+      
+      // 使用缓动函数计算当前进度
+      const progress = currentStep / ANIMATION_STEPS
+      const easeProgress = this.easeOutCubic(progress)
+      const currentSteps = startSteps + (endSteps - startSteps) * easeProgress
+      const currentProgress = ((currentSteps / totalRequiredSteps) * 100).toFixed(2)
+      
+      this.setData({
+        progressSteps: Math.floor(currentSteps),
+        progress: currentProgress
+      })
+      
+      currentStep++
+      setTimeout(updateProgress, stepDuration)
+    }
+    
+    updateProgress()
+  },
+
+  // 缓动函数
+  easeOutCubic(x) {
+    return 1 - Math.pow(1 - x, 3)
   },
 
   async onPlanNextTravel() {

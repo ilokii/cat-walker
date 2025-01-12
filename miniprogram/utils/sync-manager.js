@@ -9,6 +9,7 @@ class SyncManager {
       startSteps: 0,
       visitedCities: [],
       totalSteps: 0,
+      totalStepsTemp: 0,
       isInitStepInfo: false,
       lastUpdateStepInfo: {
         date: new Date(1900, 0, 1, 0, 0, 0),
@@ -47,6 +48,7 @@ class SyncManager {
           startSteps: userData.startSteps || 0,
           visitedCities: userData.visitedCities || [],
           totalSteps: userData.totalSteps || 0,
+          totalStepsTemp: userData.totalSteps || 0,
           isInitStepInfo: userData.isInitStepInfo || false,
           lastUpdateStepInfo: {
             date: userData.lastUpdateStepInfo?.date || new Date(1900, 0, 1, 0, 0, 0),
@@ -221,6 +223,9 @@ class SyncManager {
   // 更新总步数
   async updateTotalSteps(steps) {
     try {
+      // 先更新临时步数
+      this.localData.totalStepsTemp = this.localData.totalSteps
+      
       await this.db.collection('users').where({
         _openid: getApp().globalData.openid
       }).update({
@@ -234,6 +239,16 @@ class SyncManager {
       console.error('更新总步数失败：', err)
       throw err
     }
+  }
+
+  // 获取临时步数
+  getTotalStepsTemp() {
+    return this.localData.totalStepsTemp
+  }
+
+  // 设置临时步数
+  setTotalStepsTemp(steps) {
+    this.localData.totalStepsTemp = steps
   }
 
   // 更新步数初始化状态
