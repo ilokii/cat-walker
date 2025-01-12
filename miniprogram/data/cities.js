@@ -10,7 +10,9 @@ const citiesData = {
       "镇江市": { distance: 80, steps: 106670 },      // 东面接壤
       "扬州市": { distance: 105, steps: 140000 },     // 东北面接壤
       "苏州市": { distance: 145, steps: 193330 },     // 西北面接壤
-      "常州市": { distance: 155, steps: 206670 }      // 东南面接壤
+      "常州市": { distance: 155, steps: 206670 },      // 东南面接壤
+      // 安徽省
+      "马鞍山市": { distance: 85, steps: 113330 }    // 西面接壤
     }
   },
   "苏州市": {
@@ -49,6 +51,7 @@ const citiesData = {
       "无锡市": { distance: 75, steps: 100000 },      // 东面接壤
       "镇江市": { distance: 95, steps: 126670 },      // 西北面接壤
       "南京市": { distance: 155, steps: 206670 },     // 西面接壤
+      "苏州市": { distance: 140, steps: 186670 },     // 东北面接壤
       // 浙江省
       "湖州市": { distance: 145, steps: 193330 }      // 南面接壤
     }
@@ -59,9 +62,10 @@ const citiesData = {
     icon: 'zhenjiang.png',
     neighbors: {
       // 江苏省内
-      "南京市": { distance: 80, steps: 106670 },      // 东面接壤
-      "常州市": { distance: 95, steps: 126670 },      // 西北面接壤
-      "无锡市": { distance: 75, steps: 100000 },      // 西面接壤
+      "南京市": { distance: 80, steps: 106670 },      // 西面接壤
+      "常州市": { distance: 95, steps: 126670 },      // 东北面接壤
+      "扬州市": { distance: 95, steps: 126670 },      // 北面接壤
+      "泰州市": { distance: 95, steps: 126670 },       // 南面接壤
       // 浙江省
       "湖州市": { distance: 145, steps: 193330 }      // 南面接壤
     }
@@ -126,7 +130,7 @@ const citiesData = {
       "连云港市": { distance: 185, steps: 246670 },   // 北面接壤
       "淮安市": { distance: 145, steps: 193330 },     // 西面接壤
       "泰州市": { distance: 165, steps: 220000 },     // 南面接壤
-      "南通市": { distance: 155, steps: 206670 }      // 南面接壤
+      "南通市": { distance: 155, steps: 206670 }      // 东南面接壤
     }
   },
   "扬州市": {
@@ -149,7 +153,9 @@ const citiesData = {
       // 江苏省内
       "盐城市": { distance: 165, steps: 220000 },     // 北面接壤
       "南通市": { distance: 95, steps: 126670 },      // 东面接壤
-      "扬州市": { distance: 85, steps: 113330 }       // 西面接壤
+      "扬州市": { distance: 85, steps: 113330 },       // 西面接壤
+      "镇江市": { distance: 95, steps: 126670 },      // 西南面接壤
+      "镇江市": { distance: 95, steps: 126670 }      // 西南面接壤
     }
   },
   "宿迁市": {
@@ -341,10 +347,8 @@ const citiesData = {
       // 安徽省内
       "合肥市": { distance: 85, steps: 113330 },      // 西北面接壤
       "马鞍山市": { distance: 65, steps: 86670 },     // 东北面接壤
-      "宣城市": { distance: 115, steps: 153330 },     // 南面接壤
-      "铜陵市": { distance: 75, steps: 100000 },      // 南面接壤
-      // 江苏省
-      "南京市": { distance: 145, steps: 193330 }      // 东面接壤
+      "宣城市": { distance: 115, steps: 153330 },     // 东南面接壤
+      "铜陵市": { distance: 75, steps: 100000 }       // 西南面接壤
     }
   },
 
@@ -395,7 +399,7 @@ const citiesData = {
       // 安徽省内
       "宿州市": { distance: 115, steps: 153330 },     // 东面接壤
       // 河南省
-      "商丘": { distance: 165, steps: 220000 }      // 西面接壤
+      "商丘市": { distance: 165, steps: 220000 }      // 西面接壤
     }
   },
 
@@ -477,13 +481,13 @@ const citiesData = {
     icon: 'suzhou.png',
     neighbors: {
       // 安徽省内
-      "淮北市": { distance: 115, steps: 153330 },     // 西面接壤
+      "淮北市": { distance: 115, steps: 153330 },     // 西北面接壤
       "蚌埠市": { distance: 125, steps: 166670 },     // 南面接壤
       // 江苏省
       "徐州市": { distance: 145, steps: 193330 },     // 东面接壤
       "宿迁市": { distance: 175, steps: 233330 },     // 东南面接壤
       // 河南省
-      "商丘市": { distance: 185, steps: 246670 }      // 西面接壤
+      "商丘市": { distance: 185, steps: 246670 }      // 西南面接壤
     }
   },
 
@@ -524,7 +528,7 @@ const citiesData = {
       // 安徽省内
       "铜陵市": { distance: 85, steps: 113330 },      // 北面接壤
       "安庆市": { distance: 125, steps: 166670 },     // 西面接壤
-      "黄山市": { distance: 145, steps: 193330 },     // 南面接壤
+      "黄山市": { distance: 145, steps: 193330 },     // 东南面接壤
       // 江西省
       "九江市": { distance: 165, steps: 220000 }      // 南面接壤
     }
@@ -537,11 +541,11 @@ const citiesData = {
     neighbors: {
       // 安徽省内
       "芜湖市": { distance: 115, steps: 153330 },     // 西北面接壤
-      "黄山市": { distance: 155, steps: 206670 },     // 南面接壤
+      "黄山市": { distance: 155, steps: 206670 },     // 西南面接壤
       // 浙江省
       "湖州市": { distance: 185, steps: 246670 },     // 东面接壤
       // 江西省
-      "上饶市": { distance: 215, steps: 286670 }      // 南面接壤
+      "上饶市": { distance: 215, steps: 286670 }      // 东南面接壤
     }
   },
 
@@ -1914,19 +1918,6 @@ const citiesData = {
     }
   },
 
-  "河源市": {
-    province: 'GD',
-    location: { lat: 23.7465, lon: 114.7005 },
-    icon: 'heyuan.png',
-    neighbors: {
-      // 广东省内
-      "韶关市": { distance: 165, steps: 220000 },     // 西北面接壤
-      "清远市": { distance: 185, steps: 246670 },     // 西面接壤
-      "惠州市": { distance: 145, steps: 193330 },     // 南面接壤
-      "梅州市": { distance: 165, steps: 220000 }      // 东面接壤
-    }
-  },
-
   "阳江市": {
     province: 'GD',
     location: { lat: 21.8579, lon: 111.9826 },
@@ -2958,7 +2949,7 @@ const citiesData = {
       // 西藏自治区内
       "昌都市": { distance: 285, steps: 380000 },     // 北面接壤
       "拉萨市": { distance: 285, steps: 380000 },     // 西面接壤
-      "山南市": { distance: 245, steps: 326670 }      // 西南面接壤
+      "山南市": { distance: 245, steps: 326670 }      // 东面接壤
     }
   },
 
