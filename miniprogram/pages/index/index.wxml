@@ -6,7 +6,7 @@
 
   <!-- 统计区域 -->
   <view class="stats-section">
-    <text class="section-title">千山万水</text>
+    <text class="section-title center">千山万水</text>
     <view class="stats-content">
       <!-- 上半部分 -->
       <view class="stats-row">
@@ -39,13 +39,13 @@
 
   <!-- 当前旅行区域 -->
   <view class="travel-section">
-    <text class="section-title">漫漫旅途</text>
+    <text class="section-title center">漫漫旅途</text>
     <!-- 城市信息区域 -->
     <view class="cities-info">
       <!-- 当前城市 -->
       <view class="city-item">
+        <text class="city-label">当前城市</text>
         <block wx:if="{{currentCity}}">
-          <image class="city-icon" src="/images/cities/{{currentCity.icon}}" mode="aspectFit"></image>
           <view class="city-text">
             <text class="city-name">{{currentCity.name}}</text>
             <text class="province-name">{{currentProvince.name}}</text>
@@ -55,8 +55,8 @@
       </view>
       <!-- 目标城市 -->
       <view class="city-item">
+        <text class="city-label">目标城市</text>
         <block wx:if="{{targetCity}}">
-          <image class="city-icon" src="/images/cities/{{targetCity.icon}}" mode="aspectFit"></image>
           <view class="city-text">
             <text class="city-name">{{targetCity.name}}</text>
             <text class="province-name">{{targetProvince.name}}</text>

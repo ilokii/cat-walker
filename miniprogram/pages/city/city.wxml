@@ -26,7 +26,6 @@
             wx:key="name"
             bindtap="selectTarget"
             data-city="{{item}}">
-        <image class="city-icon" src="/images/cities/{{item.icon}}" />
         <view class="city-info">
           <text class="city-name">{{item.name}}{{item.visited ? '（已造访）' : ''}}</text>
           <text class="province-name">{{provinces[item.province].name}}</text>
