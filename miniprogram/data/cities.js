@@ -2469,8 +2469,8 @@ const citiesData = {
       "成都市": { distance: 155, steps: 206670 },     // 东北面接壤
       "眉山市": { distance: 145, steps: 193330 },     // 东面接壤
       "乐山市": { distance: 165, steps: 220000 },     // 东南面接壤
-      "甘孜州": { distance: 285, steps: 380000 },     // 西面接壤
-      "阿坝州": { distance: 245, steps: 326670 }      // 北面接壤
+      "甘孜藏族自治州": { distance: 285, steps: 380000 },     // 西面接壤
+      "阿坝藏族羌族自治州": { distance: 245, steps: 326670 }      // 北面接壤
     }
   },
 
