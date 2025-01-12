@@ -1153,10 +1153,10 @@ const citiesData = {
     neighbors: {
       // 河南省内
       "鹤壁市": { distance: 95, steps: 126670 },      // 北面接壤
-      "安阳市": { distance: 145, steps: 193330 },     // 北面接壤
       "焦作市": { distance: 85, steps: 113330 },      // 西面接壤
       "郑州市": { distance: 85, steps: 113330 },      // 南面接壤
-      "开封市": { distance: 115, steps: 153330 }      // 东南面接壤
+      "开封市": { distance: 115, steps: 153330 },      // 东南面接壤
+      "濮阳市": { distance: 165, steps: 220000 }     // 东北面接壤
     }
   },
 
@@ -1181,6 +1181,7 @@ const citiesData = {
     neighbors: {
       // 河南省内
       "新乡市": { distance: 165, steps: 220000 },     // 西面接壤
+      "安阳市": { distance: 125, steps: 166670 },     // 北面接壤
       // 山东省
       "聊城市": { distance: 155, steps: 206670 },     // 东面接壤
       "菏泽市": { distance: 155, steps: 206670 }      // 东南面接壤
@@ -1432,6 +1433,7 @@ const citiesData = {
       "仙桃市": { distance: 85, steps: 113330 },      // 东北面接壤
       "潜江市": { distance: 75, steps: 100000 },      // 东面接壤
       "宜昌市": { distance: 145, steps: 193330 },     // 西面接壤
+      "咸宁市": { distance: 125, steps: 166670 },     // 南面接壤
       // 湖南省
       "岳阳市": { distance: 165, steps: 220000 }      // 南面接壤
     }
@@ -1446,7 +1448,7 @@ const citiesData = {
       "孝感市": { distance: 115, steps: 153330 },     // 西北面接壤
       "武汉市": { distance: 75, steps: 100000 },      // 西面接壤
       "鄂州市": { distance: 75, steps: 100000 },      // 南面接壤
-      "咸宁市": { distance: 125, steps: 166670 },     // 南面接壤
+      "咸宁市": { distance: 125, steps: 166670 },     // 东南面接壤
       // 河南省
       "信阳市": { distance: 165, steps: 220000 },     // 北面接壤
       // 安徽省
@@ -1462,6 +1464,7 @@ const citiesData = {
       // 湖北省内
       "黄石市": { distance: 85, steps: 113330 },      // 北面接壤
       "黄冈市": { distance: 125, steps: 166670 },     // 北面接壤
+      "荆州市": { distance: 125, steps: 166670 },     // 南面接壤
       // 湖南省
       "岳阳市": { distance: 145, steps: 193330 },     // 南面接壤
       // 江西省
@@ -1505,7 +1508,7 @@ const citiesData = {
       "武汉市": { distance: 95, steps: 126670 },      // 东面接壤
       "荆门市": { distance: 115, steps: 153330 },     // 西北面接壤
       "荆州市": { distance: 85, steps: 113330 },      // 西南面接壤
-      "潜市": { distance: 65, steps: 86670 }        // 西面接壤
+      "潜江市": { distance: 65, steps: 86670 }        // 西面接壤
     }
   },
 
@@ -1609,7 +1612,7 @@ const citiesData = {
     icon: 'shaoyang.png',
     neighbors: {
       // 湖南省内
-      "娄底市": { distance: 125, steps: 166670 },     // 面接壤
+      "娄底市": { distance: 125, steps: 166670 },     // 北面接壤
       "衡阳市": { distance: 145, steps: 193330 },     // 东面接壤
       "永州市": { distance: 165, steps: 220000 },     // 南面接壤
       "怀化市": { distance: 185, steps: 246670 }      // 西面接壤
@@ -1624,7 +1627,6 @@ const citiesData = {
       // 湖南省内
       "长沙市": { distance: 145, steps: 193330 },     // 南面接壤
       "常德市": { distance: 165, steps: 220000 },     // 西面接壤
-      // 湖州市: { distance: 165, steps: 220000 },     // 北面接壤
       "咸宁市": { distance: 145, steps: 193330 },     // 东北面接壤
       // 江西省
       "九江市": { distance: 125, steps: 166670 }      // 东面接壤
@@ -1832,7 +1834,7 @@ const citiesData = {
     location: { lat: 21.2707, lon: 110.3594 },
     icon: 'zhanjiang.png',
     neighbors: {
-      // 广���省内
+      // 广东省内
       "茂名市": { distance: 145, steps: 193330 },     // 东北面接壤
       "阳江市": { distance: 215, steps: 286670 },     // 东面接壤
       // 广西壮族自治区
@@ -4151,7 +4153,7 @@ const citiesData = {
       "廊坊市": { distance: 165, steps: 220000 },     // 北面接壤
       "保定市": { distance: 145, steps: 193330 },     // 西北面接壤
       "邢台市": { distance: 125, steps: 166670 },     // 南面接壤
-      "邯郸市": { distance: 145, steps: 193330 },     // 西北面接壤
+      "邯郸市": { distance: 145, steps: 193330 },     // 东南面接壤
       // 山东省
       "德州市": { distance: 145, steps: 193330 }      // 南面接壤
     }
