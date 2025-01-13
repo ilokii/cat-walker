@@ -2134,7 +2134,8 @@ const citiesData = {
       // 广西壮族自治区内
       "贵港市": { distance: 115, steps: 153330 },     // 北面接壤
       "钦州市": { distance: 165, steps: 220000 },     // 西面接壤
-      "梧州市": { distance: 165, steps: 220000 }      // 东北面接壤
+      "梧州市": { distance: 165, steps: 220000 },     // 东北面接壤
+      "贺州市": { distance: 215, steps: 286670 }      // 东面接壤
     }
   },
 
@@ -2144,7 +2145,8 @@ const citiesData = {
     icon: 'baise.png',
     neighbors: {
       // 广西壮族自治区内
-      "河池市": { distance: 185, steps: 246670 },     // 东面接壤
+      "河池市": { distance: 185, steps: 246670 },     // 东北面接壤
+      "来宾市": { distance: 215, steps: 286670 },     // 东面接壤
       "崇左市": { distance: 215, steps: 286670 },     // 南面接壤
       // 云南省
       "文山州": { distance: 165, steps: 220000 },     // 西面接壤
@@ -2161,7 +2163,8 @@ const citiesData = {
     neighbors: {
       // 广西壮族自治区内
       "桂林市": { distance: 165, steps: 220000 },     // 北面接壤
-      "梧州市": { distance: 145, steps: 193330 },     // 南面接壤
+      "梧州市": { distance: 145, steps: 193330 },     // 西南面接壤
+      "玉林市": { distance: 215, steps: 286670 },     // 南面接壤
       // 湖南省
       "永州市": { distance: 215, steps: 286670 }      // 东北面接壤
     }
@@ -2175,9 +2178,10 @@ const citiesData = {
       // 广西壮族自治区内
       "柳州市": { distance: 165, steps: 220000 },     // 东面接壤
       "来宾市": { distance: 185, steps: 246670 },     // 东南面接壤
-      "百色市": { distance: 185, steps: 246670 },     // 西面接壤
+      "百色市": { distance: 185, steps: 246670 },     // 西南面接壤
       // 贵州省
-      "黔南州": { distance: 215, steps: 286670 }      // 北面接壤
+      "黔南州": { distance: 215, steps: 286670 },     // 北面接壤
+      "黔西南布依族苗族自治州": { distance: 245, steps: 326670 }      // 西北面接壤
     }
   },
 
