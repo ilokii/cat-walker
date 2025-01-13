@@ -3235,6 +3235,58 @@ const citiesData = {
     }
   },
 
+  "金昌市": {
+    province: 'GS',
+    location: { lat: 38.5204, lon: 102.1877 },
+    icon: 'jinchang.png',
+    neighbors: {
+      // 甘肃省内
+      "武威市": { distance: 145, steps: 193330 },    // 南面接壤
+      "张掖市": { distance: 185, steps: 246670 }     // 西面接壤
+    }
+  },
+
+  "嘉峪关市": {
+    province: 'GS',
+    location: { lat: 39.7727, lon: 98.2891 },
+    icon: 'jiayuguan.png',
+    neighbors: {
+      // 甘肃省内
+      "酒泉市": { distance: 85, steps: 113330 }      // 西面接壤
+    }
+  },
+
+  "庆阳市": {
+    province: 'GS',
+    location: { lat: 35.7094, lon: 107.6389 },
+    icon: 'qingyang.png',
+    neighbors: {
+      // 甘肃省内
+      "白银市": { distance: 385, steps: 513330 },    // 西面接壤
+      "平凉市": { distance: 165, steps: 220000 },    // 西南面接壤
+      // 陕西省
+      "延安市": { distance: 245, steps: 326670 },    // 东面接壤
+      // 宁夏回族自治区
+      "固原市": { distance: 245, steps: 326670 }     // 西北面接壤
+    }
+  },
+
+  "酒泉市": {
+    province: 'GS',
+    location: { lat: 39.7326, lon: 98.4941 },
+    icon: 'jiuquan.png',
+    neighbors: {
+      // 甘肃省内
+      "嘉峪关市": { distance: 85, steps: 113330 },    // 东面接壤
+      "张掖市": { distance: 245, steps: 326670 },     // 东南面接壤
+      "武威市": { distance: 385, steps: 513330 },     // 东面接壤
+      // 内蒙古自治区
+      "阿拉善盟": { distance: 485, steps: 646670 },   // 北面接壤
+      // 青海省
+      "海西蒙古族藏族自治州": { distance: 385, steps: 513330 }  // 南面接壤
+    }
+  },
+
   "巴中市": {
     province: 'SC',
     location: { lat: 31.8675, lon: 106.7478 },
@@ -3370,7 +3422,7 @@ const citiesData = {
 
   "资阳市": {
     province: 'SC',
-    location: { lat: 30.1229, lon: 104.6268 },
+    location: { lat: 30.1229, lon: 104.6419 },
     icon: 'ziyang.png',
     neighbors: {
       // 四川省内
@@ -3496,9 +3548,11 @@ const citiesData = {
     icon: 'linxia.png',
     neighbors: {
       // 甘肃省内
-      "兰州市": { distance: 145, steps: 193330 },   // 东北面接壤
-      "平凉市": { distance: 165, steps: 220000 },     // 北面接壤
-      "甘南藏族自治州": { distance: 245, steps: 326670 }      // 东面接壤
+      "兰州市": { distance: 145, steps: 193330 },     // 东北面接壤
+      "定西市": { distance: 165, steps: 220000 },     // 东面接壤
+      "甘南藏族自治州": { distance: 245, steps: 326670 },     // 南面接壤
+      // 青海省
+      "海东市": { distance: 245, steps: 326670 }      // 西面接壤
     }
   },
 
@@ -4465,6 +4519,37 @@ const citiesData = {
       // 黑龙江省内
       "齐齐哈尔市": { distance: 285, steps: 380000 },     // 西面接壤
       "伊春市": { distance: 285, steps: 380000 }      // 东面接壤
+    }
+  },
+
+  "平凉市": {
+    province: 'GS',
+    location: { lat: 35.5427, lon: 106.6795 },
+    icon: 'pingliang.png',
+    neighbors: {
+      // 甘肃省内
+      "庆阳市": { distance: 165, steps: 220000 },     // 北面接壤
+      "定西市": { distance: 165, steps: 220000 },     // 西面接壤
+      "天水市": { distance: 165, steps: 220000 },     // 南面接壤
+      // 宁夏回族自治区
+      "固原市": { distance: 165, steps: 220000 },     // 西北面接壤
+      // 陕西省
+      "延安市": { distance: 245, steps: 326670 }      // 东北面接壤
+    }
+  },
+
+  "甘南藏族自治州": {
+    province: 'GS',
+    location: { lat: 34.9733, lon: 102.9272 },
+    icon: 'gannan.png',
+    neighbors: {
+      // 甘肃省内
+      "临夏回族自治州": { distance: 245, steps: 326670 },     // 北面接壤
+      // 四川省
+      "阿坝藏族羌族自治州": { distance: 245, steps: 326670 },     // 南面接壤
+      // 青海省
+      "黄南藏族自治州": { distance: 245, steps: 326670 },     // 西面接壤
+      "海东市": { distance: 285, steps: 380000 }      // 西北面接壤
     }
   }
 }
