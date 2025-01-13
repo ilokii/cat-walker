@@ -2087,7 +2087,6 @@ const citiesData = {
     }
   },
 
-  // === 广西壮族自治区城市 ===
   "防城港市": {
     province: 'GX',
     location: { lat: 21.6867, lon: 108.3547 },
@@ -2155,7 +2154,6 @@ const citiesData = {
     }
   },
 
-  // === 广西壮族自治区城市 ===
   "贺州市": {
     province: 'GX',
     location: { lat: 24.4037, lon: 111.5520 },
@@ -2234,7 +2232,7 @@ const citiesData = {
       // 海南省内
       "海口市": { distance: 245, steps: 326670 },     // 北面接壤
       "儋州市": { distance: 215, steps: 286670 },     // 西北面接壤
-      "三沙市": { distance: 385, steps: 513330 }      // 东南面接壤
+      "三沙市": { distance: 385, steps: 513330 }      // 东南面隔海
     }
   },
 
@@ -2255,7 +2253,7 @@ const citiesData = {
     icon: 'sansha.png',
     neighbors: {
       // 海南省内
-      "三亚市": { distance: 385, steps: 513330 }      // 西北面接壤
+      "三亚市": { distance: 385, steps: 513330 }      // 西北面隔海
     }
   },
 
