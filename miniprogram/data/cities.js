@@ -1760,7 +1760,8 @@ const citiesData = {
       "佛山市": { distance: 45, steps: 60000 },       // 西面接壤
       "东莞市": { distance: 55, steps: 73330 },       // 东面接壤
       "清远市": { distance: 115, steps: 153330 },     // 北面接壤
-      "肇庆市": { distance: 125, steps: 166670 }      // 西北面接壤
+      "肇庆市": { distance: 125, steps: 166670 },     // 西北面接壤
+      "深圳市": { distance: 145, steps: 193330 }      // 东南面接壤
     }
   },
 
@@ -1772,6 +1773,8 @@ const citiesData = {
       // 广东省内
       "东莞市": { distance: 65, steps: 86670 },       // 北面接壤
       "惠州市": { distance: 85, steps: 113330 },      // 东北面接壤
+      "广州市": { distance: 145, steps: 193330 },     // 西南面接壤
+      "珠海市": { distance: 165, steps: 220000 },     // 西面隔海大桥
       // 香港特别行政区
       "香港特别行政区": { distance: 35, steps: 46670 }      // 南面接壤
     }
@@ -1785,6 +1788,7 @@ const citiesData = {
       // 广东省内
       "中山市": { distance: 45, steps: 60000 },       // 北面接壤
       "江门市": { distance: 85, steps: 113330 },      // 西北面接壤
+      "深圳市": { distance: 165, steps: 220000 },     // 东面隔海大桥
       // 澳门特别行政区
       "澳门特别行政区": { distance: 15, steps: 20000 }      // 南面接壤
     }
@@ -1838,7 +1842,9 @@ const citiesData = {
       "茂名市": { distance: 145, steps: 193330 },     // 东北面接壤
       "阳江市": { distance: 215, steps: 286670 },     // 东面接壤
       // 广西壮族自治区
-      "北海市": { distance: 165, steps: 220000 }      // 西面接壤
+      "北海市": { distance: 165, steps: 220000 },      // 西面接壤
+      // 海南省
+      "海口市": { distance: 245, steps: 326670 }       // 南面隔海
     }
   },
 
@@ -2210,7 +2216,9 @@ const citiesData = {
     neighbors: {
       // 海南省内
       "儋州市": { distance: 145, steps: 193330 },     // 西面接壤
-      "三亚市": { distance: 245, steps: 326670 }      // 南面接壤
+      "三亚市": { distance: 245, steps: 326670 },      // 南面接壤
+      // 广东省
+      "湛江市": { distance: 245, steps: 326670 }       // 北面隔海
     }
   },
 
@@ -2940,7 +2948,7 @@ const citiesData = {
       // 四川省
       "甘孜藏族自治州": { distance: 485, steps: 646670 },     // 东面接壤
       // 云南省
-      "迪庆藏族自治州": { distance: 385, steps: 513330 }      // 东南面接壤
+      "迪庆藏族自治州": { distance: 385, steps: 513330 }      // 东北面接壤
     }
   },
 
@@ -3871,20 +3879,6 @@ const citiesData = {
     }
   },
 
-  "台中市": {
-    province: 'TW',
-    location: { lat: 24.1477, lon: 120.6736 },
-    icon: 'taichung.png',
-    neighbors: {
-      // 台湾省内
-      "苗栗县": { distance: 85, steps: 113330 },    // 北面接壤
-      "彰化县": { distance: 45, steps: 60000 },     // 西面接壤
-      "南投县": { distance: 65, steps: 86670 },     // 东面接壤
-      // 福建省
-      "泉州市": { distance: 245, steps: 326670 }    // 西面隔海
-    }
-  },
-
   "台南市": {
     province: 'TW',
     location: { lat: 22.9998, lon: 120.2269 },
@@ -4513,7 +4507,7 @@ const citiesData = {
     neighbors: {
       // 吉林省内
       "长春市": { distance: 145, steps: 193330 },     // 西面接壤
-      "四平市": { distance: 185, steps: 246670 },     // 西南面接壤
+      "四平市": { distance: 185, steps: 246670 },     // 东南面接壤
       "辽源市": { distance: 165, steps: 220000 },     // 南面接壤
       "通化市": { distance: 185, steps: 246670 },     // 东南面接壤
       "延边朝鲜族自治州": { distance: 245, steps: 326670 }  // 东面接壤
