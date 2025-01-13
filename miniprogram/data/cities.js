@@ -2492,13 +2492,11 @@ const citiesData = {
     icon: 'yaan.png',
     neighbors: {
       // 四川省内
-      "成都市": { distance: 155, steps: 206670 },     // 东北面接壤
-      "眉山市": { distance: 145, steps: 193330 },     // 东面接壤
-      "乐山市": { distance: 165, steps: 220000 },     // 东南面接壤
-      "甘孜藏族自治州": { distance: 285, steps: 380000 },     // 西面接壤
-      "阿坝藏族羌族自治州": { distance: 245, steps: 326670 },  // 北面接壤
-      "凉山彝族自治州": { distance: 245, steps: 326670 },     // 南面接壤
-      "玉林市": { distance: 245, steps: 326670 }      // 西南面接壤
+      "成都市": { distance: 245, steps: 326670 },     // 东北面接壤
+      "乐山市": { distance: 245, steps: 326670 },     // 东南面接壤
+      "阿坝藏族羌族自治州": { distance: 245, steps: 326670 },     // 西北面接壤
+      "甘孜藏族自治州": { distance: 245, steps: 326670 },     // 西面接壤
+      "凉山彝族自治州": { distance: 245, steps: 326670 }      // 南面接壤
     }
   },
 
@@ -2508,7 +2506,7 @@ const citiesData = {
     icon: 'meishan.png',
     neighbors: {
       // 四川省内
-      "成都市": { distance: 75, steps: 100000 },      // 北面接壤
+      "成都市": { distance: 165, steps: 220000 },     // 东北面接壤
       "资阳市": { distance: 115, steps: 153330 },     // 东北面接壤
       "自贡市": { distance: 125, steps: 166670 },     // 东面接壤
       "乐山市": { distance: 115, steps: 153330 },     // 南面接壤
@@ -2522,7 +2520,7 @@ const citiesData = {
     icon: 'ziyang.png',
     neighbors: {
       // 四川省内
-      "成都市": { distance: 95, steps: 126670 },      // 西面接壤
+      "成都市": { distance: 165, steps: 220000 },     // 东北面接壤
       "德阳市": { distance: 125, steps: 166670 },     // 西北面接壤
       "遂宁市": { distance: 115, steps: 153330 },     // 北面接壤
       "内江市": { distance: 125, steps: 166670 },     // 东南面接壤
@@ -2603,13 +2601,13 @@ const citiesData = {
     neighbors: {
       // 贵州省内
       "贵阳市": { distance: 185, steps: 246670 },     // 南面接壤
-      "铜仁市": { distance: 215, steps: 286670 },     // 东面接壤
+      "铜仁市": { distance: 185, steps: 246670 },     // 东面接壤
       "毕节市": { distance: 165, steps: 220000 },     // 西面接壤
       // 四川省
-      "泸州市": { distance: 245, steps: 326670 },     // 北面接壤
+      "泸州市": { distance: 215, steps: 286670 },     // 北面接壤
       "宜宾市": { distance: 245, steps: 326670 },     // 西北面接壤
       // 重庆市
-      "重庆市": { distance: 285, steps: 380000 }      // 东南面接壤
+      "重庆市": { distance: 245, steps: 326670 }      // 东北面接壤
     }
   },
 
@@ -2620,10 +2618,10 @@ const citiesData = {
     neighbors: {
       // 贵州省内
       "毕节市": { distance: 145, steps: 193330 },     // 北面接壤
-      "安顺市": { distance: 165, steps: 220000 },     // 东面接壤
+      "安顺市": { distance: 145, steps: 193330 },     // 东面接壤
       "黔西南布依族苗族自治州": { distance: 145, steps: 193330 },     // 南面接壤
       // 云南省
-      "曲靖市": { distance: 185, steps: 246670 }      // 西面接壤
+      "曲靖市": { distance: 165, steps: 220000 }      // 西面接壤
     }
   },
 
@@ -2634,9 +2632,9 @@ const citiesData = {
     neighbors: {
       // 贵州省内
       "贵阳市": { distance: 95, steps: 126670 },      // 东面接壤
-      "六盘水市": { distance: 165, steps: 220000 },   // 西面接壤
+      "六盘水市": { distance: 145, steps: 193330 },   // 西面接壤
       "黔南布依族苗族自治州": { distance: 145, steps: 193330 },     // 南面接壤
-      "毕节市": { distance: 185, steps: 246670 }      // 北面接壤
+      "毕节市": { distance: 165, steps: 220000 }      // 北面接壤
     }
   },
 
@@ -2648,11 +2646,11 @@ const citiesData = {
       // 贵州省内
       "遵义市": { distance: 165, steps: 220000 },     // 东面接壤
       "六盘水市": { distance: 145, steps: 193330 },   // 南面接壤
-      "安顺市": { distance: 185, steps: 246670 },     // 东南面接壤
+      "安顺市": { distance: 165, steps: 220000 },     // 东南面接壤
       // 四川省
-      "宜宾市": { distance: 245, steps: 326670 },     // 北面接壤
+      "宜宾市": { distance: 215, steps: 286670 },     // 北面接壤
       // 云南省
-      "昭通市": { distance: 185, steps: 246670 }      // 西面接壤
+      "昭通市": { distance: 165, steps: 220000 }      // 西面接壤
     }
   },
 
@@ -2662,12 +2660,12 @@ const citiesData = {
     icon: 'tongren.png',
     neighbors: {
       // 贵州省内
-      "遵义市": { distance: 215, steps: 286670 },     // 西面接壤
+      "遵义市": { distance: 185, steps: 246670 },     // 西面接壤
       "黔东南苗族侗族自治州": { distance: 165, steps: 220000 },     // 南面接壤
       // 湖南省
       "怀化市": { distance: 165, steps: 220000 },     // 东面接壤
       // 重庆市
-      "重庆市": { distance: 285, steps: 380000 }      // 北面接壤
+      "重庆市": { distance: 245, steps: 326670 }      // 北面接壤
     }
   },
 
@@ -2678,12 +2676,12 @@ const citiesData = {
     neighbors: {
       // 贵州省内
       "铜仁市": { distance: 165, steps: 220000 },     // 北面接壤
-      "贵阳市": { distance: 185, steps: 246670 },     // 西面接壤
+      "贵阳市": { distance: 165, steps: 220000 },     // 西面接壤
       "黔南布依族苗族自治州": { distance: 145, steps: 193330 },     // 南面接壤
       // 湖南省
-      "怀化市": { distance: 215, steps: 286670 },     // 东北面接壤
+      "怀化市": { distance: 185, steps: 246670 },     // 东北面接壤
       // 广西壮族自治区
-      "桂林市": { distance: 285, steps: 380000 }      // 东南面接壤
+      "桂林市": { distance: 245, steps: 326670 }      // 东南面接壤
     }
   },
 
@@ -3062,6 +3060,7 @@ const citiesData = {
       // 陕西省内
       "咸阳市": { distance: 145, steps: 193330 },   // 东面接壤
       "铜川市": { distance: 245, steps: 326670 },   // 东北面接壤
+      "汉中市": { distance: 165, steps: 220000 },   // 南面接壤
       // 甘肃省
       "天水市": { distance: 165, steps: 220000 }    // 西面接壤
     }
@@ -3105,7 +3104,24 @@ const citiesData = {
       "铜川市": { distance: 185, steps: 246670 },   // 南面接壤
       "榆林市": { distance: 285, steps: 380000 },   // 北面接壤
       // 山西省
-      "吕梁市": { distance: 245, steps: 326670 }    // 东面接壤
+      "吕梁市": { distance: 245, steps: 326670 },    // 东面接壤
+      // 甘肃省
+      "庆阳市": { distance: 245, steps: 326670 }     // 西面接壤
+    }
+  },
+
+  "庆阳市": {
+    province: 'GS',
+    location: { lat: 35.7094, lon: 107.6389 },
+    icon: 'qingyang.png',
+    neighbors: {
+      // 甘肃省内
+      "白银市": { distance: 385, steps: 513330 },     // 西面接壤
+      "平凉市": { distance: 165, steps: 220000 },     // 西南面接壤
+      // 陕西省
+      "延安市": { distance: 245, steps: 326670 },     // 东面接壤
+      // 宁夏回族自治区
+      "固原市": { distance: 245, steps: 326670 }      // 西北面接壤
     }
   },
 
@@ -3262,12 +3278,12 @@ const citiesData = {
     icon: 'qingyang.png',
     neighbors: {
       // 甘肃省内
-      "白银市": { distance: 385, steps: 513330 },    // 西面接壤
-      "平凉市": { distance: 165, steps: 220000 },    // 西南面接壤
+      "白银市": { distance: 385, steps: 513330 },     // 西面接壤
+      "平凉市": { distance: 165, steps: 220000 },     // 西南面接壤
       // 陕西省
-      "延安市": { distance: 245, steps: 326670 },    // 东面接壤
+      "延安市": { distance: 245, steps: 326670 },     // 东面接壤
       // 宁夏回族自治区
-      "固原市": { distance: 245, steps: 326670 }     // 西北面接壤
+      "固原市": { distance: 245, steps: 326670 }      // 西北面接壤
     }
   },
 
