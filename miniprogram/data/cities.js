@@ -2458,7 +2458,7 @@ const citiesData = {
 
   "达州市": {
     province: 'SC',
-    location: { lat: 31.2090, lon: 107.4684 },
+    location: { lat: 31.2089, lon: 107.4677 },
     icon: 'dazhou.png',
     neighbors: {
       // 四川省内
@@ -3383,7 +3383,7 @@ const citiesData = {
 
   "眉山市": {
     province: 'SC',
-    location: { lat: 30.0762, lon: 103.8521 },
+    location: { lat: 30.0750, lon: 103.8317 },
     icon: 'meishan.png',
     neighbors: {
       // 四川省内
@@ -3440,7 +3440,7 @@ const citiesData = {
 
   "甘孜藏族自治州": {
     province: 'SC',
-    location: { lat: 30.0492, lon: 101.9646 },
+    location: { lat: 30.0492, lon: 101.9625 },
     icon: 'ganzi.png',
     neighbors: {
       // 四川省内
