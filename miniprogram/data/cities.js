@@ -1315,7 +1315,6 @@ const citiesData = {
       "鄂州市": { distance: 55, steps: 73330 },       // 东面接壤
       "黄冈市": { distance: 75, steps: 100000 },      // 东北面接壤
       "孝感市": { distance: 85, steps: 113330 },      // 北面接壤
-      "仙桃市": { distance: 95, steps: 126670 },      // 西面接壤
       "黄石市": { distance: 95, steps: 126670 }       // 东南面接壤
     }
   },
@@ -1399,8 +1398,6 @@ const citiesData = {
       // 湖北省内
       "襄阳市": { distance: 125, steps: 166670 },     // 北面接壤
       "孝感市": { distance: 145, steps: 193330 },     // 东北面接壤
-      "天门市": { distance: 95, steps: 126670 },      // 东面接壤
-      "仙桃市": { distance: 115, steps: 153330 },     // 东南面接壤
       "荆州市": { distance: 125, steps: 166670 },     // 南面接壤
       "宜昌市": { distance: 165, steps: 220000 }      // 西面接壤
     }
@@ -1415,7 +1412,6 @@ const citiesData = {
       "随州市": { distance: 145, steps: 193330 },     // 北面接壤
       "黄冈市": { distance: 115, steps: 153330 },     // 东面接壤
       "武汉市": { distance: 85, steps: 113330 },      // 南面接壤
-      "天门市": { distance: 125, steps: 166670 },     // 西南面接壤
       "荆门市": { distance: 145, steps: 193330 },     // 西面接壤
       "襄阳市": { distance: 165, steps: 220000 },     // 西北面接壤
       // 河南省
@@ -1430,8 +1426,6 @@ const citiesData = {
     neighbors: {
       // 湖北省内
       "荆门市": { distance: 125, steps: 166670 },     // 北面接壤
-      "仙桃市": { distance: 85, steps: 113330 },      // 东北面接壤
-      "潜江市": { distance: 75, steps: 100000 },      // 东面接壤
       "宜昌市": { distance: 145, steps: 193330 },     // 西面接壤
       "咸宁市": { distance: 125, steps: 166670 },     // 南面接壤
       // 湖南省
@@ -1496,54 +1490,6 @@ const citiesData = {
       "重庆市": { distance: 385, steps: 513330 },     // 西面接壤
       // 湖南省
       "张家界市": { distance: 245, steps: 326670 }    // 南面接壤
-    }
-  },
-
-  "仙桃市": {
-    province: 'HUB',
-    location: { lat: 30.3625, lon: 113.4541 },
-    icon: 'xiantao.png',
-    neighbors: {
-      // 湖北省内
-      "武汉市": { distance: 95, steps: 126670 },      // 东面接壤
-      "荆门市": { distance: 115, steps: 153330 },     // 西北面接壤
-      "荆州市": { distance: 85, steps: 113330 },      // 西南面接壤
-      "潜江市": { distance: 65, steps: 86670 }        // 西面接壤
-    }
-  },
-
-  "潜江市": {
-    province: 'HUB',
-    location: { lat: 30.4021, lon: 112.8993 },
-    icon: 'qianjiang.png',
-    neighbors: {
-      // 湖北省内
-      "荆州市": { distance: 85, steps: 113330 },      // 南面接壤
-      "天门市": { distance: 65, steps: 86670 },       // 北面接壤
-      "仙桃市": { distance: 45, steps: 60000 }        // 东面接壤
-    }
-  },
-
-  "天门市": {
-    province: 'HUB',
-    location: { lat: 30.6637, lon: 113.1660 },
-    icon: 'tianmen.png',
-    neighbors: {
-      // 湖北省内
-      "孝感市": { distance: 125, steps: 166670 },     // 东北面接壤
-      "仙桃市": { distance: 75, steps: 100000 },      // 南面接壤
-      "荆门市": { distance: 95, steps: 126670 }       // 西面接壤
-    }
-  },
-
-  "神农架林区": {
-    province: 'HUB',
-    location: { lat: 31.7444, lon: 110.6768 },
-    icon: 'shennongjia.png',
-    neighbors: {
-      // 湖北省内
-      "十堰市": { distance: 165, steps: 220000 },     // 北面接壤
-      "宜昌市": { distance: 185, steps: 246670 }      // 南面接壤
     }
   },
 
@@ -3810,8 +3756,20 @@ const citiesData = {
     neighbors: {
       // 台湾省内
       "新北市": { distance: 15, steps: 20000 },      // 环绕
+      "基隆市": { distance: 45, steps: 60000 },      // 东北面接壤
       // 福建省
       "福州市": { distance: 185, steps: 246670 }     // 西面隔海
+    }
+  },
+
+  "基隆市": {
+    province: 'TW',
+    location: { lat: 25.1276, lon: 121.7392 },
+    icon: 'jilong.png',
+    neighbors: {
+      // 台湾省内
+      "台北市": { distance: 45, steps: 60000 },     // 西南面接壤
+      "新北市": { distance: 35, steps: 46670 }      // 南面接壤
     }
   },
 
@@ -3834,8 +3792,40 @@ const citiesData = {
     neighbors: {
       // 台湾省内
       "新北市": { distance: 45, steps: 60000 },     // 东北面接壤
-      "新竹县": { distance: 45, steps: 60000 },     // 南面接壤
-      "宜兰县": { distance: 85, steps: 113330 }     // 东面接壤
+      "新竹市": { distance: 45, steps: 60000 },     // 南面接壤
+    }
+  },
+
+  "新竹市": {
+    province: 'TW',
+    location: { lat: 24.8138, lon: 120.9675 },
+    icon: 'xinzhu.png',
+    neighbors: {
+      // 台湾省内
+      "桃园市": { distance: 45, steps: 60000 },     // 北面接壤
+      "台中市": { distance: 85, steps: 113330 }     // 南面接壤
+    }
+  },
+
+  "台中市": {
+    province: 'TW',
+    location: { lat: 24.1477, lon: 120.6736 },
+    icon: 'taizhong.png',
+    neighbors: {
+      // 台湾省内
+      "新竹市": { distance: 85, steps: 113330 },    // 北面接壤
+      "嘉义市": { distance: 85, steps: 113330 }     // 南面接壤
+    }
+  },
+
+  "嘉义市": {
+    province: 'TW',
+    location: { lat: 23.4800, lon: 120.4491 },
+    icon: 'jiayi.png',
+    neighbors: {
+      // 台湾省内
+      "台中市": { distance: 85, steps: 113330 },    // 北面接壤
+      "台南市": { distance: 65, steps: 86670 }      // 南面接壤
     }
   },
 
@@ -3845,7 +3835,7 @@ const citiesData = {
     icon: 'tainan.png',
     neighbors: {
       // 台湾省内
-      "嘉义县": { distance: 85, steps: 113330 },    // 北面接壤
+      "嘉义市": { distance: 65, steps: 86670 },    // 北面接壤
       "高雄市": { distance: 45, steps: 60000 }      // 南面接壤
     }
   },
@@ -4516,216 +4506,526 @@ const citiesData = {
 
   "白山市": {
     province: 'JL',
-    location: { lat: 41.9446, lon: 126.4279 },
+    location: { lat: 41.9429, lon: 126.4230 },
     icon: 'baishan.png',
     neighbors: {
       // 吉林省内
       "通化市": { distance: 165, steps: 220000 },     // 西面接壤
-      "延边朝鲜族自治州": { distance: 185, steps: 246670 }  // 北面接壤
-    }
-  },
-
-  "松原市": {
-    province: 'JL',
-    location: { lat: 45.1411, lon: 124.8253 },
-    icon: 'songyuan.png',
-    neighbors: {
-      // 吉林省内
-      "长春市": { distance: 185, steps: 246670 },     // 东南面接壤
-      "四平市": { distance: 165, steps: 220000 },     // 南面接壤
-      "白城市": { distance: 185, steps: 246670 },     // 西北面接壤
-      // 内蒙古自治区
-      "通辽市": { distance: 245, steps: 326670 }      // 西面接壤
-    }
-  },
-
-  "白城市": {
-    province: 'JL',
-    location: { lat: 45.6196, lon: 122.8411 },
-    icon: 'baicheng.png',
-    neighbors: {
-      // 吉林省内
-      "松原市": { distance: 185, steps: 246670 },     // 东南面接壤
-      // 内蒙古自治区
-      "通辽市": { distance: 245, steps: 326670 },     // 西南面接壤
-      "兴安盟": { distance: 285, steps: 380000 }      // 西北面接壤
+      "延边朝鲜族自治州": { distance: 185, steps: 246670 }  // 东北面接壤
     }
   },
 
   "延边朝鲜族自治州": {
     province: 'JL',
-    location: { lat: 42.9048, lon: 129.4735 },
+    location: { lat: 42.8917, lon: 129.5097 },
     icon: 'yanbian.png',
     neighbors: {
       // 吉林省内
       "吉林市": { distance: 245, steps: 326670 },     // 西面接壤
       "通化市": { distance: 245, steps: 326670 },     // 西南面接壤
-      "白山市": { distance: 185, steps: 246670 },     // 南面接壤
-      // 黑龙江省
-      "牡丹江市": { distance: 285, steps: 380000 }    // 北面接壤
+      "白山市": { distance: 185, steps: 246670 }      // 西北面接壤
     }
   },
 
   // === 黑龙江省城市 ===
   "哈尔滨市": {
     province: 'HLJ',
-    location: { lat: 45.8038, lon: 126.5340 },
+    location: { lat: 45.7517, lon: 126.6475 },
     icon: 'haerbin.png',
     neighbors: {
       // 黑龙江省内
-      "绥化市": { distance: 165, steps: 220000 },     // 西北面接壤
-      "双鸭山市": { distance: 245, steps: 326670 },   // 东面接壤
-      "牡丹江市": { distance: 285, steps: 380000 },   // 东南面接壤
-      "大庆市": { distance: 245, steps: 326670 }      // 西面接壤
+      "大庆市": { distance: 165, steps: 220000 },     // 东面接壤
+      "齐齐哈尔市": { distance: 185, steps: 246670 },   // 东北面接壤
+      "绥化市": { distance: 165, steps: 220000 },     // 东南面接壤
+      "牡丹江市": { distance: 185, steps: 246670 }      // 南面接壤
     }
   },
 
   "齐齐哈尔市": {
     province: 'HLJ',
-    location: { lat: 47.3542, lon: 123.9183 },
+    location: { lat: 47.3543, lon: 123.9179 },
     icon: 'qiqihaer.png',
     neighbors: {
       // 黑龙江省内
-      "大庆市": { distance: 245, steps: 326670 },     // 东南面接壤
-      "绥化市": { distance: 185, steps: 246670 },     // 东面接壤
-      "黑河市": { distance: 285, steps: 380000 },     // 北面接壤
-      // 内蒙古自治区
-      "呼伦贝尔市": { distance: 345, steps: 460000 }  // 西面接壤
-    }
-  },
-
-  "牡丹江市": {
-    province: 'HLJ',
-    location: { lat: 44.5519, lon: 129.6333 },
-    icon: 'mudanjiang.png',
-    neighbors: {
-      // 黑龙江省内
-      "哈尔滨市": { distance: 285, steps: 380000 },   // 西北面接壤
-      "佳木斯市": { distance: 245, steps: 326670 },   // 北面接壤
-      "鸡西市": { distance: 165, steps: 220000 },     // 东面接壤
-      // 吉林省
-      "延边朝鲜族自治州": { distance: 285, steps: 380000 }  // 南面接壤
-    }
-  },
-
-  "佳木斯市": {
-    province: 'HLJ',
-    location: { lat: 46.8099, lon: 130.3188 },
-    icon: 'jiamusi.png',
-    neighbors: {
-      // 黑龙江省内
-      "双鸭山市": { distance: 165, steps: 220000 },   // 西南面接壤
-      "鸡西市": { distance: 185, steps: 246670 },     // 南面接壤
-      "牡丹江市": { distance: 245, steps: 326670 },   // 南面接壤
-      "伊春市": { distance: 245, steps: 326670 },     // 西北面接壤
-      "七台河市": { distance: 145, steps: 193330 }    // 南面接壤
-    }
-  },
-
-  "大庆市": {
-    province: 'HLJ',
-    location: { lat: 46.5959, lon: 125.1037 },
-    icon: 'daqing.png',
-    neighbors: {
-      // 黑龙江省内
-      "齐齐哈尔市": { distance: 245, steps: 326670 }, // 西北面接壤
-      "绥化市": { distance: 165, steps: 220000 },     // 东北面接壤
-      "哈尔滨市": { distance: 245, steps: 326670 }    // 东面接壤
+      "哈尔滨市": { distance: 185, steps: 246670 },   // 西南面接壤
+      "大庆市": { distance: 185, steps: 246670 },     // 东南面接壤
+      "黑河市": { distance: 285, steps: 380000 },     // 东面接壤
+      "绥化市": { distance: 185, steps: 246670 },   // 西面接壤
+      "鸡西市": { distance: 165, steps: 220000 }      // 西北面接壤
     }
   },
 
   "鸡西市": {
     province: 'HLJ',
-    location: { lat: 45.2953, lon: 130.9688 },
+    location: { lat: 45.2952, lon: 130.9697 },
     icon: 'jixi.png',
     neighbors: {
       // 黑龙江省内
-      "牡丹江市": { distance: 165, steps: 220000 },   // 西面接壤
-      "佳木斯市": { distance: 185, steps: 246670 },   // 北面接壤
-      "七台河市": { distance: 125, steps: 166670 }    // 西北面接壤
+      "齐齐哈尔市": { distance: 165, steps: 220000 },   // 东南面接壤
+      "牡丹江市": { distance: 185, steps: 246670 },     // 东面接壤
+      "鹤岗市": { distance: 165, steps: 220000 }      // 南面接壤
     }
   },
 
-  "双鸭山市": {
+  "绥化市": {
     province: 'HLJ',
-    location: { lat: 46.6434, lon: 131.1591 },
-    icon: 'shuangyashan.png',
+    location: { lat: 46.6434, lon: 126.9927 },
+    icon: 'suihua.png',
     neighbors: {
       // 黑龙江省内
-      "佳木斯市": { distance: 165, steps: 220000 },   // 东面接壤
-      "七台河市": { distance: 145, steps: 193330 },   // 东南面接壤
-      "哈尔滨市": { distance: 245, steps: 326670 }    // 西面接壤
+      "哈尔滨市": { distance: 165, steps: 220000 },     // 西南面接壤
+      "齐齐哈尔市": { distance: 185, steps: 246670 },   // 东面接壤
+      "黑河市": { distance: 185, steps: 246670 },     // 北面接壤
+      "大兴安岭地区": { distance: 185, steps: 246670 }    // 东北面接壤
     }
   },
 
-  "伊春市": {
+  "大兴安岭地区": {
     province: 'HLJ',
-    location: { lat: 47.7273, lon: 128.8990 },
-    icon: 'yichun.png',
+    location: { lat: 52.3352, lon: 124.7108 },
+    icon: 'daxinganling.png',
     neighbors: {
       // 黑龙江省内
-      "佳木斯市": { distance: 245, steps: 326670 },   // 东南面接壤
-      "绥化市": { distance: 245, steps: 326670 },     // 西面接壤
-      "黑河市": { distance: 285, steps: 380000 }      // 西北面接壤
+      "绥化市": { distance: 185, steps: 246670 },     // 西南面接壤
+      // 内蒙古自治区
+      "呼伦贝尔市": { distance: 285, steps: 380000 }    // 西面接壤
     }
   },
 
-  "七台河市": {
-    province: 'HLJ',
-    location: { lat: 45.7750, lon: 131.0033 },
-    icon: 'qitaihe.png',
+  // === 内蒙古自治区城市 ===
+  "呼和浩特市": {
+    province: 'NMG',
+    location: { lat: 40.8415, lon: 111.7508 },
+    icon: 'huhehaote.png',
     neighbors: {
-      // 黑龙江省内
-      "佳木斯市": { distance: 145, steps: 193330 },   // 北面接壤
-      "鸡西市": { distance: 125, steps: 166670 },     // 东南面接壤
-      "双鸭山市": { distance: 145, steps: 193330 }    // 北西面接壤
+      // 内蒙古自治区内
+      "包头市": { distance: 185, steps: 246670 },     // 东面接壤
+      "赤峰市": { distance: 185, steps: 246670 },     // 东南面接壤
+      "通辽市": { distance: 185, steps: 246670 },     // 南面接壤
+      "呼伦贝尔市": { distance: 185, steps: 246670 },   // 西北面接壤
+      "巴彦淖尔市": { distance: 185, steps: 246670 },   // 西南面接壤
+      "乌海市": { distance: 185, steps: 246670 }      // 西面接壤
     }
   },
 
-  "鹤岗市": {
-    province: 'HLJ',
-    location: { lat: 47.3321, lon: 130.2975 },
-    icon: 'hegang.png',
+  "包头市": {
+    province: 'NMG',
+    location: { lat: 40.6581, lon: 109.8189 },
+    icon: 'baotou.png',
     neighbors: {
-      // 黑龙江省内
-      "佳木斯市": { distance: 165, steps: 220000 },   // 南面接壤
-      "伊春市": { distance: 185, steps: 246670 }      // 西面接壤
+      // 内蒙古自治区内
+      "呼和浩特市": { distance: 185, steps: 246670 },   // 西面接壤
+      "赤峰市": { distance: 185, steps: 246670 },     // 东南面接壤
+      "鄂尔多斯市": { distance: 185, steps: 246670 },   // 东面接壤
+      "巴彦淖尔市": { distance: 185, steps: 246670 }   // 西南面接壤
     }
   },
 
-  "黑河市": {
-    province: 'HLJ',
-    location: { lat: 50.2506, lon: 127.4994 },
-    icon: 'heihe.png',
+  "赤峰市": {
+    province: 'NMG',
+    location: { lat: 42.2581, lon: 118.9527 },
+    icon: 'chifeng.png',
     neighbors: {
-      // 黑龙江省内
-      "齐齐哈尔市": { distance: 285, steps: 380000 },     // 西面接壤
-      "伊春市": { distance: 285, steps: 380000 }      // 东面接壤
+      // 内蒙古自治区内
+      "呼和浩特市": { distance: 185, steps: 246670 },   // 西南面接壤
+      "包头市": { distance: 185, steps: 246670 },     // 西北面接壤
+      "通辽市": { distance: 185, steps: 246670 },     // 东面接壤
+      "鄂尔多斯市": { distance: 185, steps: 246670 },   // 东南面接壤
+      // 河北省
+      "承德市": { distance: 285, steps: 380000 },     // 北面接壤
+      // 辽宁省
+      "朝阳市": { distance: 285, steps: 380000 }      // 南面接壤
     }
   },
 
-  "平凉市": {
-    province: 'GS',
-    location: { lat: 35.5427, lon: 106.6795 },
-    icon: 'pingliang.png',
+  "通辽市": {
+    province: 'NMG',
+    location: { lat: 43.6526, lon: 122.2444 },
+    icon: 'tongliao.png',
     neighbors: {
-      // 甘肃省内
-      "庆阳市": { distance: 165, steps: 220000 },     // 北面接壤
-      "定西市": { distance: 165, steps: 220000 },     // 西面接壤
-      "天水市": { distance: 165, steps: 220000 },     // 南面接壤
-      // 宁夏回族自治区
-      "固原市": { distance: 165, steps: 220000 },     // 西北面接壤
+      // 内蒙古自治区内
+      "呼和浩特市": { distance: 185, steps: 246670 },   // 北面接壤
+      "赤峰市": { distance: 185, steps: 246670 },     // 西面接壤
+      "鄂尔多斯市": { distance: 185, steps: 246670 },   // 东南面接壤
+      "乌兰察布市": { distance: 185, steps: 246670 },   // 东北面接壤
+      // 吉林省
+      "阜新市": { distance: 285, steps: 380000 }      // 南面接壤
+    }
+  },
+
+  "呼伦贝尔市": {
+    province: 'NMG',
+    location: { lat: 49.2117, lon: 119.7656 },
+    icon: 'hulunbeier.png',
+    neighbors: {
+      // 内蒙古自治区内
+      "呼和浩特市": { distance: 185, steps: 246670 },   // 东南面接壤
+      "巴彦淖尔市": { distance: 185, steps: 246670 },   // 东面接壤
+      "兴安盟": { distance: 185, steps: 246670 },     // 北面接壤
+      // 黑龙江省
+      "大兴安岭地区": { distance: 285, steps: 380000 }  // 西面接壤
+    }
+  },
+
+  "兴安盟": {
+    province: 'NMG',
+    location: { lat: 46.0762, lon: 122.0703 },
+    icon: 'xinganmeng.png',
+    neighbors: {
+      // 内蒙古自治区内
+      "呼伦贝尔市": { distance: 185, steps: 246670 }   // 南面接壤
+    }
+  },
+
+  "哲里木盟": {
+    province: 'NMG',
+    location: { lat: 43.3333, lon: 117.0000 },
+    icon: 'zhelimu.png',
+    neighbors: {
+      // 内蒙古自治区内
+      "乌兰察布市": { distance: 185, steps: 246670 }   // 南面接壤
+    }
+  },
+
+  "锡林郭勒盟": {
+    province: 'NMG',
+    location: { lat: 43.9388, lon: 116.0911 },
+    icon: 'xilinguole.png',
+    neighbors: {
+      // 内蒙古自治区内
+      "乌兰察布市": { distance: 185, steps: 246670 },   // 西面接壤
+      "阿拉善盟": { distance: 185, steps: 246670 }     // 东北面接壤
+    }
+  },
+
+  "阿拉善盟": {
+    province: 'NMG',
+    location: { lat: 38.8451, lon: 105.6702 },
+    icon: 'alashan.png',
+    neighbors: {
+      // 内蒙古自治区内
+      "锡林郭勒盟": { distance: 185, steps: 246670 }   // 西南面接壤
+    }
+  },
+
+  // === 宁夏回族自治区城市 ===
+  "银川市": {
+    province: 'NX',
+    location: { lat: 38.4864, lon: 106.2324 },
+    icon: 'yinchuan.png',
+    neighbors: {
+      // 宁夏回族自治区内
+      "石嘴山市": { distance: 185, steps: 246670 },   // 东面接壤
+      "固原市": { distance: 185, steps: 246670 },     // 南面接壤
       // 陕西省
-      "延安市": { distance: 245, steps: 326670 }      // 东北面接壤
+      "榆林市": { distance: 285, steps: 380000 },     // 西面接壤
+      "汉中市": { distance: 285, steps: 380000 }      // 西北面接壤
     }
   },
 
-  "甘南藏族自治州": {
-    province: 'GS',
-    location: { lat: 34.9733, lon: 102.9272 },
-    icon: 'gannan.png',
+  "石嘴山市": {
+    province: 'NX',
+    location: { lat: 39.0177, lon: 106.3843 },
+    icon: 'shizuishan.png',
     neighbors: {
-      // 甘肃省内
+      // 宁夏回族自治区内
+      "银川市": { distance: 185, steps: 246670 },   // 西面接壤
+      "吴忠市": { distance: 185, steps: 246670 }     // 东南面接壤
+    }
+  },
+
+  "吴忠市": {
+    province: 'NX',
+    location: { lat: 37.9979, lon: 106.1994 },
+    icon: 'wuzhong.png',
+    neighbors: {
+      // 宁夏回族自治区内
+      "石嘴山市": { distance: 185, steps: 246670 },   // 西北面接壤
+      "固原市": { distance: 185, steps: 246670 }     // 东面接壤
+    }
+  },
+
+  "固原市": {
+    province: 'NX',
+    location: { lat: 36.0045, lon: 106.2852 },
+    icon: 'guyuan.png',
+    neighbors: {
+      // 宁夏回族自治区内
+      "银川市": { distance: 185, steps: 246670 },     // 北面接壤
+      "吴忠市": { distance: 185, steps: 246670 },     // 西面接壤
+      // 山西省
+      "运城市": { distance: 245, steps: 326670 },     // 东北面接壤
+      "吕梁市": { distance: 245, steps: 326670 }      // 东面接壤
+    }
+  },
+
+  // === 青海省城市 ===
+  "西宁市": {
+    province: 'QH',
+    location: { lat: 36.6171, lon: 101.7782 },
+    icon: 'xining.png',
+    neighbors: {
+      // 青海省内
+      "海东市": { distance: 185, steps: 246670 },     // 东面接壤
+      "海北藏族自治州": { distance: 185, steps: 246670 }, // 北面接壤
+      "黄南藏族自治州": { distance: 185, steps: 246670 }, // 西北面接壤
+      "海南藏族自治州": { distance: 185, steps: 246670 }, // 西南面接壤
+      "果洛藏族自治州": { distance: 185, steps: 246670 }, // 南面接壤
+      // 陕西省
+      "西安市": { distance: 285, steps: 380000 }      // 西面接壤
+    }
+  },
+
+  "海东市": {
+    province: 'QH',
+    location: { lat: 36.5029, lon: 102.1018 },
+    icon: 'haidong.png',
+    neighbors: {
+      // 青海省内
+      "西宁市": { distance: 185, steps: 246670 },     // 西面接壤
+      "海南藏族自治州": { distance: 185, steps: 246670 }, // 南面接壤
+      "海北藏族自治州": { distance: 185, steps: 246670 } // 东北面接壤
+    }
+  },
+
+  "海北藏族自治州": {
+    province: 'QH',
+    location: { lat: 36.9541, lon: 100.9010 },
+    icon: 'haibei.png',
+    neighbors: {
+      // 青海省内
+      "西宁市": { distance: 185, steps: 246670 },     // 南面接壤
+      "海东市": { distance: 185, steps: 246670 },     // 西南面接壤
+      "黄南藏族自治州": { distance: 185, steps: 246670 }, // 西面接壤
+      "果洛藏族自治州": { distance: 185, steps: 246670 } // 东南面接壤
+    }
+  },
+
+  "黄南藏族自治州": {
+    province: 'QH',
+    location: { lat: 35.5172, lon: 102.0087 },
+    icon: 'huangnan.png',
+    neighbors: {
+      // 青海省内
+      "西宁市": { distance: 185, steps: 246670 },     // 东南面接壤
+      "海北藏族自治州": { distance: 185, steps: 246670 }, // 东面接壤
+      "果洛藏族自治州": { distance: 185, steps: 246670 } // 南面接壤
+    }
+  },
+
+  "海南藏族自治州": {
+    province: 'QH',
+    location: { lat: 36.2982, lon: 100.6212 },
+    icon: 'hainan.png',
+    neighbors: {
+      // 青海省内
+      "西宁市": { distance: 185, steps: 246670 },     // 东北面接壤
+      "海东市": { distance: 185, steps: 246670 },     // 北面接壤
+      "果洛藏族自治州": { distance: 185, steps: 246670 } // 东面接壤
+    }
+  },
+
+  "果洛藏族自治州": {
+    province: 'QH',
+    location: { lat: 34.4736, lon: 100.2475 },
+    icon: 'guoluo.png',
+    neighbors: {
+      // 青海省内
+      "西宁市": { distance: 185, steps: 246670 },     // 北面接壤
+      "海北藏族自治州": { distance: 185, steps: 246670 }, // 西北面接壤
+      "黄南藏族自治州": { distance: 185, steps: 246670 }, // 北面接壤
+      "海南藏族自治州": { distance: 185, steps: 246670 } // 西面接壤
+    }
+  },
+
+  // === 新疆维吾尔自治区城市 ===
+  "乌鲁木齐市": {
+    province: 'XJ',
+    location: { lat: 43.8256, lon: 87.6168 },
+    icon: 'wulumuqi.png',
+    neighbors: {
+      // 新疆维吾尔自治区内
+      "克拉玛依市": { distance: 185, steps: 246670 },   // 东面接壤
+      "吐鲁番市": { distance: 185, steps: 246670 },   // 东北面接壤
+      "哈密市": { distance: 185, steps: 246670 },     // 北面接壤
+      "昌吉回族自治州": { distance: 185, steps: 246670 }, // 西北面接壤
+      "博尔塔拉蒙古自治州": { distance: 185, steps: 246670 }, // 西面接壤
+      "伊犁哈萨克自治州": { distance: 185, steps: 246670 } // 西南面接壤
+    }
+  },
+
+  "克拉玛依市": {
+    province: 'XJ',
+    location: { lat: 45.5798, lon: 84.8830 },
+    icon: 'kelamayi.png',
+    neighbors: {
+      // 新疆维吾尔自治区内
+      "乌鲁木齐市": { distance: 185, steps: 246670 },   // 西面接壤
+      "吐鲁番市": { distance: 185, steps: 246670 },   // 东南面接壤
+      "阿克苏地区": { distance: 185, steps: 246670 }   // 南面接壤
+    }
+  },
+
+  "吐鲁番市": {
+    province: 'XJ',
+    location: { lat: 42.9477, lon: 89.1847 },
+    icon: 'tulufan.png',
+    neighbors: {
+      // 新疆维吾尔自治区内
+      "乌鲁木齐市": { distance: 185, steps: 246670 },   // 西南面接壤
+      "克拉玛依市": { distance: 185, steps: 246670 },   // 西北面接壤
+      "哈密市": { distance: 185, steps: 246670 },     // 东北面接壤
+      "和田地区": { distance: 185, steps: 246670 }     // 东面接壤
+    }
+  },
+
+  "哈密市": {
+    province: 'XJ',
+    location: { lat: 42.8333, lon: 93.5167 },
+    icon: 'hami.png',
+    neighbors: {
+      // 新疆维吾尔自治区内
+      "乌鲁木齐市": { distance: 185, steps: 246670 },   // 南面接壤
+      "吐鲁番市": { distance: 185, steps: 246670 },   // 西南面接壤
+      "昌吉回族自治州": { distance: 185, steps: 246670 }, // 东面接壤
+      "阿勒泰地区": { distance: 185, steps: 246670 }   // 东北面接壤
+    }
+  },
+
+  "昌吉回族自治州": {
+    province: 'XJ',
+    location: { lat: 44.0145, lon: 87.3043 },
+    icon: 'changji.png',
+    neighbors: {
+      // 新疆维吾尔自治区内
+      "乌鲁木齐市": { distance: 185, steps: 246670 },   // 东南面接壤
+      "哈密市": { distance: 185, steps: 246670 },     // 西面接壤
+      "博尔塔拉蒙古自治州": { distance: 185, steps: 246670 }, // 东北面接壤
+      "巴音郭楞蒙古自治州": { distance: 185, steps: 246670 }, // 东面接壤
+      "阿克苏地区": { distance: 185, steps: 246670 }   // 南面接壤
+    }
+  },
+
+  "博尔塔拉蒙古自治州": {
+    province: 'XJ',
+    location: { lat: 44.9033, lon: 82.2667 },
+    icon: 'boertala.png',
+    neighbors: {
+      // 新疆维吾尔自治区内
+      "乌鲁木齐市": { distance: 185, steps: 246670 },   // 东面接壤
+      "昌吉回族自治州": { distance: 185, steps: 246670 }, // 西南面接壤
+      "阿拉尔市": { distance: 185, steps: 246670 }     // 东北面接壤
+    }
+  },
+
+  "巴音郭楞蒙古自治州": {
+    province: 'XJ',
+    location: { lat: 41.7675, lon: 86.1448 },
+    icon: 'bayinguoleng.png',
+    neighbors: {
+      // 新疆维吾尔自治区内
+      "昌吉回族自治州": { distance: 185, steps: 246670 }, // 西面接壤
+      "阿克苏地区": { distance: 185, steps: 246670 },   // 东南面接壤
+      "克孜勒苏柯尔克孜自治州": { distance: 185, steps: 246670 } // 东北面接壤
+    }
+  },
+
+  "阿克苏地区": {
+    province: 'XJ',
+    location: { lat: 41.1675, lon: 80.2647 },
+    icon: 'akesu.png',
+    neighbors: {
+      // 新疆维吾尔自治区内
+      "克拉玛依市": { distance: 185, steps: 246670 },   // 北面接壤
+      "昌吉回族自治州": { distance: 185, steps: 246670 }, // 北面接壤
+      "巴音郭楞蒙古自治州": { distance: 185, steps: 246670 }, // 西南面接壤
+      "克孜勒苏柯尔克孜自治州": { distance: 185, steps: 246670 }, // 西面接壤
+      "喀什地区": { distance: 185, steps: 246670 }     // 东南面接壤
+    }
+  },
+
+  "克孜勒苏柯尔克孜自治州": {
+    province: 'XJ',
+    location: { lat: 39.7134, lon: 76.1728 },
+    icon: 'kezilesukeerkezi.png',
+    neighbors: {
+      // 新疆维吾尔自治区内
+      "阿克苏地区": { distance: 185, steps: 246670 },   // 东面接壤
+      "巴音郭楞蒙古自治州": { distance: 185, steps: 246670 }, // 西北面接壤
+      "喀什地区": { distance: 185, steps: 246670 }     // 东南面接壤
+    }
+  },
+
+  "喀什地区": {
+    province: 'XJ',
+    location: { lat: 39.4676, lon: 75.9897 },
+    icon: 'kashi.png',
+    neighbors: {
+      // 新疆维吾尔自治区内
+      "阿克苏地区": { distance: 185, steps: 246670 },   // 西北面接壤
+      "克孜勒苏柯尔克孜自治州": { distance: 185, steps: 246670 }, // 西南面接壤
+      "和田地区": { distance: 185, steps: 246670 },     // 东面接壤
+      "伊犁哈萨克自治州": { distance: 185, steps: 246670 } // 北面接壤
+    }
+  },
+
+  "和田地区": {
+    province: 'XJ',
+    location: { lat: 37.1109, lon: 79.9253 },
+    icon: 'hetian.png',
+    neighbors: {
+      // 新疆维吾尔自治区内
+      "吐鲁番市": { distance: 185, steps: 246670 },   // 西面接壤
+      "喀什地区": { distance: 185, steps: 246670 },     // 西面接壤
+      "伊犁哈萨克自治州": { distance: 185, steps: 246670 } // 北面接壤
+    }
+  },
+
+  "伊犁哈萨克自治州": {
+    province: 'XJ',
+    location: { lat: 43.9139, lon: 81.3165 },
+    icon: 'yili.png',
+    neighbors: {
+      // 新疆维吾尔自治区内
+      "乌鲁木齐市": { distance: 185, steps: 246670 },   // 东北面接壤
+      "和田地区": { distance: 185, steps: 246670 },     // 南面接壤
+      "喀什地区": { distance: 185, steps: 246670 },     // 南面接壤
+      "塔城地区": { distance: 185, steps: 246670 },     // 东面接壤
+      "阿勒泰地区": { distance: 185, steps: 246670 }   // 东南面接壤
+    }
+  },
+
+  "塔城地区": {
+    province: 'XJ',
+    location: { lat: 46.7463, lon: 82.9834 },
+    icon: 'tacheng.png',
+    neighbors: {
+      // 新疆维吾尔自治区内
+      "伊犁哈萨克自治州": { distance: 185, steps: 246670 }, // 西面接壤
+      "阿勒泰地区": { distance: 185, steps: 246670 }   // 东南面接壤
+    }
+  },
+
+  "阿勒泰地区": {
+    province: 'XJ',
+    location: { lat: 47.8483, lon: 88.1396 },
+    icon: 'aletai.png',
+    neighbors: {
+      // 新疆维吾尔自治区内
+      "哈密市": { distance: 185, steps: 246670 },     // 西南面接壤
+      "塔城地区": { distance: 185, steps: 246670 },     // 西北面接壤
+      "伊犁哈萨克自治州": { distance: 185, steps: 246670 } // 西面接壤
+    }
+  },
+
+  "石河子市": {
+    province: 'XJ',
+    location: { lat: 44.3054, lon: 86.0742 },
+    icon: 'shihezi.png',
+    neighbors: {
+      "克拉玛依市": { distance: 185, steps: 246670 },   // 东北面接壤
+      "吐鲁番市": { distance: 185, steps: 246670 },   // 东面接壤
+      "哈密市": { distance: 185, steps: 246670 },     // 南面接壤
       "临夏回族自治州": { distance: 245, steps: 326670 },     // 北面接壤
       "阿坝藏族羌族自治州": { distance: 245, steps: 326670 },     // 南面接壤
       // 青海省
