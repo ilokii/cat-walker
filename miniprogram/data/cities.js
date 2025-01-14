@@ -1946,7 +1946,7 @@ const citiesData = {
     icon: 'qingyuan.png',
     neighbors: {
       // 广东省内
-      "韶关市": { distance: 145, steps: 193330 },     // 北面接壤
+      "韶关市": { distance: 145, steps: 193330 },     // 南面接壤
       "河源市": { distance: 185, steps: 246670 },     // 东面接壤
       "广州市": { distance: 115, steps: 153330 },     // 南面接壤
       "肇庆市": { distance: 145, steps: 193330 }      // 西面接壤
@@ -3578,6 +3578,8 @@ const citiesData = {
     icon: 'gannan.png',
     neighbors: {
       // 甘肃省内
+      "临夏回族自治州": { distance: 245, steps: 326670 },     // 北面接壤
+      "阿坝藏族羌族自治州": { distance: 245, steps: 326670 },     // 西面接壤
       // 内蒙古自治区内
       "呼伦贝尔市": { distance: 385, steps: 513330 },   // 北面接壤
       "通辽市": { distance: 285, steps: 380000 },    // 南面接壤
@@ -3594,7 +3596,38 @@ const citiesData = {
       // 内蒙古自治区内
       "乌兰察布市": { distance: 245, steps: 326670 },   // 南面接壤
       "通辽市": { distance: 285, steps: 380000 },    // 东面接壤
-      "赤峰市": { distance: 385, steps: 513330 }     // 东南面接壤
+      "赤峰市": { distance: 385, steps: 513330 },     // 东南面接壤
+      "呼和浩特市": { distance: 245, steps: 326670 }   // 西南面接壤
+    }
+  },
+
+  "包头市": {
+    province: 'NMG',
+    location: { lat: 40.6571, lon: 109.8405 },
+    icon: 'baotou.png',
+    neighbors: {
+      // 内蒙古自治区内
+      "呼和浩特市": { distance: 165, steps: 220000 },  // 东面接壤
+      "乌海市": { distance: 185, steps: 246670 },      // 西面接壤
+      "鄂尔多斯市": { distance: 165, steps: 220000 },  // 南面接壤
+      // 山西省
+      "朔州市": { distance: 245, steps: 326670 }       // 东南面接壤
+    }
+  },
+
+  "鄂尔多斯市": {
+    province: 'NMG',
+    location: { lat: 39.6087, lon: 109.7811 },
+    icon: 'eerduosi.png',
+    neighbors: {
+      // 内蒙古自治区内
+      "包头市": { distance: 165, steps: 220000 },      // 北面接壤
+      "乌海市": { distance: 165, steps: 220000 },      // 西北面接壤
+      "阿拉善盟": { distance: 285, steps: 380000 },    // 西面接壤
+      // 陕西省
+      "榆林市": { distance: 245, steps: 326670 },      // 南面接壤
+      // 山西省
+      "朔州市": { distance: 245, steps: 326670 }       // 东面接壤
     }
   },
 
@@ -3606,11 +3639,144 @@ const citiesData = {
       // 内蒙古自治区内
       "巴彦淖尔市": { distance: 285, steps: 380000 },   // 东面接壤
       "乌海市": { distance: 285, steps: 380000 },    // 东南面接壤
+      "鄂尔多斯市": { distance: 285, steps: 380000 },    // 西面接壤
       // 甘肃省
       "酒泉市": { distance: 485, steps: 646670 },    // 西面接壤
       // 宁夏回族自治区
       "中卫市": { distance: 285, steps: 380000 },    // 南面接壤
       "银川市": { distance: 385, steps: 513330 }     // 东南面接壤
+    }
+  },
+
+  "呼和浩特市": {
+    province: 'NMG',
+    location: { lat: 40.8173, lon: 111.7651 },
+    icon: 'huhehaote.png',
+    neighbors: {
+      // 内蒙古自治区内
+      "包头市": { distance: 165, steps: 220000 },      // 东面接壤
+      "乌海市": { distance: 165, steps: 220000 },      // 南面接壤
+      "乌兰察布市": { distance: 185, steps: 246670 },  // 南面接壤
+      // 河北省
+      "承德市": { distance: 245, steps: 326670 },      // 西面接壤
+      "唐山市": { distance: 245, steps: 326670 }       // 西北面接壤
+    }
+  },
+
+  "乌海市": {
+    province: 'NMG',
+    location: { lat: 39.6635, lon: 106.8255 },
+    icon: 'wuhai.png',
+    neighbors: {
+      // 内蒙古自治区内
+      "呼和浩特市": { distance: 165, steps: 220000 },  // 北面接壤
+      "阿拉善盟": { distance: 285, steps: 380000 },    // 西面接壤
+      "鄂尔多斯市": { distance: 165, steps: 220000 },  // 东面接壤
+      // 青海省
+      "海西蒙古族藏族自治州": { distance: 245, steps: 326670 } // 南面接壤
+    }
+  },
+
+  "赤峰市": {
+    province: 'NMG',
+    location: { lat: 42.2584, lon: 118.8894 },
+    icon: 'chifeng.png',
+    neighbors: {
+      // 内蒙古自治区内
+      "通辽市": { distance: 245, steps: 326670 },      // 西北面接壤
+      "锡林郭勒盟": { distance: 385, steps: 513330 },  // 西面接壤
+      // 辽宁省
+      "朝阳市": { distance: 285, steps: 380000 },      // 南面接壤
+      // 河北省
+      "承德市": { distance: 285, steps: 380000 }       // 西南面接壤
+    }
+  },
+
+  "通辽市": {
+    province: 'NMG',
+    location: { lat: 43.6524, lon: 122.2437 },
+    icon: 'tongliao.png',
+    neighbors: {
+      // 内蒙古自治区内
+      "呼伦贝尔市": { distance: 385, steps: 513330 },  // 北面接壤
+      "兴安盟": { distance: 285, steps: 380000 },      // 西北面接壤
+      "锡林郭勒盟": { distance: 285, steps: 380000 },  // 西面接壤
+      "赤峰市": { distance: 245, steps: 326670 },      // 南面接壤
+      // 吉林省
+      "松原市": { distance: 245, steps: 326670 },      // 东面接壤
+      // 辽宁省
+      "阜新市": { distance: 285, steps: 380000 }       // 东南面接壤
+    }
+  },
+
+  "呼伦贝尔市": {
+    province: 'NMG',
+    location: { lat: 49.2153, lon: 119.7651 },
+    icon: 'hulunbeier.png',
+    neighbors: {
+      // 内蒙古自治区内
+      "兴安盟": { distance: 285, steps: 380000 },      // 南面接壤
+      "通辽市": { distance: 385, steps: 513330 },      // 南面接壤
+      // 黑龙江省
+      "齐齐哈尔市": { distance: 345, steps: 460000 }   // 东面接壤
+    }
+  },
+
+  "巴彦淖尔市": {
+    province: 'NMG',
+    location: { lat: 40.7436, lon: 107.3883 },
+    icon: 'bayannaoer.png',
+    neighbors: {
+      // 内蒙古自治区内
+      "包头市": { distance: 245, steps: 326670 },      // 东面接壤
+      "乌兰察布市": { distance: 285, steps: 380000 },  // 东北面接壤
+      "阿拉善盟": { distance: 285, steps: 380000 },    // 西面接壤
+      // 宁夏回族自治区
+      "石嘴山市": { distance: 165, steps: 220000 }     // 南面接壤
+    }
+  },
+
+  "乌兰察布市": {
+    province: 'NMG',
+    location: { lat: 41.0260, lon: 113.1145 },
+    icon: 'wulanchabu.png',
+    neighbors: {
+      // 内蒙古自治区内
+      "呼和浩特市": { distance: 185, steps: 246670 },  // 南面接壤
+      "锡林郭勒盟": { distance: 245, steps: 326670 },  // 东面接壤
+      "巴彦淖尔市": { distance: 285, steps: 380000 },  // 西面接壤
+      // 山西省
+      "大同市": { distance: 245, steps: 326670 }       // 南面接壤
+    }
+  },
+
+  "兴安盟": {
+    province: 'NMG',
+    location: { lat: 46.0827, lon: 122.0703 },
+    icon: 'xinganmeng.png',
+    neighbors: {
+      // 内蒙古自治区内
+      "呼伦贝尔市": { distance: 285, steps: 380000 },  // 北面接壤
+      "通辽市": { distance: 285, steps: 380000 },      // 南面接壤
+      // 吉林省
+      "白城市": { distance: 285, steps: 380000 }       // 东面接壤
+    }
+  },
+
+  "阿拉善盟": {
+    province: 'NMG',
+    location: { lat: 38.8451, lon: 105.6722 },
+    icon: 'alashanmeng.png',
+    neighbors: {
+      // 内蒙古自治区内
+      "巴彦淖尔市": { distance: 285, steps: 380000 },    // 东面接壤
+      "乌海市": { distance: 285, steps: 380000 },        // 东面接壤
+      "鄂尔多斯市": { distance: 285, steps: 380000 },    // 东面接壤
+      // 宁夏回族自治区
+      "中卫市": { distance: 245, steps: 326670 },       // 南面接壤
+      "银川市": { distance: 245, steps: 326670 },       // 南面接壤
+      // 甘肃省
+      "酒泉市": { distance: 245, steps: 326670 }         // 西面接壤
     }
   },
 
@@ -4561,7 +4727,6 @@ const citiesData = {
     neighbors: {
       // 甘肃省内
       "临夏回族自治州": { distance: 245, steps: 326670 },     // 北面接壤
-      // 四川省
       "阿坝藏族羌族自治州": { distance: 245, steps: 326670 },     // 南面接壤
       // 青海省
       "黄南藏族自治州": { distance: 245, steps: 326670 },     // 西面接壤
