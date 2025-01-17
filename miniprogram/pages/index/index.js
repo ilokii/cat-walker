@@ -25,7 +25,10 @@ Page({
     progressSteps: 0,
     totalRequiredSteps: 0,
     showArrivalModal: false,
-    animatingProgress: false
+    animatingProgress: false,
+    
+    // 添加后台切换标记
+    hasBeenInBackground: false
   },
 
   onLoad() {
@@ -33,7 +36,17 @@ Page({
   },
 
   onShow() {
+    // 如果之前进入过后台，则触发刷新
+    if (this.data.hasBeenInBackground) {
+      this.onRefresh()
+      this.setData({ hasBeenInBackground: false })
+    }
     this.refreshData()
+  },
+
+  onHide() {
+    // 标记已进入后台
+    this.setData({ hasBeenInBackground: true })
   },
 
   async initializeData() {
