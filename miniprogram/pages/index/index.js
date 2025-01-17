@@ -256,8 +256,7 @@ Page({
       return
     }
 
-    // 不在冷却中，更新最后刷新时间并跳转到loading页面
-    syncManager.updateLastRefreshTime()
+    // 不在冷却中，直接跳转到loading页面
     wx.redirectTo({
       url: '/pages/loading/loading'
     })

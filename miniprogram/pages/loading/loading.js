@@ -50,6 +50,8 @@ Page({
     try {
       const success = await syncManager.handleWeRunData()
       if (success) {
+        // 更新最后刷新时间
+        syncManager.updateLastRefreshTime()
         // 处理完成，进入主页
         wx.reLaunch({
           url: '/pages/index/index'
