@@ -15,9 +15,30 @@ class SyncManager {
         date: new Date(1900, 0, 1, 0, 0, 0),
         steps: 0
       },
-      startDate: new Date(1900, 0, 1, 0, 0, 0)
+      startDate: new Date(1900, 0, 1, 0, 0, 0),
+      lastRefreshTime: 0 // 添加最后刷新时间
     }
     this.isInitialized = false
+    this.REFRESH_COOLDOWN = 10 * 60 * 1000 // 10分钟的冷却时间（毫秒）
+  }
+
+  // 检查是否在冷却中
+  isRefreshCooldown() {
+    const now = Date.now()
+    return (now - this.localData.lastRefreshTime) < this.REFRESH_COOLDOWN
+  }
+
+  // 更新最后刷新时间
+  updateLastRefreshTime() {
+    this.localData.lastRefreshTime = Date.now()
+  }
+
+  // 获取剩余冷却时间（秒）
+  getRefreshCooldownRemaining() {
+    const now = Date.now()
+    const elapsed = now - this.localData.lastRefreshTime
+    const remaining = Math.max(0, this.REFRESH_COOLDOWN - elapsed)
+    return Math.ceil(remaining / 1000)
   }
 
   // 初始化数据管理器
