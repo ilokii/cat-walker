@@ -39,7 +39,12 @@
 
   <!-- 当前旅行区域 -->
   <view class="travel-section">
-    <text class="section-title center">漫漫旅途</text>
+    <view class="section-header">
+      <text class="section-title center">漫漫旅途</text>
+      <view class="refresh-btn" bindtap="onRefresh">
+        <text class="refresh-icon">↻</text>
+      </view>
+    </view>
     <!-- 城市信息区域 -->
     <view class="cities-info">
       <!-- 当前城市 -->

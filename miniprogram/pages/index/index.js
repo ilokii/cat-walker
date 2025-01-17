@@ -218,6 +218,13 @@ Page({
     return 1 - Math.pow(1 - x, 3)
   },
 
+  // 刷新按钮点击处理
+  onRefresh() {
+    wx.redirectTo({
+      url: '/pages/loading/loading'
+    })
+  },
+
   async onPlanNextTravel() {
     try {
       // 获取当前日期的步数

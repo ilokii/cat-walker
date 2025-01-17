@@ -263,4 +263,38 @@
 .modal-button:active {
   transform: translateY(2rpx);
   box-shadow: 0 4rpx 10rpx rgba(76, 175, 80, 0.2);
+}
+
+.section-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-bottom: 40rpx;
+  padding-right: 20rpx;
+}
+
+.refresh-btn {
+  position: absolute;
+  right: -10rpx;
+  top: -10rpx;
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 30rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.refresh-icon {
+  font-size: 40rpx;
+  color: #666;
+  font-weight: bold;
+}
+
+.refresh-btn:active {
+  background-color: #e9ecef;
+  transform: scale(0.95);
 } 
