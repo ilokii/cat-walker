@@ -4,43 +4,9 @@
     <view class="nav-title">猫咪漫游记</view>
   </view>
 
-  <!-- 统计区域 -->
-  <view class="stats-section">
-    <text class="section-title center">千山万水</text>
-    <view class="stats-content">
-      <!-- 上半部分 -->
-      <view class="stats-row">
-        <!-- 总公里数 -->
-        <view class="stats-item">
-          <text class="stats-label">您已走过</text>
-          <text class="stats-value">{{totalKilometers}} km</text>
-        </view>
-        <!-- 总步数 -->
-        <view class="stats-item">
-          <text class="stats-label">您已走了</text>
-          <text class="stats-value">{{totalSteps}} 步</text>
-        </view>
-      </view>
-      <!-- 下半部分 -->
-      <view class="stats-row">
-        <!-- 已解锁省份数 -->
-        <view class="stats-item">
-          <text class="stats-label">走过的省份</text>
-          <text class="stats-value">{{visitedProvinces}}/{{totalProvinces}}</text>
-        </view>
-        <!-- 已解锁城市数 -->
-        <view class="stats-item">
-          <text class="stats-label">走过的城市</text>
-          <text class="stats-value">{{visitedCities}}/{{totalCities}}</text>
-        </view>
-      </view>
-    </view>
-  </view>
-
   <!-- 当前旅行区域 -->
   <view class="travel-section">
     <view class="section-header">
-      <text class="section-title center">漫漫旅途</text>
       <view class="refresh-btn" bindtap="onRefresh">
         <text class="refresh-icon">↻</text>
       </view>
@@ -78,6 +44,38 @@
         </view>
       </view>
       <text class="progress-steps">{{progressSteps}}/{{totalRequiredSteps}}</text>
+    </view>
+  </view>
+
+  <!-- 统计区域 -->
+  <view class="stats-section">
+    <view class="stats-content">
+      <!-- 上半部分 -->
+      <view class="stats-row">
+        <!-- 总公里数 -->
+        <view class="stats-item">
+          <text class="stats-label">您已走过</text>
+          <text class="stats-value">{{totalKilometers}} km</text>
+        </view>
+        <!-- 总步数 -->
+        <view class="stats-item">
+          <text class="stats-label">您已走了</text>
+          <text class="stats-value">{{totalSteps}} 步</text>
+        </view>
+      </view>
+      <!-- 下半部分 -->
+      <view class="stats-row">
+        <!-- 已解锁省份数 -->
+        <view class="stats-item">
+          <text class="stats-label">走过的省份</text>
+          <text class="stats-value">{{visitedProvinces}}/{{totalProvinces}}</text>
+        </view>
+        <!-- 已解锁城市数 -->
+        <view class="stats-item">
+          <text class="stats-label">走过的城市</text>
+          <text class="stats-value">{{visitedCities}}/{{totalCities}}</text>
+        </view>
+      </view>
     </view>
   </view>
 

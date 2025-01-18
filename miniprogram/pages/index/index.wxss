@@ -1,7 +1,7 @@
 .container {
   min-height: 100vh;
   padding: 30rpx;
-  padding-top: 200rpx;
+  padding-top: 180rpx;
   box-sizing: border-box;
   background-color: #f8f9fa;
 }
@@ -31,8 +31,8 @@
 .travel-section {
   background-color: #ffffff;
   border-radius: 24rpx;
-  padding: 40rpx;
-  margin-bottom: 40rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
   box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.06);
 }
 
@@ -48,18 +48,26 @@
   text-align: center;
 }
 
+.section-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+  margin-bottom: 20rpx;
+}
+
 /* 统计区域样式 */
 .stats-content {
   display: flex;
   flex-direction: column;
-  gap: 30rpx;
+  gap: 20rpx;
 }
 
 .stats-row {
   display: flex;
   justify-content: space-between;
   gap: 40rpx;
-  min-height: 100rpx;
+  min-height: 90rpx;
 }
 
 .stats-item {
@@ -68,7 +76,7 @@
   flex-direction: column;
   align-items: center;
   gap: 8rpx;
-  min-height: 100rpx;
+  min-height: 90rpx;
   justify-content: center;
 }
 
@@ -263,15 +271,6 @@
 .modal-button:active {
   transform: translateY(2rpx);
   box-shadow: 0 4rpx 10rpx rgba(76, 175, 80, 0.2);
-}
-
-.section-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  margin-bottom: 40rpx;
-  padding-right: 20rpx;
 }
 
 .refresh-btn {
