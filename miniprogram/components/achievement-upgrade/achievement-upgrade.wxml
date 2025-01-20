@@ -1,0 +1,15 @@
+<view class="achievement-upgrade-modal" wx:if="{{visible}}">
+  <view class="modal-content">
+    <view class="title">{{achievement.name}}(Lv.{{achievement.level}})</view>
+    <image class="icon" src="/images/achievements/{{achievement.icon}}.png" mode="aspectFit"/>
+    <view class="description">
+      <block wx:if="{{!isMaxLevel}}">
+        您的{{achievement.name}}已提升至{{achievement.level}}级，继续加油~
+      </block>
+      <block wx:else>
+        您的{{achievement.name}}已满级，实在是天棒啦~
+      </block>
+    </view>
+    <button class="confirm-btn" bindtap="onConfirm">好的</button>
+  </view>
+</view> 

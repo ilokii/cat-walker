@@ -1,6 +1,7 @@
 const syncManager = require('../../utils/sync-manager')
 const { provincesData } = require('../../data/provinces')
 const { citiesData } = require('../../data/cities')
+const achievementManager = require('../../utils/achievement-manager')
 
 const PROGRESS_ANIMATION_DURATION = 1000 // 进度条动画持续时间（毫秒）
 const ARRIVAL_MODAL_DELAY = 500 // 到达弹窗延迟时间（毫秒）
@@ -28,11 +29,15 @@ Page({
     animatingProgress: false,
     
     // 添加后台切换标记
-    hasBeenInBackground: false
+    hasBeenInBackground: false,
+    achievements: [],
+    showAchievementUpgrade: false,
+    currentUpgradeAchievement: null
   },
 
   onLoad() {
     this.initializeData()
+    this.updateAchievements()
   },
 
   onShow() {
@@ -171,7 +176,8 @@ Page({
       progress: progress || 0,
       progressSteps: progressSteps || 0,
       totalRequiredSteps: totalRequiredSteps || 0,
-      travelDays: travelDays || 0
+      travelDays: travelDays || 0,
+      dailyLoginCount: localData.achievement_daily_login || 0  // 添加每日登录次数
     }
 
     // 只在非动画状态下更新showArrivalModal
@@ -179,7 +185,11 @@ Page({
       updates.showArrivalModal = hasArrived
     }
     
+    const oldData = { ...this.data }
     this.setData(updates)
+    
+    // 检查勋章升级
+    this.checkAchievements(oldData)
   },
 
   // 播放进度条动画
@@ -296,5 +306,58 @@ Page({
         icon: 'none'
       })
     }
+  },
+
+  updateAchievements() {
+    const achievements = [
+      achievementManager.calculateAchievement('daily_login', this.data.dailyLoginCount || 0),
+      achievementManager.calculateAchievement('steps', this.data.totalSteps || 0),
+      achievementManager.calculateAchievement('cities', this.data.visitedCities || 0),
+      achievementManager.calculateAchievement('provinces', this.data.visitedProvinces || 0)
+    ].filter(Boolean)
+
+    this.setData({ achievements })
+  },
+
+  showNextAchievementUpgrade() {
+    if (achievementManager.hasUpgrade()) {
+      const achievement = achievementManager.getNextUpgrade()
+      this.setData({
+        showAchievementUpgrade: true,
+        currentUpgradeAchievement: achievement
+      })
+    } else if (this.data.showArrivalModal) {
+      this.setData({ showArrivalModal: true })
+    }
+  },
+
+  onAchievementUpgradeConfirm() {
+    this.setData({
+      showAchievementUpgrade: false,
+      currentUpgradeAchievement: null
+    }, () => {
+      setTimeout(() => {
+        this.showNextAchievementUpgrade()
+      }, 500)
+    })
+  },
+
+  // 在数据更新后检查勋章升级
+  checkAchievements(oldData) {
+    if (oldData.dailyLoginCount !== undefined && this.data.dailyLoginCount !== oldData.dailyLoginCount) {
+      achievementManager.checkUpgrade('daily_login', oldData.dailyLoginCount, this.data.dailyLoginCount)
+    }
+    if (oldData.totalSteps !== undefined && this.data.totalSteps !== oldData.totalSteps) {
+      achievementManager.checkUpgrade('steps', oldData.totalSteps, this.data.totalSteps)
+    }
+    if (oldData.visitedCities !== undefined && this.data.visitedCities !== oldData.visitedCities) {
+      achievementManager.checkUpgrade('cities', oldData.visitedCities, this.data.visitedCities)
+    }
+    if (oldData.visitedProvinces !== undefined && this.data.visitedProvinces !== oldData.visitedProvinces) {
+      achievementManager.checkUpgrade('provinces', oldData.visitedProvinces, this.data.visitedProvinces)
+    }
+
+    this.updateAchievements()
+    this.showNextAchievementUpgrade()
   }
 }) 

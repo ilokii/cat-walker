@@ -16,7 +16,8 @@ class SyncManager {
         steps: 0
       },
       startDate: new Date(1900, 0, 1, 0, 0, 0),
-      lastRefreshTime: 0 // 添加最后刷新时间
+      lastRefreshTime: 0, // 添加最后刷新时间
+      achievement_daily_login: 0 // 添加每日登录成就
     }
     this.isInitialized = false
     this.REFRESH_COOLDOWN = 10 * 60 * 1000 // 10分钟的冷却时间（毫秒）
@@ -75,7 +76,9 @@ class SyncManager {
             date: userData.lastUpdateStepInfo?.date || new Date(1900, 0, 1, 0, 0, 0),
             steps: userData.lastUpdateStepInfo?.steps || 0
           },
-          startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0)
+          startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0),
+          lastRefreshTime: 0,
+          achievement_daily_login: userData.achievement_daily_login || 0 // 添加每日登录成就
         }
       } else {
         // 如果没有找到用户数据，创建新用户
@@ -105,12 +108,15 @@ class SyncManager {
           startSteps: userData.startSteps || 0,
           visitedCities: userData.visitedCities || [],
           totalSteps: userData.totalSteps || 0,
+          totalStepsTemp: userData.totalSteps || 0,
           isInitStepInfo: userData.isInitStepInfo || false,
           lastUpdateStepInfo: {
             date: userData.lastUpdateStepInfo?.date || new Date(1900, 0, 1, 0, 0, 0),
             steps: userData.lastUpdateStepInfo?.steps || 0
           },
-          startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0)
+          startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0),
+          lastRefreshTime: 0,
+          achievement_daily_login: userData.achievement_daily_login || 0 // 添加每日登录成就
         }
         return
       }
@@ -153,7 +159,9 @@ class SyncManager {
             date: userData.lastUpdateStepInfo?.date || new Date(1900, 0, 1, 0, 0, 0),
             steps: userData.lastUpdateStepInfo?.steps || 0
           },
-          startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0)
+          startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0),
+          lastRefreshTime: this.localData.lastRefreshTime,
+          achievement_daily_login: userData.achievement_daily_login || 0 // 添加每日登录成就
         }
       }
       return this.localData
@@ -430,7 +438,26 @@ class SyncManager {
 
   // 获取服务器时间
   getServerDate() {
-    return this.db.serverDate()
+    // 由于db.serverDate()只能在云端运行，这里使用本地时间
+    return new Date()
+  }
+
+  // 更新每日登录成就
+  async updateDailyLoginAchievement(count) {
+    try {
+      await this.db.collection('users').where({
+        _openid: getApp().globalData.openid
+      }).update({
+        data: {
+          achievement_daily_login: count,
+          updateTime: this.db.serverDate()
+        }
+      })
+      this.localData.achievement_daily_login = count
+    } catch (err) {
+      console.error('更新每日登录成就失败：', err)
+      throw err
+    }
   }
 }
 

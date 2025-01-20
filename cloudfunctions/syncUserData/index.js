@@ -15,7 +15,8 @@ exports.main = async (event, context) => {
       totalSteps, 
       startSteps,
       isInitStepInfo,
-      lastUpdateStepInfo
+      lastUpdateStepInfo,
+      achievement_daily_login
     } = event
 
     // 更新用户数据
@@ -30,6 +31,7 @@ exports.main = async (event, context) => {
         startSteps,
         isInitStepInfo,
         lastUpdateStepInfo,
+        achievement_daily_login,
         updateTime: db.serverDate()
       }
     })

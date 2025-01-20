@@ -296,4 +296,90 @@
 .refresh-btn:active {
   background-color: #e9ecef;
   transform: scale(0.95);
+}
+
+/* 勋章区域 */
+.achievements-section {
+  width: 100%;
+  padding: 30rpx;
+  box-sizing: border-box;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+  color: #333;
+}
+
+.achievements-list {
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 20rpx;
+}
+
+.achievement-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.achievement-item:last-child {
+  border-bottom: none;
+}
+
+.achievement-icon {
+  width: 80rpx;
+  height: 80rpx;
+  margin-right: 20rpx;
+}
+
+.achievement-info {
+  flex: 1;
+}
+
+.achievement-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.achievement-name {
+  font-size: 28rpx;
+  color: #333;
+  margin-right: 10rpx;
+}
+
+.achievement-level {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.achievement-progress {
+  display: flex;
+  align-items: center;
+}
+
+.progress-bar-bg {
+  flex: 1;
+  height: 12rpx;
+  background: #eee;
+  border-radius: 6rpx;
+  margin-right: 10rpx;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: #07c160;
+  border-radius: 6rpx;
+  transition: width 0.3s;
+}
+
+.progress-text {
+  font-size: 24rpx;
+  color: #666;
+  min-width: 120rpx;
+  text-align: right;
 } 
