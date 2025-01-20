@@ -167,17 +167,17 @@
   border-radius: 16rpx;
 }
 
-.progress-bar-container {
+.travel-progress-container {
   width: 100%;
   height: 44rpx;
-  background-color: #e9ecef;
+  background-color: #d1d5db;
   border-radius: 22rpx;
   overflow: hidden;
   position: relative;
   box-shadow: inset 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
 }
 
-.progress-text {
+.travel-progress-text {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -185,10 +185,11 @@
   z-index: 1;
   font-size: 26rpx;
   font-weight: bold;
-  color: #666;
+  color: #1a1a1a;
+  text-shadow: 0 1rpx 2rpx rgba(255, 255, 255, 0.9);
 }
 
-.progress-bar {
+.travel-progress-bar {
   position: absolute;
   left: 0;
   top: 0;
@@ -306,80 +307,130 @@
 }
 
 .section-title {
-  font-size: 32rpx;
+  font-size: 36rpx;
   font-weight: bold;
-  margin-bottom: 20rpx;
+  margin-bottom: 30rpx;
   color: #333;
+  position: relative;
+  padding-left: 24rpx;
+}
+
+.section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8rpx;
+  height: 32rpx;
+  background: #07c160;
+  border-radius: 4rpx;
 }
 
 .achievements-list {
   background: #fff;
-  border-radius: 12rpx;
+  border-radius: 16rpx;
   padding: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
 }
 
 .achievement-item {
   display: flex;
   align-items: center;
-  padding: 20rpx;
+  padding: 30rpx;
   border-bottom: 1rpx solid #eee;
+  position: relative;
 }
 
 .achievement-item:last-child {
   border-bottom: none;
 }
 
+.achievement-item:active {
+  background: #f8f8f8;
+}
+
 .achievement-icon {
-  width: 80rpx;
-  height: 80rpx;
-  margin-right: 20rpx;
+  width: 160rpx;
+  height: 160rpx;
+  margin-right: 30rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
 }
 
 .achievement-info {
   flex: 1;
+  padding-right: 20rpx;
 }
 
 .achievement-header {
   display: flex;
   align-items: center;
-  margin-bottom: 10rpx;
+  margin-bottom: 20rpx;
 }
 
 .achievement-name {
-  font-size: 28rpx;
+  font-size: 32rpx;
   color: #333;
-  margin-right: 10rpx;
+  font-weight: bold;
+  margin-right: 12rpx;
 }
 
 .achievement-level {
-  font-size: 24rpx;
-  color: #666;
+  font-size: 28rpx;
+  color: #07c160;
+  font-weight: 500;
+  background: rgba(7, 193, 96, 0.1);
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
 }
 
 .achievement-progress {
-  display: flex;
-  align-items: center;
+  width: 100%;
+}
+
+.progress-bar-container {
+  position: relative;
+  width: 100%;
+  height: 48rpx;
+  margin-top: 12rpx;
 }
 
 .progress-bar-bg {
-  flex: 1;
-  height: 12rpx;
-  background: #eee;
-  border-radius: 6rpx;
-  margin-right: 10rpx;
+  width: 100%;
+  height: 100%;
+  background: #d1d5db;
+  border-radius: 24rpx;
   overflow: hidden;
+  box-shadow: inset 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
 }
 
 .progress-bar-fill {
   height: 100%;
-  background: #07c160;
-  border-radius: 6rpx;
-  transition: width 0.3s;
+  background: linear-gradient(90deg, #07c160, #09b861);
+  border-radius: 24rpx;
+  transition: width 0.3s ease;
 }
 
 .progress-text {
-  font-size: 24rpx;
-  color: #666;
-  min-width: 120rpx;
-  text-align: right;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 32rpx;
+  color: #1a1a1a;
+  z-index: 1;
+  text-shadow: 0 1rpx 2rpx rgba(255, 255, 255, 0.9);
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+/* 添加满级样式 */
+.achievement-item.max-level .achievement-level {
+  background: rgba(255, 152, 0, 0.1);
+  color: #ff9800;
+}
+
+.achievement-item.max-level .progress-bar-fill {
+  background: linear-gradient(90deg, #ff9800, #ffa726);
 } 

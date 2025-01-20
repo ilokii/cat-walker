@@ -38,9 +38,9 @@
     </view>
     <!-- 进度条区域 -->
     <view class="progress-area">
-      <view class="progress-bar-container">
-        <text class="progress-text">{{progress}}%</text>
-        <view class="progress-bar" style="width: {{progress}}%">
+      <view class="travel-progress-container">
+        <text class="travel-progress-text">{{progress}}%</text>
+        <view class="travel-progress-bar" style="width: {{progress}}%">
         </view>
       </view>
       <text class="progress-steps">{{progressSteps}}/{{totalRequiredSteps}}</text>
@@ -83,7 +83,7 @@
   <view class="achievements-section">
     <view class="section-title">我的勋章</view>
     <view class="achievements-list">
-      <view class="achievement-item" wx:for="{{achievements}}" wx:key="id">
+      <view class="achievement-item {{item.isMaxLevel ? 'max-level' : ''}}" wx:for="{{achievements}}" wx:key="id">
         <image class="achievement-icon" src="/images/achievements/{{item.icon}}.png" mode="aspectFit"/>
         <view class="achievement-info">
           <view class="achievement-header">
@@ -91,10 +91,12 @@
             <text class="achievement-level">(Lv.{{item.level}})</text>
           </view>
           <view class="achievement-progress">
-            <view class="progress-bar-bg">
-              <view class="progress-bar-fill" style="width: {{item.progress * 100}}%"></view>
+            <view class="progress-bar-container">
+              <view class="progress-bar-bg">
+                <view class="progress-bar-fill" style="width: {{item.progress * 100}}%"></view>
+              </view>
+              <text class="progress-text">{{item.isMaxLevel ? '已满级' : item.value + '/' + item.nextValue}}</text>
             </view>
-            <text class="progress-text">{{item.isMaxLevel ? '已满级' : item.value + '/' + item.nextValue}}</text>
           </view>
         </view>
       </view>
