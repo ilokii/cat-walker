@@ -42,6 +42,20 @@
   color: #333;
   margin-bottom: 40rpx;
   display: block;
+  position: relative;
+  padding-left: 24rpx;
+}
+
+.section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8rpx;
+  height: 32rpx;
+  background: #07c160;
+  border-radius: 4rpx;
 }
 
 .section-title.center {
@@ -50,7 +64,7 @@
 
 .section-header {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   position: relative;
   margin-bottom: 20rpx;
@@ -274,64 +288,58 @@
   box-shadow: 0 4rpx 10rpx rgba(76, 175, 80, 0.2);
 }
 
-.refresh-btn {
-  position: absolute;
-  right: -10rpx;
-  top: -10rpx;
-  width: 60rpx;
-  height: 60rpx;
+/* 悬浮刷新按钮 */
+.floating-refresh-btn {
+  position: fixed;
+  right: 40rpx;
+  bottom: 40rpx;
+  width: 100rpx;
+  height: 100rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f8f9fa;
-  border-radius: 30rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border-radius: 50rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15);
+  z-index: 100;
 }
 
 .refresh-icon {
-  font-size: 40rpx;
+  font-size: 50rpx;
   color: #666;
   font-weight: bold;
 }
 
-.refresh-btn:active {
-  background-color: #e9ecef;
+.floating-refresh-btn:active {
+  background-color: #f8f9fa;
   transform: scale(0.95);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
 }
 
 /* 勋章区域 */
 .achievements-section {
   width: 100%;
-  padding: 30rpx;
   box-sizing: border-box;
+  margin-bottom: 30rpx;
+}
+
+.achievements-content {
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  padding: 30rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.06);
 }
 
 .section-title {
-  font-size: 36rpx;
+  font-size: 40rpx;
   font-weight: bold;
-  margin-bottom: 30rpx;
   color: #333;
-  position: relative;
-  padding-left: 24rpx;
-}
-
-.section-title::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 8rpx;
-  height: 32rpx;
-  background: #07c160;
-  border-radius: 4rpx;
+  margin-bottom: 40rpx;
+  display: block;
 }
 
 .achievements-list {
-  background: #fff;
   border-radius: 16rpx;
-  padding: 20rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
 }
 
 .achievement-item {
