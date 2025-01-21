@@ -4,6 +4,7 @@ class SyncManager {
   constructor() {
     this.db = wx.cloud.database()
     this.localData = {
+      userAvatar: null,
       currentCity: null,
       targetCity: null,
       startSteps: 0,
@@ -16,11 +17,11 @@ class SyncManager {
         steps: 0
       },
       startDate: new Date(1900, 0, 1, 0, 0, 0),
-      lastRefreshTime: 0, // 添加最后刷新时间
-      achievement_daily_login: 0 // 添加每日登录成就
+      lastRefreshTime: 0,
+      achievement_daily_login: 0
     }
     this.isInitialized = false
-    this.REFRESH_COOLDOWN = 10 * 60 * 1000 // 10分钟的冷却时间（毫秒）
+    this.REFRESH_COOLDOWN = 10 * 60 * 1000
   }
 
   // 检查是否在冷却中
@@ -70,6 +71,7 @@ class SyncManager {
         // 使用第一条记录的数据
         const userData = result.data[0]
         this.localData = {
+          userAvatar: userData.userAvatar || null,
           currentCity: userData.currentCity || null,
           targetCity: userData.targetCity || null,
           startSteps: userData.startSteps || 0,
@@ -103,44 +105,32 @@ class SyncManager {
   // 创建新用户数据
   async createNewUser() {
     try {
-      // 再次检查是否已存在用户数据（双重检查）
-      const existingUser = await this.db.collection('users').where({
-        _openid: getApp().globalData.openid
-      }).get()
-
-      if (existingUser.data.length > 0) {
-        // 如果已存在用户数据，使用已有数据
-        const userData = existingUser.data[0]
-        this.localData = {
-          currentCity: userData.currentCity || null,
-          targetCity: userData.targetCity || null,
-          startSteps: userData.startSteps || 0,
-          visitedCities: userData.visitedCities || [],
-          totalSteps: userData.totalSteps || 0,
-          totalStepsTemp: userData.totalSteps || 0,
-          isInitStepInfo: userData.isInitStepInfo || false,
-          lastUpdateStepInfo: {
-            date: userData.lastUpdateStepInfo?.date || new Date(1900, 0, 1, 0, 0, 0),
-            steps: userData.lastUpdateStepInfo?.steps || 0
-          },
-          startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0),
-          lastRefreshTime: 0,
-          achievement_daily_login: userData.achievement_daily_login || 0
-        }
-        return
+      const collection = this.db.collection('users')
+      const data = {
+        userAvatar: null,
+        currentCity: null,
+        targetCity: null,
+        startSteps: 0,
+        visitedCities: [],
+        totalSteps: 0,
+        isInitStepInfo: false,
+        lastUpdateStepInfo: {
+          date: new Date(1900, 0, 1, 0, 0, 0),
+          steps: 0
+        },
+        startDate: new Date(1900, 0, 1, 0, 0, 0),
+        lastRefreshTime: 0,
+        achievement_daily_login: 0,
+        createTime: this.db.serverDate(),
+        updateTime: this.db.serverDate()
       }
-
-      // 如果确实不存在，则创建新用户数据
-      await this.db.collection('users').add({
-        data: {
-          ...this.localData,
-          createTime: this.db.serverDate(),
-          updateTime: this.db.serverDate()
-        }
-      })
-    } catch (err) {
-      console.error('创建新用户数据失败：', err)
-      throw err
+      
+      await collection.add({ data })
+      Object.assign(this.localData, data)
+      return true
+    } catch (error) {
+      console.error('创建用户失败：', error)
+      throw error
     }
   }
 
@@ -163,6 +153,7 @@ class SyncManager {
 
       if (userData) {
         this.localData = {
+          userAvatar: userData.userAvatar || null,
           currentCity: userData.currentCity || null,
           targetCity: userData.targetCity || null,
           startSteps: userData.startSteps || 0,
@@ -509,6 +500,33 @@ class SyncManager {
     } catch (err) {
       console.error('更新每日登录成就失败：', err)
       throw err
+    }
+  }
+
+  async updateUserData(userData) {
+    try {
+      const { userAvatar } = userData
+      
+      // 更新本地数据
+      this.localData.userAvatar = userAvatar
+      
+      // 更新云端数据
+      const openid = getApp().globalData.openid
+      const collection = this.db.collection('users')
+      
+      await collection.where({
+        _openid: openid
+      }).update({
+        data: {
+          userAvatar,
+          updateTime: this.db.serverDate()
+        }
+      })
+      
+      return true
+    } catch (error) {
+      console.error('更新用户信息失败：', error)
+      throw error
     }
   }
 }

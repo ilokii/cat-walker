@@ -5,7 +5,8 @@
     "pages/index/index",
     "pages/city/city",
     "pages/profile/profile",
-    "pages/werun-auth/werun-auth"
+    "pages/werun-auth/werun-auth",
+    "pages/user-init/user-init"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -1,0 +1,32 @@
+<view class="container">
+  <view class="section avatar-section">
+    <text class="section-title">选择一个喜欢的头像</text>
+    <view class="avatar-grid">
+      <view class="avatar-item {{selectedAvatarIndex === index ? 'selected' : ''}}" 
+            wx:for="{{avatarList}}" 
+            wx:key="index"
+            bindtap="onSelectAvatar"
+            data-index="{{index}}">
+        <image class="avatar-image" src="{{item}}" mode="aspectFit"/>
+      </view>
+    </view>
+  </view>
+
+  <view class="button-section">
+    <button class="confirm-button" bindtap="onConfirm">确认</button>
+  </view>
+</view>
+
+<!-- 二次确认弹窗 -->
+<view class="modal" wx:if="{{showConfirmModal}}">
+  <view class="modal-content">
+    <text class="modal-title">就是它了吗？</text>
+    <view class="modal-info">
+      <image class="modal-avatar" src="{{avatarList[selectedAvatarIndex]}}" mode="aspectFit"/>
+    </view>
+    <view class="modal-buttons">
+      <button class="modal-button cancel" bindtap="onModalCancel">取消</button>
+      <button class="modal-button confirm" bindtap="onModalConfirm">确定</button>
+    </view>
+  </view>
+</view> 

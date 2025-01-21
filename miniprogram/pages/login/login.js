@@ -5,58 +5,58 @@ Page({
     isLoading: false
   },
 
-  async onLogin() {
+  onLogin() {
     // 显示登录提示
     wx.showLoading({
       title: '登录中......',
       mask: true
     })
 
-    try {
-      // 获取用户openid
-      const { result } = await wx.cloud.callFunction({
-        name: 'login'
-      })
-      
+    // 获取用户openid
+    wx.cloud.callFunction({
+      name: 'login'
+    })
+    .then(({ result }) => {
       if (!result || !result.openid) {
-        wx.hideLoading()
-        wx.showToast({
-          title: '登录失败，请重试',
-          icon: 'none'
-        })
-        return
+        throw new Error('登录失败')
       }
 
       getApp().globalData.openid = result.openid
-
       // 初始化数据管理器
-      await syncManager.initialize()
+      return syncManager.initialize()
+    })
+    .then(() => {
       const userData = syncManager.getLocalData()
       
       // 隐藏登录提示
       wx.hideLoading()
       
       // 根据用户数据状态决定跳转目标
-      if (userData.currentCity && userData.targetCity) {
-        // 如果当前城市和目标城市都存在，前往loading界面
+      if (!userData.userAvatar) {
+        // 如果没有头像，前往用户信息初始化界面
         wx.redirectTo({
-          url: '/pages/loading/loading'
+          url: '/pages/user-init/user-init'
         })
-      } else {
-        // 如果有任一城市为null，前往城市选择界面
+      } else if (!userData.currentCity || !userData.targetCity) {
+        // 如果有头像但没有城市信息，前往城市选择界面
         wx.redirectTo({
           url: '/pages/city/city'
         })
+      } else {
+        // 如果所有信息都存在，前往loading界面
+        wx.redirectTo({
+          url: '/pages/loading/loading'
+        })
       }
-
-    } catch (err) {
-      console.error('登录失败：', err)
+    })
+    .catch(error => {
+      console.error('登录失败:', error)
       wx.hideLoading()
       wx.showToast({
         title: '登录失败，请重试',
         icon: 'none'
       })
-    }
+    })
   },
 
   // 检查用户数据
