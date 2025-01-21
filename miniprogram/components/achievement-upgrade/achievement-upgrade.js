@@ -14,6 +14,18 @@ Component({
     }
   },
 
+  data: {
+    envId: ''
+  },
+
+  lifetimes: {
+    attached() {
+      this.setData({
+        envId: getApp().globalData.envId
+      })
+    }
+  },
+
   methods: {
     onConfirm() {
       this.triggerEvent('confirm')

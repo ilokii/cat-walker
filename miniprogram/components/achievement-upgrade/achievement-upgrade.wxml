@@ -1,7 +1,7 @@
 <view class="achievement-upgrade-modal" wx:if="{{visible}}">
   <view class="modal-content">
     <view class="title">{{achievement.name}}(Lv.{{achievement.level}})</view>
-    <image class="icon" src="/images/achievements/{{achievement.icon}}.png" mode="aspectFit"/>
+    <image class="icon" src="cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/achievements/{{achievement.icon}}.png" mode="aspectFit"/>
     <view class="description">
       <block wx:if="{{!isMaxLevel}}">
         您的{{achievement.name}}已提升至{{achievement.level}}级，继续加油~

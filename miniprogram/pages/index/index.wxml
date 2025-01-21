@@ -84,7 +84,7 @@
     <view class="section-title">我的勋章</view>
     <view class="achievements-list">
       <view class="achievement-item {{item.isMaxLevel ? 'max-level' : ''}}" wx:for="{{achievements}}" wx:key="id">
-        <image class="achievement-icon" src="/images/achievements/{{item.icon}}.png" mode="aspectFit"/>
+        <image class="achievement-icon" src="cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/achievements/{{item.icon}}.png" mode="aspectFit"/>
         <view class="achievement-info">
           <view class="achievement-header">
             <text class="achievement-name">{{item.name}}</text>

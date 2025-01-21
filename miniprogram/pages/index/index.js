@@ -32,10 +32,14 @@ Page({
     hasBeenInBackground: false,
     achievements: [],
     showAchievementUpgrade: false,
-    currentUpgradeAchievement: null
+    currentUpgradeAchievement: null,
+    envId: '',
   },
 
   onLoad() {
+    this.setData({
+      envId: getApp().globalData.envId
+    })
     this.initializeData()
     this.updateAchievements()
   },
