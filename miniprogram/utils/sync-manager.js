@@ -481,9 +481,11 @@ class SyncManager {
   // 更新每日登录成就
   async updateDailyLoginAchievement(count) {
     try {
-      console.log('更新每日登录成就 - 开始:', {
+      console.log('===== 更新每日登录成就开始 =====')
+      console.log('更新参数:', {
         currentCount: this.localData.achievement_daily_login,
-        newCount: count
+        newCount: count,
+        difference: count - (this.localData.achievement_daily_login || 0)
       })
 
       await this.db.collection('users').where({
@@ -494,11 +496,18 @@ class SyncManager {
           updateTime: this.db.serverDate()
         }
       })
+
+      const oldCount = this.localData.achievement_daily_login
       this.localData.achievement_daily_login = count
 
-      console.log('更新每日登录成就 - 完成')
+      console.log('更新结果:', {
+        oldCount,
+        newCount: this.localData.achievement_daily_login,
+        isSuccess: this.localData.achievement_daily_login === count
+      })
+      console.log('===== 更新每日登录成就结束 =====')
     } catch (err) {
-      console.error('更新每日登录成就失败：', err)
+      console.error('更新每日登录成就失败:', err)
       throw err
     }
   }

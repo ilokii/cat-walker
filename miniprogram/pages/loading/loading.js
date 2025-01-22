@@ -89,54 +89,76 @@ Page({
   async checkDailyLogin() {
     try {
       const localData = syncManager.getLocalData()
-      console.log('每日打卡检查 - 原始数据:', {
+      console.log('===== 每日打卡检查开始 =====')
+      console.log('本地数据:', {
         lastUpdateStepInfo: localData.lastUpdateStepInfo,
-        achievement_daily_login: localData.achievement_daily_login
+        achievement_daily_login: localData.achievement_daily_login,
+        isInitStepInfo: localData.isInitStepInfo
       })
 
       // 确保日期有效
       let lastUpdateDate
       try {
         lastUpdateDate = new Date(localData.lastUpdateStepInfo.date)
+        console.log('解析上次更新日期:', {
+          originalDate: localData.lastUpdateStepInfo.date,
+          parsedDate: lastUpdateDate,
+          isValid: !isNaN(lastUpdateDate.getTime())
+        })
+
         // 检查日期是否有效
         if (isNaN(lastUpdateDate.getTime())) {
-          console.log('上次更新日期无效，使用默认日期')
+          console.warn('上次更新日期无效，使用默认日期')
           lastUpdateDate = new Date(1900, 0, 1, 0, 0, 0)
         }
       } catch (err) {
-        console.log('解析上次更新日期失败，使用默认日期')
+        console.error('解析上次更新日期失败:', err)
         lastUpdateDate = new Date(1900, 0, 1, 0, 0, 0)
       }
 
-      const currentDate = syncManager.getServerDate()
+      const currentDate = new Date()
       
-      console.log('每日打卡检查 - 处理后数据:', {
-        lastLoginCount: localData.achievement_daily_login,
+      // 记录原始时间
+      console.log('时间比较 - 原始值:', {
         lastUpdateDate: lastUpdateDate.toISOString(),
-        currentDate: currentDate.toISOString()
+        currentDate: currentDate.toISOString(),
+        lastUpdateLocalDate: lastUpdateDate.toLocaleDateString(),
+        currentLocalDate: currentDate.toLocaleDateString()
       })
       
-      // 检查是否是新的一天（忽略小时、分钟和秒）
-      const lastUpdateDay = Math.floor(lastUpdateDate.getTime() / (24 * 60 * 60 * 1000))
-      const currentDay = Math.floor(currentDate.getTime() / (24 * 60 * 60 * 1000))
+      // 获取本地日期字符串进行比较（考虑时区）
+      const lastUpdateLocalDate = lastUpdateDate.toLocaleDateString()
+      const currentLocalDate = currentDate.toLocaleDateString()
       
-      console.log('每日打卡检查 - 天数比较:', {
-        lastUpdateDay,
-        currentDay,
-        needUpdate: currentDay > lastUpdateDay
+      console.log('时间比较 - 本地日期:', {
+        lastUpdateLocalDate,
+        currentLocalDate,
+        isDifferentDay: lastUpdateLocalDate !== currentLocalDate
       })
       
-      if (currentDay > lastUpdateDay) {
+      // 比较本地日期字符串是否不同
+      if (lastUpdateLocalDate !== currentLocalDate) {
         // 是新的一天，增加登录次数
         const newCount = (localData.achievement_daily_login || 0) + 1
         console.log('每日打卡 - 更新计数:', {
           oldCount: localData.achievement_daily_login,
-          newCount
+          newCount,
+          lastUpdateDate: lastUpdateLocalDate,
+          currentDate: currentLocalDate
         })
         await syncManager.updateDailyLoginAchievement(newCount)
+        console.log('每日打卡 - 更新完成')
+      } else {
+        console.log('每日打卡 - 今天已经打卡:', {
+          lastUpdateDate: lastUpdateLocalDate,
+          currentDate: currentLocalDate,
+          currentCount: localData.achievement_daily_login
+        })
       }
+      
+      console.log('===== 每日打卡检查结束 =====')
     } catch (err) {
-      console.error('检查每日登录失败：', err)
+      console.error('检查每日登录失败:', err)
     }
   }
 }) 
