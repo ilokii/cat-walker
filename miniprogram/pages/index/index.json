@@ -1,6 +1,4 @@
 {
   "navigationStyle": "custom",
-  "usingComponents": {
-    "achievement-upgrade": "/components/achievement-upgrade/achievement-upgrade"
-  }
+  "usingComponents": {}
 }

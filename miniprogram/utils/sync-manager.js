@@ -17,8 +17,7 @@ class SyncManager {
         steps: 0
       },
       startDate: new Date(1900, 0, 1, 0, 0, 0),
-      lastRefreshTime: 0,
-      achievement_daily_login: 0
+      lastRefreshTime: 0
     }
     this.isInitialized = false
     this.REFRESH_COOLDOWN = 10 * 60 * 1000
@@ -120,7 +119,6 @@ class SyncManager {
         },
         startDate: new Date(1900, 0, 1, 0, 0, 0),
         lastRefreshTime: 0,
-        achievement_daily_login: 0,
         createTime: this.db.serverDate(),
         updateTime: this.db.serverDate()
       }
