@@ -52,11 +52,6 @@ class SyncManager {
         _openid: getApp().globalData.openid
       }).get()
 
-      console.log('初始化数据管理器 - 获取用户数据:', {
-        hasData: result.data.length > 0,
-        achievement_daily_login: result.data[0]?.achievement_daily_login
-      })
-
       if (result.data.length > 0) {
         // 如果找到多条记录，删除多余的记录
         if (result.data.length > 1) {
@@ -83,13 +78,8 @@ class SyncManager {
             steps: userData.lastUpdateStepInfo?.steps || 0
           },
           startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0),
-          lastRefreshTime: 0,
-          achievement_daily_login: userData.achievement_daily_login || 0
+          lastRefreshTime: 0
         }
-
-        console.log('初始化数据管理器 - 设置本地数据:', {
-          achievement_daily_login: this.localData.achievement_daily_login
-        })
       } else {
         // 如果没有找到用户数据，创建新用户
         await this.createNewUser()
@@ -145,8 +135,7 @@ class SyncManager {
     try {
       const userData = await this.getUserData()
       console.log('同步云端数据 - 获取用户数据:', {
-        hasData: !!userData,
-        achievement_daily_login: userData?.achievement_daily_login
+        hasData: !!userData
       })
 
       if (userData) {
@@ -163,13 +152,10 @@ class SyncManager {
             steps: userData.lastUpdateStepInfo?.steps || 0
           },
           startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0),
-          lastRefreshTime: this.localData.lastRefreshTime,
-          achievement_daily_login: userData.achievement_daily_login || 0
+          lastRefreshTime: this.localData.lastRefreshTime
         }
 
-        console.log('同步云端数据 - 更新本地数据:', {
-          achievement_daily_login: this.localData.achievement_daily_login
-        })
+        console.log('同步云端数据 - 更新本地数据完成')
       }
       return this.localData
     } catch (err) {
@@ -474,40 +460,6 @@ class SyncManager {
   getServerDate() {
     // 由于db.serverDate()只能在云端运行，这里使用本地时间
     return new Date()
-  }
-
-  // 更新每日登录成就
-  async updateDailyLoginAchievement(count) {
-    try {
-      console.log('===== 更新每日登录成就开始 =====')
-      console.log('更新参数:', {
-        currentCount: this.localData.achievement_daily_login,
-        newCount: count,
-        difference: count - (this.localData.achievement_daily_login || 0)
-      })
-
-      await this.db.collection('users').where({
-        _openid: getApp().globalData.openid
-      }).update({
-        data: {
-          achievement_daily_login: count,
-          updateTime: this.db.serverDate()
-        }
-      })
-
-      const oldCount = this.localData.achievement_daily_login
-      this.localData.achievement_daily_login = count
-
-      console.log('更新结果:', {
-        oldCount,
-        newCount: this.localData.achievement_daily_login,
-        isSuccess: this.localData.achievement_daily_login === count
-      })
-      console.log('===== 更新每日登录成就结束 =====')
-    } catch (err) {
-      console.error('更新每日登录成就失败:', err)
-      throw err
-    }
   }
 
   async updateUserData(userData) {
