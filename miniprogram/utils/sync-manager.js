@@ -1,24 +1,44 @@
 const { citiesData } = require('../data/cities')
 
+// 本地存档数据结构
+const defaultLocalData = {
+  userAvatar: null,
+  currentCity: null,
+  targetCity: null,
+  startSteps: 0,
+  visitedCities: [],
+  totalSteps: 0,
+  totalStepsTemp: 0,
+  isInitStepInfo: false,
+  lastUpdateStepInfo: {
+    date: new Date(1900, 0, 1, 0, 0, 0),
+    steps: 0
+  },
+  startDate: new Date(1900, 0, 1, 0, 0, 0),
+  lastRefreshTime: 0,
+  
+  // 卡牌收集数据
+  albumData: {
+    currentSeasonId: '', // 当前赛季ID
+    collectedCards: [], // 已收集的卡牌id列表
+    completedSets: [], // 已完成的套牌id列表
+    collectionLevel: 1 // 当前收集等级
+  }
+}
+
+// 云存储文件路径配置
+const CLOUD_PATH = {
+  ALBUMS: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/config/albums.json',
+  SETS: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/config/sets.json',
+  CARDS: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/config/cards.json',
+  UNCOLLECTED_CARD: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/commons/uncollect_card.png',
+  ALBUM_ICON: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/commons/album.png'
+}
+
 class SyncManager {
   constructor() {
     this.db = wx.cloud.database()
-    this.localData = {
-      userAvatar: null,
-      currentCity: null,
-      targetCity: null,
-      startSteps: 0,
-      visitedCities: [],
-      totalSteps: 0,
-      totalStepsTemp: 0,
-      isInitStepInfo: false,
-      lastUpdateStepInfo: {
-        date: new Date(1900, 0, 1, 0, 0, 0),
-        steps: 0
-      },
-      startDate: new Date(1900, 0, 1, 0, 0, 0),
-      lastRefreshTime: 0
-    }
+    this.localData = { ...defaultLocalData }
     this.isInitialized = false
     this.REFRESH_COOLDOWN = 10 * 60 * 1000
   }
@@ -78,7 +98,13 @@ class SyncManager {
             steps: userData.lastUpdateStepInfo?.steps || 0
           },
           startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0),
-          lastRefreshTime: 0
+          lastRefreshTime: 0,
+          albumData: {
+            currentSeasonId: userData.albumData?.currentSeasonId || '',
+            collectedCards: userData.albumData?.collectedCards || [],
+            completedSets: userData.albumData?.completedSets || [],
+            collectionLevel: userData.albumData?.collectionLevel || 1
+          }
         }
       } else {
         // 如果没有找到用户数据，创建新用户
@@ -109,6 +135,12 @@ class SyncManager {
         },
         startDate: new Date(1900, 0, 1, 0, 0, 0),
         lastRefreshTime: 0,
+        albumData: {
+          currentSeasonId: '',
+          collectedCards: [],
+          completedSets: [],
+          collectionLevel: 1
+        },
         createTime: this.db.serverDate(),
         updateTime: this.db.serverDate()
       }
@@ -152,7 +184,13 @@ class SyncManager {
             steps: userData.lastUpdateStepInfo?.steps || 0
           },
           startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0),
-          lastRefreshTime: this.localData.lastRefreshTime
+          lastRefreshTime: this.localData.lastRefreshTime,
+          albumData: {
+            currentSeasonId: userData.albumData?.currentSeasonId || '',
+            collectedCards: userData.albumData?.collectedCards || [],
+            completedSets: userData.albumData?.completedSets || [],
+            collectionLevel: userData.albumData?.collectionLevel || 1
+          }
         }
 
         console.log('同步云端数据 - 更新本地数据完成')
@@ -485,6 +523,165 @@ class SyncManager {
       return true
     } catch (error) {
       console.error('更新用户信息失败：', error)
+      throw error
+    }
+  }
+
+  // 初始化赛季数据
+  async initSeasonData(seasonId, shouldSave = false) {
+    if (this.localData.albumData.currentSeasonId !== seasonId) {
+      // 如果是新赛季，重置收集数据
+      this.localData.albumData = {
+        currentSeasonId: seasonId,
+        collectedCards: [],
+        completedSets: [],
+        collectionLevel: 1
+      }
+      
+      // 只有在需要保存时才执行保存操作
+      if (shouldSave) {
+        await this.saveLocalData()
+        await this.syncToCloud()
+      }
+    }
+  }
+
+  // 添加收集到的卡牌
+  async addCollectedCard(seasonId, cardId, setId) {
+    // 确保是当前赛季，并且需要保存数据
+    if (seasonId !== this.localData.albumData.currentSeasonId) {
+      await this.initSeasonData(seasonId, true)
+    }
+    
+    // 检查卡牌是否已收集
+    if (!this.localData.albumData.collectedCards.includes(cardId)) {
+      // 添加新卡牌
+      this.localData.albumData.collectedCards.push(cardId)
+      
+      // 检查套牌是否集齐
+      const allSetCards = await this.getAllSetCards(setId)
+      const collectedSetCards = this.localData.albumData.collectedCards.filter(id => id.startsWith(setId))
+      
+      if (allSetCards.length === collectedSetCards.length && !this.localData.albumData.completedSets.includes(setId)) {
+        // 套牌集齐，添加到完成列表
+        this.localData.albumData.completedSets.push(setId)
+        
+        // 检查是否需要升级收集等级
+        await this.checkCollectionLevelUp()
+      }
+      
+      await this.saveLocalData()
+      await this.syncToCloud()
+      
+      return true
+    }
+    
+    return false
+  }
+
+  // 从临时文件路径读取JSON
+  async readJSONFile(tempFilePath) {
+    return new Promise((resolve, reject) => {
+      wx.getFileSystemManager().readFile({
+        filePath: tempFilePath,
+        encoding: 'utf-8',
+        success: res => {
+          try {
+            const data = JSON.parse(res.data)
+            resolve(data)
+          } catch (e) {
+            reject(e)
+          }
+        },
+        fail: reject
+      })
+    })
+  }
+
+  // 获取套牌的所有卡牌
+  async getAllSetCards(setId) {
+    try {
+      const { tempFilePath } = await wx.cloud.downloadFile({
+        fileID: CLOUD_PATH.CARDS
+      })
+      const cardsData = await this.readJSONFile(tempFilePath)
+      const setCards = cardsData.find(cards => cards.id === setId)
+      return setCards ? setCards.cards.map(card => card.card_id) : []
+    } catch (error) {
+      console.error('获取套牌卡牌失败：', error)
+      return []
+    }
+  }
+
+  // 检查是否需要升级收集等级
+  async checkCollectionLevelUp() {
+    try {
+      // 获取当前赛季的所有套牌
+      const { tempFilePath } = await wx.cloud.downloadFile({
+        fileID: CLOUD_PATH.SETS
+      })
+      const setsData = await this.readJSONFile(tempFilePath)
+      const seasonSets = setsData.find(sets => sets.id === this.localData.albumData.currentSeasonId)
+      
+      if (seasonSets && this.localData.albumData.completedSets.length === seasonSets.sets.length) {
+        // 所有套牌都已集齐，可以升级
+        if (this.localData.albumData.collectionLevel < 3) { // 最高3级
+          this.localData.albumData.collectionLevel++
+          this.localData.albumData.collectedCards = [] // 重置收集进度
+          this.localData.albumData.completedSets = [] // 重置完成套牌
+          
+          await this.saveLocalData()
+          await this.syncToCloud()
+          
+          return true
+        }
+      }
+    } catch (error) {
+      console.error('检查收集等级升级失败：', error)
+    }
+    
+    return false
+  }
+
+  // 获取收集等级
+  getCollectionLevel(seasonId = null) {
+    // 如果没有指定赛季ID，或者是当前赛季，返回当前收集等级
+    if (!seasonId || seasonId === this.localData.albumData.currentSeasonId) {
+      return this.localData.albumData.collectionLevel
+    }
+    // 如果不是当前赛季，返回默认等级1
+    return 1
+  }
+
+  // 获取卡牌收集状态
+  getCollectedCards() {
+    return this.localData.albumData.collectedCards
+  }
+
+  // 获取已完成套牌
+  getCompletedSets() {
+    return this.localData.albumData.completedSets
+  }
+
+  // 获取当前赛季ID
+  getCurrentSeasonId() {
+    return this.localData.albumData.currentSeasonId
+  }
+
+  // 保存本地数据到云端
+  async saveLocalData() {
+    try {
+      await this.db.collection('users').where({
+        _openid: getApp().globalData.openid
+      }).update({
+        data: {
+          albumData: this.localData.albumData,
+          updateTime: this.db.serverDate()
+        }
+      })
+      return true
+    } catch (error) {
+      console.error('保存本地数据失败：', error)
       throw error
     }
   }

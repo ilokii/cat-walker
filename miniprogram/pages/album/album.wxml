@@ -1,0 +1,27 @@
+<view class="album-container">
+  <!-- 卡册标题 -->
+  <view class="album-title">{{currentAlbum.name}}</view>
+  
+  <!-- 赛季倒计时 -->
+  <view class="countdown">{{remainingTime}}</view>
+  
+  <!-- 卡册集齐奖励 -->
+  <view class="album-reward">
+    <image class="reward-badge" src="{{currentAlbum.rewards[collectionLevel]}}" mode="aspectFit"></image>
+  </view>
+  
+  <!-- 套牌列表 -->
+  <scroll-view class="sets-container" scroll-y>
+    <view class="sets-grid">
+      <view class="set-item" wx:for="{{sets}}" wx:key="set_id" bindtap="onSetTap" data-set-id="{{item.set_id}}">
+        <image class="set-cover" src="{{item.res}}" mode="aspectFill"></image>
+        <view class="set-cover-mask"></view>
+        <view class="set-name">{{item.name}}</view>
+        <view class="set-progress">{{item.progress.collected}}/{{item.progress.total}}</view>
+      </view>
+    </view>
+  </scroll-view>
+  
+  <!-- 关闭按钮 -->
+  <view class="close-btn" bindtap="onClose">X</view>
+</view> 

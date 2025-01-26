@@ -1,0 +1,26 @@
+{
+  "albums": [
+    {
+      "id": "2025Q1",
+      "name": "春意盎然",
+      "rewards": {
+        "1": "badge_2025Q1_copper",
+        "2": "badge_2025Q1_silver",
+        "3": "badge_2025Q1_gold"
+      },
+      "start_time": 1735689600,
+      "end_time": 1743465599
+    },
+    {
+      "id": "2025Q2",
+      "name": "夏日炎炎",
+      "rewards": {
+        "1": "badge_2025Q2_copper",
+        "2": "badge_2025Q2_silver",
+        "3": "badge_2025Q2_gold"
+      },
+      "start_time": 1743465600,
+      "end_time": 1751327999
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+<view class="set-detail-container">
+  <!-- 套牌标题 -->
+  <view class="set-title">{{setInfo.name}}</view>
+  
+  <!-- 套牌集齐奖励 -->
+  <view class="set-reward">
+    <image class="reward-badge" src="{{setInfo.rewards[collectionLevel]}}" mode="aspectFit"></image>
+  </view>
+  
+  <!-- 套牌收集进度 -->
+  <view class="progress-container">
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{progressPercentage}}%"></view>
+      <view class="progress-text">{{progress.collected}}/{{progress.total}}</view>
+    </view>
+  </view>
+  
+  <!-- 卡牌列表 -->
+  <scroll-view class="cards-container" scroll-y>
+    <view class="cards-grid">
+      <view class="card-item" wx:for="{{cards}}" wx:key="card_id">
+        <image class="card-image" 
+               src="{{collectedCards.includes(item.card_id) ? item.res : 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/commons/uncollect_card.png'}}" 
+               mode="aspectFill"></image>
+        <text class="card-name">{{item.name}}</text>
+        <view class="card-stars">
+          <text wx:for="{{item.star}}" wx:key="*this">★</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  
+  <!-- 关闭按钮 -->
+  <view class="close-btn" bindtap="onClose">X</view>
+</view> 

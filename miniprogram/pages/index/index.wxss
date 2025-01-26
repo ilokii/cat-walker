@@ -314,4 +314,24 @@
   background-color: #f8f9fa;
   transform: scale(0.95);
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.album-entry {
+  position: fixed;
+  left: 40rpx;
+  bottom: 40rpx;
+  width: 100rpx;
+  height: 100rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.album-icon {
+  width: 60rpx;
+  height: 60rpx;
 } 

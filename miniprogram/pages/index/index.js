@@ -300,5 +300,12 @@ Page({
         icon: 'none'
       })
     }
-  }
+  },
+
+  // 打开卡册
+  onAlbumTap() {
+    wx.navigateTo({
+      url: '/pages/album/album'
+    })
+  },
 }) 
