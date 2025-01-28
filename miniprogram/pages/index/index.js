@@ -304,6 +304,15 @@ Page({
 
   // 打开卡册
   onAlbumTap() {
+    const app = getApp()
+    if (!app.globalData.isInitialized) {
+      wx.showToast({
+        title: '数据加载中...',
+        icon: 'loading',
+        duration: 2000
+      })
+      return
+    }
     wx.navigateTo({
       url: '/pages/album/album'
     })

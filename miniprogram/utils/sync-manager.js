@@ -37,10 +37,17 @@ const CLOUD_PATH = {
 
 class SyncManager {
   constructor() {
-    this.db = wx.cloud.database()
+    this.db = null
     this.localData = { ...defaultLocalData }
     this.isInitialized = false
     this.REFRESH_COOLDOWN = 10 * 60 * 1000
+  }
+
+  // 初始化数据库连接
+  initDatabase() {
+    if (!this.db) {
+      this.db = wx.cloud.database()
+    }
   }
 
   // 检查是否在冷却中
@@ -67,6 +74,9 @@ class SyncManager {
     if (this.isInitialized) return
     
     try {
+      // 初始化数据库连接
+      this.initDatabase()
+
       // 获取用户数据，如果有多条记录，只使用第一条
       const result = await this.db.collection('users').where({
         _openid: getApp().globalData.openid

@@ -1,84 +1,59 @@
 const syncManager = require('../../utils/sync-manager')
+const albumManager = require('../../utils/album-manager')
 
 Page({
-  data: {},
-
-  onLoad() {
-    this.checkWeRunAuth()
+  data: {
+    loadingText: '正在加载数据...'
   },
 
-  // 检查微信运动权限
-  async checkWeRunAuth() {
+  onLoad: async function() {
+    const app = getApp()
     try {
-      // 先检查是否已经授权
-      const setting = await wx.getSetting()
-      if (setting.authSetting['scope.werun']) {
-        // 已授权，处理步数数据
-        await this.handleWeRunData()
-      } else {
-        // 未授权，主动请求授权
-        wx.authorize({
-          scope: 'scope.werun',
-          success: async () => {
-            // 用户同意授权，处理步数数据
-            await this.handleWeRunData()
-          },
-          fail: () => {
-            // 用户拒绝授权，跳转到授权页面
-            wx.redirectTo({
-              url: '/pages/werun-auth/werun-auth'
-            })
-          }
-        })
-      }
-    } catch (err) {
-      console.error('检查微信运动权限失败：', err)
-      wx.showToast({
-        title: '数据加载失败，请重新登录',
-        icon: 'none'
+      // 获取用户openid
+      this.setData({ loadingText: '正在获取用户信息...' })
+      const { result } = await wx.cloud.callFunction({
+        name: 'login'
       })
-      setTimeout(() => {
-        wx.reLaunch({
-          url: '/pages/login/login'
-        })
-      }, 1500)
-    }
-  },
+      app.globalData.openid = result.openid
 
-  // 处理微信运动数据
-  async handleWeRunData() {
-    try {
-      const success = await syncManager.handleWeRunData()
-      if (success) {
-        // 更新最后刷新时间
-        syncManager.updateLastRefreshTime()
-        
-        // 处理完成，进入主页
-        wx.reLaunch({
-          url: '/pages/index/index'
+      // 初始化数据管理器
+      this.setData({ loadingText: '正在同步用户数据...' })
+      await syncManager.initialize()
+
+      // 预加载卡牌配置数据
+      this.setData({ loadingText: '正在加载卡册数据...' })
+      await albumManager.init()
+
+      // 标记初始化完成
+      app.globalData.isInitialized = true
+
+      // 检查微信运动授权
+      const hasWeRunAuth = await app.checkWeRunAuth()
+      if (!hasWeRunAuth) {
+        wx.redirectTo({
+          url: '/pages/auth/auth'
         })
-      } else {
-        wx.showToast({
-          title: '数据加载失败，请重新登录',
-          icon: 'none'
-        })
-        setTimeout(() => {
-          wx.reLaunch({
-            url: '/pages/login/login'
-          })
-        }, 1500)
+        return
       }
-    } catch (err) {
-      console.error('处理微信运动数据失败：', err)
-      wx.showToast({
-        title: '数据加载失败，请重新登录',
-        icon: 'none'
+
+      // 获取并处理微信运动数据
+      this.setData({ loadingText: '正在同步运动数据...' })
+      await syncManager.handleWeRunData()
+
+      // 更新最后刷新时间
+      syncManager.updateLastRefreshTime()
+
+      // 跳转到首页
+      wx.reLaunch({
+        url: '/pages/index/index'
       })
-      setTimeout(() => {
-        wx.reLaunch({
-          url: '/pages/login/login'
-        })
-      }, 1500)
+    } catch (error) {
+      console.error('初始化失败：', error)
+      wx.showToast({
+        title: '加载失败，请重试',
+        icon: 'none',
+        duration: 2000
+      })
     }
   }
 }) 

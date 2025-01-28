@@ -9,12 +9,7 @@ Page({
   },
 
   onLoad: async function() {
-    await this.initAlbumData()
-    this.startCountdown()
-  },
-
-  async initAlbumData() {
-    await albumManager.init()
+    // 数据已在 app.js 中初始化，这里直接获取数据
     const currentAlbum = albumManager.currentAlbum
     const sets = albumManager.getCurrentSets()
 
@@ -28,6 +23,8 @@ Page({
       sets,
       collectionLevel: albumManager.userCollectionLevel
     })
+
+    this.startCountdown()
   },
 
   startCountdown() {

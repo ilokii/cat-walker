@@ -1,26 +1,23 @@
+const syncManager = require('./utils/sync-manager')
+const albumManager = require('./utils/album-manager')
+
 App({
   globalData: {
     openid: null,
     envId: 'cat-walker-1gnvj0y102f12cab', // 云环境ID
+    isInitialized: false
   },
 
-  onLaunch() {
+  onLaunch: function() {
+    // 初始化云开发环境
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
-    } else {
-      wx.cloud.init({
-        env: this.globalData.envId,
-        traceUser: true,
-      })
+      return
     }
-
-    this.globalData = {
-      userInfo: null,
-      hasUserInfo: false,
-      openid: '',
-      isLogin: false,
-      envId: 'cat-walker-1gnvj0y102f12cab' // 确保在重置 globalData 时也包含 envId
-    }
+    wx.cloud.init({
+      env: 'cat-walker-1gnvj0y102f12cab',
+      traceUser: true
+    })
   },
 
   // 检查用户是否授权微信运动

@@ -194,4 +194,6 @@ class AlbumManager {
   }
 }
 
-export default new AlbumManager() 
+// 创建单例实例
+const albumManager = new AlbumManager()
+module.exports = albumManager 
