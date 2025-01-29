@@ -2,9 +2,14 @@
   <!-- 套牌标题 -->
   <view class="set-title">{{setInfo.name}}</view>
   
-  <!-- 套牌集齐奖励 -->
+  <!-- 套牌奖励 -->
   <view class="set-reward">
-    <image class="reward-badge" src="{{setInfo.rewards[collectionLevel]}}" mode="aspectFit"></image>
+    <image class="reward-badge" 
+           src="{{rewardPath}}" 
+           mode="aspectFit" 
+           binderror="onImageError" 
+           data-type="reward">
+    </image>
   </view>
   
   <!-- 套牌收集进度 -->
@@ -19,12 +24,29 @@
   <scroll-view class="cards-container" scroll-y>
     <view class="cards-grid">
       <view class="card-item" wx:for="{{cards}}" wx:key="card_id">
-        <image class="card-image" 
-               src="{{collectedCards.includes(item.card_id) ? item.res : 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/commons/uncollect_card.png'}}" 
-               mode="aspectFill"></image>
-        <text class="card-name">{{item.name}}</text>
-        <view class="card-stars">
-          <text wx:for="{{item.star}}" wx:key="*this">★</text>
+        <view class="card-frame star-{{item.star}}">
+          <!-- 调试信息 -->
+          <view class="debug-info" style="font-size: 10px; color: #666;">
+            ID: {{item.card_id}}
+            收集: {{item.isCollected ? '是' : '否'}}
+            错误: {{item.imageLoadError ? '是' : '否'}}
+            路径: {{item.displayRes}}
+          </view>
+          
+          <image class="card-image {{item.isCollected ? '' : 'uncollected'}}" 
+                 src="{{item.displayRes}}" 
+                 mode="aspectFit"
+                 binderror="onImageError"
+                 data-card-id="{{item.card_id}}"
+                 style="width: 200rpx; height: 300rpx;">
+          </image>
+          
+          <view class="card-info">
+            <view class="card-name">{{item.displayName}}</view>
+            <view class="card-stars">
+              <text class="star" wx:for="{{item.star}}" wx:key="*this">★</text>
+            </view>
+          </view>
         </view>
       </view>
     </view>
