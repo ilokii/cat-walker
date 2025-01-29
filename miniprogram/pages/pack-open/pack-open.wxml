@@ -13,23 +13,26 @@
       <block wx:for="{{openResult.cards}}" wx:key="card_id">
         <view class="card-item">
           <image class="card-image" src="{{item.res}}" mode="aspectFit"></image>
-          <view wx:if="{{openResult.newCards.includes(item)}}" class="new-tag">新</view>
+          <view wx:if="{{isNewCard(item.card_id)}}" class="new-tag">新</view>
         </view>
       </block>
     </view>
+    <view class="hint" wx:if="{{showHint}}">点击继续</view>
   </block>
   
   <!-- 转换状态 -->
   <block wx:if="{{stage === 'converting'}}">
     <view class="cards-grid">
       <block wx:for="{{openResult.cards}}" wx:key="card_id">
-        <view class="card-item {{!openResult.newCards.includes(item) ? 'converting' : ''}}">
-          <block wx:if="{{openResult.newCards.includes(item)}}">
+        <view class="card-item">
+          <block wx:if="{{isNewCard(item.card_id)}}">
+            <!-- 新卡保持原样显示 -->
             <image class="card-image" src="{{item.res}}" mode="aspectFit"></image>
             <view class="new-tag">新</view>
           </block>
           <block wx:else>
-            <view class="star-reward">
+            <!-- 重复卡转化为星星 -->
+            <view class="star-reward converting">
               <image class="star-icon" src="{{starIconPath}}" mode="aspectFit"></image>
               <text class="star-count">×{{item.star}}</text>
             </view>
@@ -37,6 +40,7 @@
         </view>
       </block>
     </view>
+    <view class="hint" wx:if="{{showHint}}">点击继续</view>
   </block>
   
   <!-- 完成状态 -->
@@ -44,7 +48,7 @@
     <view class="cards-grid">
       <block wx:for="{{openResult.cards}}" wx:key="card_id">
         <view class="card-item">
-          <block wx:if="{{openResult.newCards.includes(item)}}">
+          <block wx:if="{{isNewCard(item.card_id)}}">
             <image class="card-image" src="{{item.res}}" mode="aspectFit"></image>
             <view class="new-tag">新</view>
           </block>
@@ -57,6 +61,6 @@
         </view>
       </block>
     </view>
-    <view class="hint">点击继续</view>
+    <view class="hint" wx:if="{{showHint}}">点击返回</view>
   </block>
 </view> 

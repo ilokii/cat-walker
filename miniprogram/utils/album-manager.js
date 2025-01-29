@@ -16,6 +16,26 @@ class AlbumManager {
     this.setsData = null
     this.cardsData = null
     this.currentAlbum = null
+    this.maxRetries = 3 // 最大重试次数
+    this.retryDelay = 1000 // 重试延迟（毫秒）
+  }
+
+  // 带重试机制的文件下载
+  async downloadFileWithRetry(fileID, retryCount = 0) {
+    try {
+      const { tempFilePath } = await wx.cloud.downloadFile({ fileID })
+      return tempFilePath
+    } catch (error) {
+      console.error(`下载文件失败 (尝试 ${retryCount + 1}/${this.maxRetries}):`, error)
+      
+      if (retryCount < this.maxRetries - 1) {
+        // 等待一段时间后重试
+        await new Promise(resolve => setTimeout(resolve, this.retryDelay))
+        return this.downloadFileWithRetry(fileID, retryCount + 1)
+      }
+      
+      throw new Error(`文件下载失败 (${fileID}): ${error.message}`)
+    }
   }
 
   // 初始化卡册数据
@@ -28,6 +48,12 @@ class AlbumManager {
       return true
     } catch (error) {
       console.error('初始化卡册数据失败：', error)
+      // 显示错误提示
+      wx.showToast({
+        title: '数据加载失败',
+        icon: 'none',
+        duration: 2000
+      })
       return false
     }
   }
@@ -43,10 +69,10 @@ class AlbumManager {
             const data = JSON.parse(res.data)
             resolve(data)
           } catch (e) {
-            reject(e)
+            reject(new Error(`JSON解析失败: ${e.message}`))
           }
         },
-        fail: reject
+        fail: error => reject(new Error(`文件读取失败: ${error.errMsg}`))
       })
     })
   }
@@ -54,10 +80,9 @@ class AlbumManager {
   // 加载赛季数据
   async loadAlbumData() {
     try {
-      const { tempFilePath } = await wx.cloud.downloadFile({
-        fileID: CLOUD_PATH.ALBUMS
-      })
+      const tempFilePath = await this.downloadFileWithRetry(CLOUD_PATH.ALBUMS)
       this.albumData = await this.readJSONFile(tempFilePath)
+      console.log('赛季数据加载成功:', this.albumData)
     } catch (error) {
       console.error('加载赛季数据失败：', error)
       throw error
@@ -67,10 +92,9 @@ class AlbumManager {
   // 加载套牌数据
   async loadSetsData() {
     try {
-      const { tempFilePath } = await wx.cloud.downloadFile({
-        fileID: CLOUD_PATH.SETS
-      })
+      const tempFilePath = await this.downloadFileWithRetry(CLOUD_PATH.SETS)
       this.setsData = await this.readJSONFile(tempFilePath)
+      console.log('套牌数据加载成功:', this.setsData)
     } catch (error) {
       console.error('加载套牌数据失败：', error)
       throw error
@@ -80,10 +104,9 @@ class AlbumManager {
   // 加载卡牌数据
   async loadCardsData() {
     try {
-      const { tempFilePath } = await wx.cloud.downloadFile({
-        fileID: CLOUD_PATH.CARDS
-      })
+      const tempFilePath = await this.downloadFileWithRetry(CLOUD_PATH.CARDS)
       this.cardsData = await this.readJSONFile(tempFilePath)
+      console.log('卡牌数据加载成功:', this.cardsData)
     } catch (error) {
       console.error('加载卡牌数据失败：', error)
       throw error

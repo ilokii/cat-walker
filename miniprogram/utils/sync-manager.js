@@ -22,7 +22,8 @@ const defaultLocalData = {
     currentSeasonId: '', // 当前赛季ID
     collectedCards: [], // 已收集的卡牌id列表
     completedSets: [], // 已完成的套牌id列表
-    collectionLevel: 1 // 当前收集等级
+    collectionLevel: 1, // 当前收集等级
+    stars: 0 // 当前星星数量
   }
 }
 
@@ -113,7 +114,8 @@ class SyncManager {
             currentSeasonId: userData.albumData?.currentSeasonId || '',
             collectedCards: userData.albumData?.collectedCards || [],
             completedSets: userData.albumData?.completedSets || [],
-            collectionLevel: userData.albumData?.collectionLevel || 1
+            collectionLevel: userData.albumData?.collectionLevel || 1,
+            stars: userData.albumData?.stars || 0
           }
         }
       } else {
@@ -149,7 +151,8 @@ class SyncManager {
           currentSeasonId: '',
           collectedCards: [],
           completedSets: [],
-          collectionLevel: 1
+          collectionLevel: 1,
+          stars: 0
         },
         createTime: this.db.serverDate(),
         updateTime: this.db.serverDate()
@@ -199,7 +202,8 @@ class SyncManager {
             currentSeasonId: userData.albumData?.currentSeasonId || '',
             collectedCards: userData.albumData?.collectedCards || [],
             completedSets: userData.albumData?.completedSets || [],
-            collectionLevel: userData.albumData?.collectionLevel || 1
+            collectionLevel: userData.albumData?.collectionLevel || 1,
+            stars: userData.albumData?.stars || 0
           }
         }
 
@@ -545,7 +549,8 @@ class SyncManager {
         currentSeasonId: seasonId,
         collectedCards: [],
         completedSets: [],
-        collectionLevel: 1
+        collectionLevel: 1,
+        stars: 0
       }
       
       // 只有在需要保存时才执行保存操作
@@ -557,36 +562,38 @@ class SyncManager {
   }
 
   // 添加收集到的卡牌
-  async addCollectedCard(seasonId, cardId, setId) {
+  async addCollectedCard(seasonId, cardId, setId, currentDrawnCards = []) {
     // 确保是当前赛季，并且需要保存数据
     if (seasonId !== this.localData.albumData.currentSeasonId) {
       await this.initSeasonData(seasonId, true)
     }
     
-    // 检查卡牌是否已收集
-    if (!this.localData.albumData.collectedCards.includes(cardId)) {
-      // 添加新卡牌
-      this.localData.albumData.collectedCards.push(cardId)
-      
-      // 检查套牌是否集齐
-      const allSetCards = await this.getAllSetCards(setId)
-      const collectedSetCards = this.localData.albumData.collectedCards.filter(id => id.startsWith(setId))
-      
-      if (allSetCards.length === collectedSetCards.length && !this.localData.albumData.completedSets.includes(setId)) {
-        // 套牌集齐，添加到完成列表
-        this.localData.albumData.completedSets.push(setId)
-        
-        // 检查是否需要升级收集等级
-        await this.checkCollectionLevelUp()
-      }
-      
-      await this.saveLocalData()
-      await this.syncToCloud()
-      
-      return true
+    // 检查是否是重复卡牌
+    const isDuplicate = this.localData.albumData.collectedCards.includes(cardId) || 
+                       currentDrawnCards.includes(cardId)
+    
+    if (isDuplicate) {
+      // 如果是重复卡牌，转化为星星
+      await this.addStars(1)
+      return { isNewCard: false, isDuplicate: true }
     }
     
-    return false
+    // 如果不是重复卡牌，添加到收集列表
+    this.localData.albumData.collectedCards.push(cardId)
+    
+    // 检查套牌是否集齐
+    const allSetCards = await this.getAllSetCards(setId)
+    const collectedSetCards = this.localData.albumData.collectedCards.filter(id => id.startsWith(setId))
+    
+    if (allSetCards.length === collectedSetCards.length && !this.localData.albumData.completedSets.includes(setId)) {
+      // 套牌集齐，添加到完成列表
+      this.localData.albumData.completedSets.push(setId)
+    }
+    
+    await this.saveLocalData()
+    await this.syncToCloud()
+    
+    return { isNewCard: true, isDuplicate: false }
   }
 
   // 从临时文件路径读取JSON
@@ -759,23 +766,34 @@ class SyncManager {
     }
   }
 
-  // 添加卡牌到收集列表
-  async addCard(cardId) {
-    if (!this.localData.albumData.collectedCards.includes(cardId)) {
-      this.localData.albumData.collectedCards.push(cardId)
-      await this.saveLocalData()
-      await this.syncToCloud()
+  // 添加星星
+  async addStars(count) {
+    try {
+      if (!this.localData.albumData.stars) {
+        this.localData.albumData.stars = 0
+      }
+      this.localData.albumData.stars += count
+
+      // 更新云端数据
+      await this.db.collection('users').where({
+        _openid: getApp().globalData.openid
+      }).update({
+        data: {
+          'albumData.stars': this.localData.albumData.stars,
+          updateTime: this.db.serverDate()
+        }
+      })
+
+      return this.localData.albumData.stars
+    } catch (error) {
+      console.error('添加星星失败：', error)
+      return false
     }
   }
 
-  // 添加星星
-  async addStars(stars) {
-    if (!this.localData.albumData.stars) {
-      this.localData.albumData.stars = 0
-    }
-    this.localData.albumData.stars += stars
-    await this.saveLocalData()
-    await this.syncToCloud()
+  // 获取当前星星数量
+  getStars() {
+    return this.localData.albumData.stars || 0
   }
 }
 

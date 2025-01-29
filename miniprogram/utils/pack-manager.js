@@ -63,50 +63,35 @@ class PackManager {
 
   // 随机选择星级
   _randomRarity(probability) {
-    console.log('开始随机星级，概率配置:', probability)
     const random = Math.random()
-    console.log('随机数:', random)
     let sum = 0
-    
     for (const [rarity, prob] of Object.entries(probability)) {
       sum += prob
-      console.log(`当前星级: ${rarity}, 累计概率: ${sum}`)
       if (random < sum) {
-        console.log('命中星级:', rarity)
         return parseInt(rarity)
       }
     }
-    
-    console.warn('未命中任何星级，使用最低星级')
     return parseInt(Object.keys(probability)[0])
   }
 
   // 从指定星级的卡牌中随机选择一张
   _randomCardByRarity(rarity) {
-    console.log('开始随机选择卡牌，星级:', rarity)
     const currentSets = albumManager.getCurrentSets()
-    console.log('当前赛季套牌:', currentSets)
     const allCards = []
     
-    // 收集当前赛季所有指定星级的卡牌
     currentSets.forEach(set => {
       const setCards = albumManager.getSetCards(set.set_id)
-      console.log(`套牌 ${set.set_id} 的卡牌:`, setCards)
       const rarityCards = setCards.filter(card => card.star === rarity)
-      console.log(`套牌 ${set.set_id} 中 ${rarity}星卡牌:`, rarityCards)
       allCards.push(...rarityCards)
     })
     
-    console.log(`${rarity}星级可选卡牌总数:`, allCards.length)
     if (allCards.length === 0) {
       console.warn(`没有找到${rarity}星级的卡牌`)
       return null
     }
     
     const randomIndex = Math.floor(Math.random() * allCards.length)
-    const selectedCard = allCards[randomIndex]
-    console.log('随机选中的卡牌:', selectedCard)
-    return selectedCard
+    return allCards[randomIndex]
   }
 
   // 获取用户未收集的卡牌
@@ -129,13 +114,11 @@ class PackManager {
 
   // 开启卡包
   async openPack(packId) {
-    console.log('开始打开卡包，ID:', packId)
     const packInfo = this.packsData.find(pack => pack.id === packId)
     if (!packInfo) {
       console.error('未找到卡包信息:', packId)
       return null
     }
-    console.log('卡包信息:', packInfo)
 
     const result = {
       newCards: [],
@@ -143,66 +126,56 @@ class PackManager {
       cards: []
     }
 
-    // 抽取卡牌
-    console.log('开始抽取卡牌，数量:', packInfo.quantity)
-    const collectedCards = new Set(syncManager.getCollectedCards())
-    let duplicateStars = 0 // 用于记录重复卡牌转化的星星数量
+    console.log(`开始开启卡包: ${packInfo.name}`)
+    const currentDrawnCards = []
     
     for (let i = 0; i < packInfo.quantity; i++) {
-      console.log(`抽取第 ${i + 1} 张卡牌`)
       const card = this._drawCard(packInfo)
-      if (!card) {
-        console.warn('抽取卡牌失败')
-        continue
-      }
-      console.log('抽到卡牌:', card)
+      if (!card) continue
+      
       result.cards.push(card)
 
-      // 检查是否为新卡
-      const isNewCard = !collectedCards.has(card.card_id)
-      console.log('是否为新卡:', isNewCard)
-      if (isNewCard) {
+      const addResult = await syncManager.addCollectedCard(
+        albumManager.currentAlbum.id,
+        card.card_id,
+        card.card_id.split('_').slice(0, -1).join('_'),
+        currentDrawnCards
+      )
+
+      if (addResult.isNewCard) {
         result.newCards.push(card)
-        // 将新卡添加到已收集集合中，避免同一次开包重复标记新卡
-        collectedCards.add(card.card_id)
-        // 同步新卡到云存档
-        await albumManager.addCard(card.card_id, card.set_id)
-      } else {
-        // 重复卡牌转化为星星
-        duplicateStars += card.star
+        console.log(`获得新卡: ${card.name}`)
+      } else if (addResult.isDuplicate) {
+        result.totalStars += card.star
+        console.log(`重复卡转化为${card.star}星星: ${card.name}`)
       }
+
+      currentDrawnCards.push(card.card_id)
     }
 
     // 保底机制检查
-    console.log('检查保底机制')
     if (result.newCards.length === 0 && packInfo.guaranteed) {
-      console.log('触发保底机制，重新抽取一张新卡')
-      const guaranteedCard = this._drawNewCard(packInfo)
+      console.log('触发保底机制')
+      const guaranteedCard = this._drawNewCard()
       if (guaranteedCard) {
-        console.log('保底抽到新卡:', guaranteedCard)
-        // 替换最后一张卡，并更新星星数量
         const replacedCard = result.cards[result.cards.length - 1]
-        console.log('替换掉的卡牌:', replacedCard)
-        duplicateStars -= replacedCard.star // 减去被替换卡牌的星星
         result.cards[result.cards.length - 1] = guaranteedCard
-        result.newCards.push(guaranteedCard)
-        // 同步保底新卡到云存档
-        await albumManager.addCard(guaranteedCard.card_id, guaranteedCard.set_id)
-      } else {
-        console.warn('保底机制未能找到新卡')
+        
+        const addResult = await syncManager.addCollectedCard(
+          albumManager.currentAlbum.id,
+          guaranteedCard.card_id,
+          guaranteedCard.card_id.split('_').slice(0, -1).join('_'),
+          currentDrawnCards
+        )
+
+        if (addResult.isNewCard) {
+          result.newCards.push(guaranteedCard)
+          console.log(`保底获得新卡: ${guaranteedCard.name}`)
+        }
       }
     }
 
-    // 更新总星星数量
-    result.totalStars = duplicateStars
-
-    // 同步重复卡牌转化的星星到本地和云端
-    if (duplicateStars > 0) {
-      console.log('同步重复卡牌转化的星星:', duplicateStars)
-      await syncManager.addStars(duplicateStars)
-    }
-
-    console.log('卡包开启结果:', result)
+    console.log(`开包完成，获得${result.newCards.length}张新卡，${result.totalStars}颗星星`)
     return result
   }
 
@@ -237,20 +210,9 @@ class PackManager {
   }
 
   _drawCard(packInfo) {
-    console.log('开始抽卡，卡包信息:', packInfo)
-    // 根据概率随机选择星级
     const rarity = this._randomRarity(packInfo.probability)
-    console.log('随机选中星级:', rarity)
-    
-    if (!rarity) {
-      console.error('未能确定卡牌星级')
-      return null
-    }
-    
-    // 随机选择指定星级的卡牌
-    const card = this._randomCardByRarity(rarity)
-    console.log('根据星级随机选中卡牌:', card)
-    return card
+    if (!rarity) return null
+    return this._randomCardByRarity(rarity)
   }
 }
 

@@ -1,4 +1,5 @@
 const albumManager = require('../../utils/album-manager')
+const syncManager = require('../../utils/sync-manager')
 
 Page({
   data: {
@@ -6,7 +7,7 @@ Page({
     isAlbumCompleted: false
   },
 
-  onLoad: function(options) {
+  onLoad: async function(options) {
     const { setId } = options
     if (!setId) {
       wx.showToast({
@@ -17,7 +18,7 @@ Page({
     }
 
     const currentSets = albumManager.getCurrentSets()
-    const setInfo = currentSets.find(set => set.id === setId)
+    const setInfo = currentSets.find(set => set.set_id === setId)
     if (!setInfo) {
       wx.showToast({
         title: '套牌不存在',
@@ -28,11 +29,15 @@ Page({
 
     // 检查是否集齐整个卡册
     const isAlbumCompleted = currentSets.every(set => {
-      const setCards = albumManager.getSetCards(set.id)
-      return setCards.every(card => 
-        albumManager.getUserCardStatus(set.id).includes(card.id)
-      )
+      const setCards = albumManager.getSetCards(set.set_id)
+      const collectedCards = syncManager.getCollectedCards()
+      return setCards.every(card => collectedCards.includes(card.card_id))
     })
+
+    // 如果所有套牌都集齐了，检查是否可以升级
+    if (isAlbumCompleted) {
+      await syncManager.checkCollectionLevelUp()
+    }
 
     this.setData({
       setInfo,
