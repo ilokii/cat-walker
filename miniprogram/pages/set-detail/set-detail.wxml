@@ -24,29 +24,17 @@
   <scroll-view class="cards-container" scroll-y>
     <view class="cards-grid">
       <view class="card-item" wx:for="{{cards}}" wx:key="card_id">
-        <view class="card-frame star-{{item.star}}">
-          <!-- 调试信息 -->
-          <view class="debug-info" style="font-size: 10px; color: #666;">
-            ID: {{item.card_id}}
-            收集: {{item.isCollected ? '是' : '否'}}
-            错误: {{item.imageLoadError ? '是' : '否'}}
-            路径: {{item.displayRes}}
-          </view>
-          
+        <view class="card-frame">
           <image class="card-image {{item.isCollected ? '' : 'uncollected'}}" 
                  src="{{item.displayRes}}" 
                  mode="aspectFit"
                  binderror="onImageError"
-                 data-card-id="{{item.card_id}}"
-                 style="width: 200rpx; height: 300rpx;">
+                 data-card-id="{{item.card_id}}">
           </image>
-          
-          <view class="card-info">
-            <view class="card-name">{{item.displayName}}</view>
-            <view class="card-stars">
-              <text class="star" wx:for="{{item.star}}" wx:key="*this">★</text>
-            </view>
+          <view class="card-stars">
+            <text class="star" wx:for="{{item.star}}" wx:key="*this">★</text>
           </view>
+          <view class="card-name">{{item.displayName}}</view>
         </view>
       </view>
     </view>
