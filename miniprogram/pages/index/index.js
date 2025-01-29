@@ -1,6 +1,8 @@
 const syncManager = require('../../utils/sync-manager')
 const { provincesData } = require('../../data/provinces')
 const { citiesData } = require('../../data/cities')
+const packManager = require('../../utils/pack-manager')
+const albumManager = require('../../utils/album-manager')
 
 const PROGRESS_ANIMATION_DURATION = 1000 // 进度条动画持续时间（毫秒）
 const ARRIVAL_MODAL_DELAY = 500 // 到达弹窗延迟时间（毫秒）
@@ -30,13 +32,24 @@ Page({
     // 添加后台切换标记
     hasBeenInBackground: false,
     envId: '',
+    testPackId: '1', // 默认卡包ID
+    userInfo: null,
+    hasUserInfo: false,
+    canIUseGetUserProfile: false,
+    packs: []
   },
 
-  onLoad() {
+  async onLoad() {
+    if (wx.getUserProfile) {
+      this.setData({
+        canIUseGetUserProfile: true
+      })
+    }
+
     this.setData({
       envId: getApp().globalData.envId
     })
-    this.initializeData()
+    await this.initializeData()
   },
 
   onShow() {
@@ -56,12 +69,31 @@ Page({
   async initializeData() {
     try {
       await syncManager.initialize()
+      await this.initManagers()
       this.refreshData()
     } catch (err) {
       console.error('初始化数据失败：', err)
       wx.showToast({
         title: '数据加载失败',
         icon: 'none'
+      })
+    }
+  },
+
+  async initManagers() {
+    try {
+      // 初始化相册管理器
+      await albumManager.init()
+      // 初始化卡包管理器
+      await packManager.init()
+      // 加载卡包数据
+      const packs = packManager.packsData || []
+      this.setData({ packs })
+    } catch (error) {
+      console.error('初始化管理器失败：', error)
+      wx.showToast({
+        title: '初始化失败',
+        icon: 'error'
       })
     }
   },
@@ -317,4 +349,103 @@ Page({
       url: '/pages/album/album'
     })
   },
+
+  // 测试卡包ID输入处理
+  onTestPackIdInput(e) {
+    this.setData({
+      testPackId: e.detail.value
+    })
+  },
+
+  // 测试开启卡包
+  async onTestOpenPack() {
+    console.log('点击开包按钮')
+    console.log('当前输入ID:', this.data.testPackId)
+    console.log('packManager状态:', packManager.packsData)
+
+    const packId = parseInt(this.data.testPackId)
+    if (!packId || packId < 1 || packId > 5) {
+      console.log('ID验证失败:', packId)
+      wx.showToast({
+        title: '请输入1-5的数字',
+        icon: 'none'
+      })
+      return
+    }
+
+    // 检查packManager是否初始化
+    if (!packManager.packsData) {
+      console.log('packManager未初始化')
+      try {
+        await packManager.init()
+      } catch (error) {
+        console.error('packManager初始化失败:', error)
+        wx.showToast({
+          title: '加载失败，请重试',
+          icon: 'none'
+        })
+        return
+      }
+    }
+
+    console.log('准备跳转到卡包页面')
+    wx.navigateTo({
+      url: `/pages/pack-open/pack-open?id=${packId}`,
+      success: () => console.log('跳转成功'),
+      fail: (error) => console.error('跳转失败:', error)
+    })
+  },
+
+  async handlePackTap(e) {
+    console.log('当前输入ID:', e.currentTarget.dataset.id)
+    console.log('packManager状态:', packManager.packsData)
+
+    const packId = parseInt(e.currentTarget.dataset.id)
+    if (!packId) {
+      console.error('无效的卡包ID')
+      return
+    }
+
+    // 检查 packManager 是否已初始化
+    if (!packManager.packsData) {
+      console.log('packManager未初始化，尝试重新初始化')
+      await packManager.init()
+      
+      // 再次检查初始化结果
+      if (!packManager.packsData) {
+        console.error('packManager初始化失败')
+        wx.showToast({
+          title: '系统错误',
+          icon: 'error'
+        })
+        return
+      }
+    }
+
+    console.log('准备跳转到卡包页面')
+    wx.navigateTo({
+      url: `/pages/pack-open/pack-open?id=${packId}`,
+      success: () => console.log('跳转成功'),
+      fail: error => console.error('跳转失败：', error)
+    })
+  },
+
+  getUserProfile(e) {
+    wx.getUserProfile({
+      desc: '用于完善会员资料',
+      success: (res) => {
+        this.setData({
+          userInfo: res.userInfo,
+          hasUserInfo: true
+        })
+      }
+    })
+  },
+
+  getUserInfo(e) {
+    this.setData({
+      userInfo: e.detail.userInfo,
+      hasUserInfo: true
+    })
+  }
 }) 

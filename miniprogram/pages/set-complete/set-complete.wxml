@@ -1,0 +1,9 @@
+<view class="container" bindtap="handleTap">
+  <view class="title">{{setInfo.name}}</view>
+  <image class="set-icon" src="{{setInfo.icon}}" mode="aspectFit"></image>
+  <view class="reward">
+    <image class="reward-icon" src="{{setInfo.reward}}" mode="aspectFit"></image>
+  </view>
+  <view class="description">恭喜！您已集齐该套牌，获得勋章碎片</view>
+  <view class="hint">点击继续</view>
+</view> 

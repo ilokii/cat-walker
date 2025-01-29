@@ -4,15 +4,15 @@
         "cards": [
             {
                 "card_id": "2025Q1_1_1",
-                "res": "    cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/cards/2025Q1/set1/2025Q1_1_1.png",
+                "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/cards/2025Q1/set1/2025Q1_1_1.png",
                 "name": "火焰使者",
-                "star": 5
+                "star": 1
             },
             {
                 "card_id": "2025Q1_1_2",
                 "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/cards/2025Q1/set1/2025Q1_1_2.png",
                 "name": "冰霜巨龙",
-                "star": 4
+                "star": 2
             },
             {
                 "card_id": "2025Q1_1_3",
@@ -29,19 +29,19 @@
                 "card_id": "2025Q1_2_1",
                 "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/cards/2025Q1/set2/2025Q1_2_1.png",
                 "name": "雷霆法师",
-                "star": 5
+                "star": 2
             },
             {
                 "card_id": "2025Q1_2_2",
                 "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/cards/2025Q1/set2/2025Q1_2_2.png",
                 "name": "大地守护者",
-                "star": 4
+                "star": 3
             },
             {
                 "card_id": "2025Q1_2_3",
                 "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/cards/2025Q1/set2/2025Q1_2_3.png",
                 "name": "光之圣女",
-                "star": 5
+                "star": 4
             }
         ]
     },
@@ -64,7 +64,7 @@
                 "card_id": "2025Q1_3_3",
                 "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/cards/2025Q1/set3/2025Q1_3_3.png",
                 "name": "沙漠行者",
-                "star": 2
+                "star": 5
             }
         ]
     },

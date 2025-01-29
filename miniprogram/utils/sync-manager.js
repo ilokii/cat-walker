@@ -695,6 +695,88 @@ class SyncManager {
       throw error
     }
   }
+
+  // 增加收集等级
+  async increaseCollectionLevel() {
+    try {
+      // 更新本地数据
+      this.localData.albumData.collectionLevel += 1
+
+      // 更新云端数据
+      await this.db.collection('users').where({
+        _openid: getApp().globalData.openid
+      }).update({
+        data: {
+          'albumData.collectionLevel': this.localData.albumData.collectionLevel,
+          updateTime: this.db.serverDate()
+        }
+      })
+
+      return true
+    } catch (error) {
+      console.error('增加收集等级失败：', error)
+      return false
+    }
+  }
+
+  // 清空已收集的卡牌
+  async clearCollectedCards() {
+    try {
+      // 更新本地数据
+      this.localData.albumData.collectedCards = []
+
+      // 更新云端数据
+      await this.db.collection('users').where({
+        _openid: getApp().globalData.openid
+      }).update({
+        data: {
+          'albumData.collectedCards': [],
+          updateTime: this.db.serverDate()
+        }
+      })
+
+      return true
+    } catch (error) {
+      console.error('清空已收集卡牌失败：', error)
+      return false
+    }
+  }
+
+  // 同步数据到云端
+  async syncToCloud() {
+    try {
+      const { result } = await wx.cloud.callFunction({
+        name: 'syncUserData',
+        data: {
+          localData: this.localData
+        }
+      })
+      console.log('同步到云端成功：', result)
+      return result
+    } catch (error) {
+      console.error('同步到云端失败：', error)
+      throw error
+    }
+  }
+
+  // 添加卡牌到收集列表
+  async addCard(cardId) {
+    if (!this.localData.albumData.collectedCards.includes(cardId)) {
+      this.localData.albumData.collectedCards.push(cardId)
+      await this.saveLocalData()
+      await this.syncToCloud()
+    }
+  }
+
+  // 添加星星
+  async addStars(stars) {
+    if (!this.localData.albumData.stars) {
+      this.localData.albumData.stars = 0
+    }
+    this.localData.albumData.stars += stars
+    await this.saveLocalData()
+    await this.syncToCloud()
+  }
 }
 
 module.exports = new SyncManager() 

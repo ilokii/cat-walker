@@ -1,0 +1,8 @@
+<view class="container" bindtap="handleTap">
+  <view class="title">{{albumInfo.name}}</view>
+  <view class="reward">
+    <image class="reward-icon" src="{{rewardIcon}}" mode="aspectFit"></image>
+  </view>
+  <view class="description">恭喜！您已集齐所有套牌，这是给你的奖励！</view>
+  <view class="hint">点击继续</view>
+</view> 

@@ -1,0 +1,77 @@
+[
+    {
+        "id": 1,
+        "name": "一星卡包",
+        "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/commons/pack_1.png",
+        "quantity": 2,
+        "guaranteed": false,
+        "probability": {
+            "1": 0.8,
+            "2": 0.2,
+            "3": 0,
+            "4": 0,
+            "5": 0
+        },
+        "desc": "可以开出1星、2星的卡牌"
+    },
+    {
+        "id": 2,
+        "name": "二星卡包",
+        "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/commons/pack_2.png",
+        "quantity": 3,
+        "guaranteed": false,
+        "probability": {
+            "1": 0.6,
+            "2": 0.3,
+            "3": 0.1,
+            "4": 0,
+            "5": 0
+        },
+        "desc": "可以开出1星、2星、3星的卡牌"
+    },
+    {
+        "id": 3,
+        "name": "三星卡包",
+        "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/commons/pack_3.png",
+        "quantity": 4,
+        "guaranteed": false,
+        "probability": {
+            "1": 0.4,
+            "2": 0.4,
+            "3": 0.2,
+            "4": 0,
+            "5": 0
+        },
+        "desc": "可以开出1星、2星、3星的卡牌"
+    },
+    {
+        "id": 4,
+        "name": "四星卡包",
+        "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/commons/pack_4.png",
+        "quantity": 5,
+        "guaranteed": false,
+        "probability": {
+            "1": 0.2,
+            "2": 0.4,
+            "3": 0.3,
+            "4": 0.1,
+            "5": 0
+        },
+        "desc": "可以开出1星、2星、3星、4星的卡牌"
+    },
+    {
+        "id": 5,
+        "name": "五星卡包",
+        "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/commons/pack_5.png",
+        "quantity": 6,
+        "guaranteed": true,
+        "probability": {
+            "1": 0.2,
+            "2": 0.3,
+            "3": 0.3,
+            "4": 0.15,
+            "5": 0.05
+        },
+        "desc": "可以开出1星、2星、3星、4星、5星的卡牌，并且至少获得1张新卡"
+    }
+]

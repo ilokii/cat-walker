@@ -8,7 +8,10 @@
     "pages/werun-auth/werun-auth",
     "pages/user-init/user-init",
     "pages/album/album",
-    "pages/set-detail/set-detail"
+    "pages/set-detail/set-detail",
+    "pages/pack-open/pack-open",
+    "pages/set-complete/set-complete",
+    "pages/album-complete/album-complete"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -27,5 +30,7 @@
   "requiredPrivateInfos": [
     "getLocation",
     "chooseLocation"
-  ]
+  ],
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
 } 

@@ -1,0 +1,53 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40rpx;
+  box-sizing: border-box;
+  background: #f8f8f8;
+}
+
+.title {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 60rpx;
+  text-align: center;
+}
+
+.reward {
+  margin: 60rpx 0;
+}
+
+.reward-icon {
+  width: 400rpx;
+  height: 400rpx;
+  animation: float 3s ease-in-out infinite;
+}
+
+.description {
+  font-size: 32rpx;
+  color: #666;
+  margin: 40rpx 0;
+  text-align: center;
+}
+
+.hint {
+  font-size: 32rpx;
+  color: #666;
+  margin-top: 40rpx;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-20rpx) scale(1.05);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+} 

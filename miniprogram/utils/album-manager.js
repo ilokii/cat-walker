@@ -165,6 +165,12 @@ class AlbumManager {
     }
   }
 
+  // 检查是否已收集某张卡牌
+  hasCard(cardId) {
+    const collectedCards = syncManager.getCollectedCards()
+    return collectedCards.includes(cardId)
+  }
+
   // 获取当前收集等级
   get userCollectionLevel() {
     return syncManager.getCollectionLevel()

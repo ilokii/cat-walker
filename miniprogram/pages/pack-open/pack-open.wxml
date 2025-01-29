@@ -1,0 +1,62 @@
+<view class="container" bindtap="handleTap">
+  <view class="title">{{packInfo.name}}</view>
+  
+  <!-- 未开启状态 -->
+  <block wx:if="{{stage === 'unopened'}}">
+    <image class="pack-icon" src="{{packInfo.res}}" mode="aspectFit"></image>
+    <view class="hint">点击开启</view>
+  </block>
+  
+  <!-- 开启状态 -->
+  <block wx:if="{{stage === 'opened'}}">
+    <view class="cards-grid">
+      <block wx:for="{{openResult.cards}}" wx:key="card_id">
+        <view class="card-item">
+          <image class="card-image" src="{{item.res}}" mode="aspectFit"></image>
+          <view wx:if="{{openResult.newCards.includes(item)}}" class="new-tag">新</view>
+        </view>
+      </block>
+    </view>
+  </block>
+  
+  <!-- 转换状态 -->
+  <block wx:if="{{stage === 'converting'}}">
+    <view class="cards-grid">
+      <block wx:for="{{openResult.cards}}" wx:key="card_id">
+        <view class="card-item {{!openResult.newCards.includes(item) ? 'converting' : ''}}">
+          <block wx:if="{{openResult.newCards.includes(item)}}">
+            <image class="card-image" src="{{item.res}}" mode="aspectFit"></image>
+            <view class="new-tag">新</view>
+          </block>
+          <block wx:else>
+            <view class="star-reward">
+              <image class="star-icon" src="{{starIconPath}}" mode="aspectFit"></image>
+              <text class="star-count">×{{item.star}}</text>
+            </view>
+          </block>
+        </view>
+      </block>
+    </view>
+  </block>
+  
+  <!-- 完成状态 -->
+  <block wx:if="{{stage === 'completed'}}">
+    <view class="cards-grid">
+      <block wx:for="{{openResult.cards}}" wx:key="card_id">
+        <view class="card-item">
+          <block wx:if="{{openResult.newCards.includes(item)}}">
+            <image class="card-image" src="{{item.res}}" mode="aspectFit"></image>
+            <view class="new-tag">新</view>
+          </block>
+          <block wx:else>
+            <view class="star-reward">
+              <image class="star-icon" src="{{starIconPath}}" mode="aspectFit"></image>
+              <text class="star-count">×{{item.star}}</text>
+            </view>
+          </block>
+        </view>
+      </block>
+    </view>
+    <view class="hint">点击继续</view>
+  </block>
+</view> 
