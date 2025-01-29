@@ -6,18 +6,42 @@
   <view class="countdown">{{remainingTime}}</view>
   
   <!-- 卡册集齐奖励 -->
-  <view class="album-reward">
-    <image class="reward-badge" src="{{currentAlbum.rewards[collectionLevel]}}" mode="aspectFit"></image>
+  <view class="album-reward-container">
+    <view class="album-reward">
+      <image class="reward-badge" src="{{currentAlbum.rewards[collectionLevel]}}" mode="aspectFit"></image>
+    </view>
+    <view class="reward-tip">集齐所有卡牌将会获得勋章</view>
+  </view>
+
+  <!-- 总进度条 -->
+  <view class="total-progress-container">
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{totalProgressPercentage}}%"></view>
+      <view class="progress-text">{{totalProgress.collected}}/{{totalProgress.total}}</view>
+    </view>
   </view>
   
   <!-- 套牌列表 -->
   <scroll-view class="sets-container" scroll-y>
     <view class="sets-grid">
       <view class="set-item" wx:for="{{sets}}" wx:key="set_id" bindtap="onSetTap" data-set-id="{{item.set_id}}">
-        <image class="set-cover" src="{{item.res}}" mode="aspectFill"></image>
-        <view class="set-cover-mask"></view>
-        <view class="set-name">{{item.name}}</view>
-        <view class="set-progress">{{item.progress.collected}}/{{item.progress.total}}</view>
+        <view class="set-cover-container">
+          <image class="set-cover" 
+                 src="{{item.res}}" 
+                 mode="aspectFit"
+                 binderror="onImageError"
+                 data-set-id="{{item.set_id}}">
+          </image>
+        </view>
+        <view class="set-info">
+          <view class="set-name">{{item.name}}</view>
+          <view class="set-progress-container">
+            <view class="set-progress-bar">
+              <view class="set-progress-fill" style="width: {{item.progress.collected / item.progress.total * 100}}%"></view>
+            </view>
+            <view class="set-progress-text">{{item.progress.collected}}/{{item.progress.total}}</view>
+          </view>
+        </view>
       </view>
     </view>
   </scroll-view>
