@@ -106,17 +106,24 @@ Page({
             // 1. 更新本地数据
             const albumId = albumManager.currentAlbum.id;
             
+            // 先获取最新的云端数据
+            await syncManager.syncFromCloud();
+            
             // 更新收集的卡牌
             for (const card of openResult.newCards) {
               const setId = card.card_id.split('_').slice(0, -1).join('_');
-              syncManager.localData.albumData.collectedCards.push(card.card_id);
               
-              // 检查套牌是否集齐
-              const allSetCards = await syncManager.getAllSetCards(setId);
-              const collectedSetCards = syncManager.localData.albumData.collectedCards.filter(id => id.startsWith(setId));
-              if (allSetCards.length === collectedSetCards.length && 
-                  !syncManager.localData.albumData.completedSets.includes(setId)) {
-                syncManager.localData.albumData.completedSets.push(setId);
+              // 检查卡片是否已经在收集列表中
+              if (!syncManager.localData.albumData.collectedCards.includes(card.card_id)) {
+                syncManager.localData.albumData.collectedCards.push(card.card_id);
+                
+                // 检查套牌是否集齐
+                const allSetCards = await syncManager.getAllSetCards(setId);
+                const collectedSetCards = syncManager.localData.albumData.collectedCards.filter(id => id.startsWith(setId));
+                if (allSetCards.length === collectedSetCards.length && 
+                    !syncManager.localData.albumData.completedSets.includes(setId)) {
+                  syncManager.localData.albumData.completedSets.push(setId);
+                }
               }
             }
 
@@ -125,28 +132,34 @@ Page({
               syncManager.localData.albumData.stars += openResult.totalStars;
             }
 
-            // 2. 一次性同步到云端
-            await syncManager.syncToCloud();
+            // 2. 保存本地数据到云端
+            await syncManager.saveLocalData();
+
+            // 3. 再次从云端同步，确保数据一致
+            await syncManager.syncFromCloud();
+
           } catch (error) {
             console.error('同步数据失败：', error);
           }
 
           wx.hideLoading();
           
-          console.log('开包结果:', {
-            总卡牌数: openResult.cards.length,
-            新卡数量: openResult.newCards.length,
-            获得星星: openResult.totalStars,
-            所有卡牌: openResult.cards.map(card => ({
-              card_id: card.card_id,
-              是否新卡: openResult.newCards.some(newCard => newCard.card_id === card.card_id)
-            }))
-          });
-          
+          // 设置数据，这样isNewCard方法可以正确工作
           this.setData({
             openResult,
             stage: 'opened',
             showHint: true
+          });
+
+          // 在设置数据后再输出日志，确保isNewCard方法可用
+          console.log('开包结果:', {
+            总卡牌数: openResult.cards.length,
+            新卡数量: openResult.newCards.length,
+            获得星星: openResult.totalStars,
+            所有卡牌: openResult.cards.map((card, index) => ({
+              card_id: card.card_id,
+              是否新卡: this.isNewCard(card.card_id, index)
+            }))
           });
           break;
 

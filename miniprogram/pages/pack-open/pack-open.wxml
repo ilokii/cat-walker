@@ -12,8 +12,18 @@
     <view class="cards-grid">
       <block wx:for="{{openResult.cards}}" wx:key="card_id" wx:for-index="cardIndex">
         <view class="card-item">
-          <image class="card-image" src="{{item.res}}" mode="aspectFit"></image>
-          <view wx:if="{{isNewCard(item.card_id, cardIndex)}}" class="new-tag">新</view>
+          <view class="card-frame">
+            <image class="card-image" src="{{item.res}}" mode="aspectFit"></image>
+            <view class="card-stars">
+              <text class="star" wx:for="{{item.star}}" wx:key="*this">★</text>
+            </view>
+            <view class="card-name">{{item.name}}</view>
+            <image wx:if="{{isNewCard(item.card_id, cardIndex)}}" 
+                   class="new-tag" 
+                   src="/miniprogram/images/albums/new.png" 
+                   mode="aspectFit">
+            </image>
+          </view>
         </view>
       </block>
     </view>
