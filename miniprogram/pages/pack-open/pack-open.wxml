@@ -10,54 +10,10 @@
   <!-- 开启状态 -->
   <block wx:if="{{stage === 'opened'}}">
     <view class="cards-grid">
-      <block wx:for="{{openResult.cards}}" wx:key="card_id">
+      <block wx:for="{{openResult.cards}}" wx:key="card_id" wx:for-index="cardIndex">
         <view class="card-item">
           <image class="card-image" src="{{item.res}}" mode="aspectFit"></image>
-          <view wx:if="{{isNewCard(item.card_id)}}" class="new-tag">新</view>
-        </view>
-      </block>
-    </view>
-    <view class="hint" wx:if="{{showHint}}">点击继续</view>
-  </block>
-  
-  <!-- 转换状态 -->
-  <block wx:if="{{stage === 'converting'}}">
-    <view class="cards-grid">
-      <block wx:for="{{openResult.cards}}" wx:key="card_id">
-        <view class="card-item">
-          <block wx:if="{{isNewCard(item.card_id)}}">
-            <!-- 新卡保持原样显示 -->
-            <image class="card-image" src="{{item.res}}" mode="aspectFit"></image>
-            <view class="new-tag">新</view>
-          </block>
-          <block wx:else>
-            <!-- 重复卡转化为星星 -->
-            <view class="star-reward converting">
-              <image class="star-icon" src="{{starIconPath}}" mode="aspectFit"></image>
-              <text class="star-count">×{{item.star}}</text>
-            </view>
-          </block>
-        </view>
-      </block>
-    </view>
-    <view class="hint" wx:if="{{showHint}}">点击继续</view>
-  </block>
-  
-  <!-- 完成状态 -->
-  <block wx:if="{{stage === 'completed'}}">
-    <view class="cards-grid">
-      <block wx:for="{{openResult.cards}}" wx:key="card_id">
-        <view class="card-item">
-          <block wx:if="{{isNewCard(item.card_id)}}">
-            <image class="card-image" src="{{item.res}}" mode="aspectFit"></image>
-            <view class="new-tag">新</view>
-          </block>
-          <block wx:else>
-            <view class="star-reward">
-              <image class="star-icon" src="{{starIconPath}}" mode="aspectFit"></image>
-              <text class="star-count">×{{item.star}}</text>
-            </view>
-          </block>
+          <view wx:if="{{isNewCard(item.card_id, cardIndex)}}" class="new-tag">新</view>
         </view>
       </block>
     </view>

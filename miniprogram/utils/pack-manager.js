@@ -127,7 +127,7 @@ class PackManager {
     }
 
     console.log(`开始开启卡包: ${packInfo.name}`)
-    const currentDrawnCards = []
+    const collectedCards = new Set(syncManager.getCollectedCards())
     
     for (let i = 0; i < packInfo.quantity; i++) {
       const card = this._drawCard(packInfo)
@@ -135,22 +135,17 @@ class PackManager {
       
       result.cards.push(card)
 
-      const addResult = await syncManager.addCollectedCard(
-        albumManager.currentAlbum.id,
-        card.card_id,
-        card.card_id.split('_').slice(0, -1).join('_'),
-        currentDrawnCards
-      )
-
-      if (addResult.isNewCard) {
+      // 检查是否为新卡
+      const isNewCard = !collectedCards.has(card.card_id)
+      if (isNewCard) {
         result.newCards.push(card)
         console.log(`获得新卡: ${card.name}`)
-      } else if (addResult.isDuplicate) {
+        collectedCards.add(card.card_id) // 更新本地缓存
+      } else {
+        // 转换为星星
         result.totalStars += card.star
         console.log(`重复卡转化为${card.star}星星: ${card.name}`)
       }
-
-      currentDrawnCards.push(card.card_id)
     }
 
     // 保底机制检查
@@ -160,18 +155,8 @@ class PackManager {
       if (guaranteedCard) {
         const replacedCard = result.cards[result.cards.length - 1]
         result.cards[result.cards.length - 1] = guaranteedCard
-        
-        const addResult = await syncManager.addCollectedCard(
-          albumManager.currentAlbum.id,
-          guaranteedCard.card_id,
-          guaranteedCard.card_id.split('_').slice(0, -1).join('_'),
-          currentDrawnCards
-        )
-
-        if (addResult.isNewCard) {
-          result.newCards.push(guaranteedCard)
-          console.log(`保底获得新卡: ${guaranteedCard.name}`)
-        }
+        result.newCards.push(guaranteedCard)
+        console.log(`保底获得新卡: ${guaranteedCard.name}`)
       }
     }
 

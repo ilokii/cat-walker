@@ -1,5 +1,6 @@
 const packManager = require('../../utils/pack-manager')
 const albumManager = require('../../utils/album-manager')
+const syncManager = require('../../utils/sync-manager')
 
 // 云存储文件路径配置
 const CLOUD_PATH = {
@@ -9,46 +10,34 @@ const CLOUD_PATH = {
 Page({
   data: {
     packInfo: null,
-    stage: 'unopened', // unopened, opened, converting, completed
+    stage: 'unopened', // unopened, opened
     openResult: null,
-    completedSet: null,
-    isAlbumCompleted: false,
-    starIconPath: CLOUD_PATH.STAR,
-    showHint: true // 添加提示显示控制
+    showHint: true
   },
 
   // 判断是否为新卡
-  isNewCard: function(cardId) {
+  isNewCard: function(cardId, cardIndex) {
     if (!this.data.openResult || !this.data.openResult.newCards) {
-      console.log(`isNewCard检查失败：openResult或newCards为空`);
       return false;
     }
-    
-    console.log('当前所有新卡:', this.data.openResult.newCards.map(card => card.card_id));
-    
-    // 获取当前卡片在所有卡牌中的索引
-    const currentIndex = this.data.openResult.cards.findIndex(card => card.card_id === cardId);
-    console.log(`当前卡片 ${cardId} 在开包结果中的索引:`, currentIndex);
-    
-    // 检查在当前卡片之前是否已经出现过相同ID的卡片
-    const hasDuplicateBefore = this.data.openResult.cards
-      .slice(0, currentIndex)
-      .some(card => card.card_id === cardId);
-    
-    if (hasDuplicateBefore) {
-      console.log(`卡片 ${cardId} 在之前已经出现过，标记为重复卡`);
-      return false;
-    }
-    
-    // 如果之前没有出现过，再检查是否为新卡
-    const isNew = this.data.openResult.newCards.some(card => {
-      const match = card.card_id === cardId;
-      console.log(`比较: 当前卡片ID ${cardId} vs 新卡ID ${card.card_id}, 结果: ${match}`);
-      return match;
+
+    // 检查是否是新卡
+    const isNew = this.data.openResult.newCards.some(function(card) {
+      return card.card_id === cardId;
     });
-    
-    console.log(`最终判定卡片 ${cardId} 是否为新卡:`, isNew);
-    return isNew;
+
+    if (!isNew) {
+      return false;
+    }
+
+    // 检查在当前卡之前是否已经出现过相同的卡
+    for (let i = 0; i < cardIndex; i++) {
+      if (this.data.openResult.cards[i].card_id === cardId) {
+        return false;  // 如果之前出现过相同的卡，就不算新卡
+      }
+    }
+
+    return true;
   },
 
   async onLoad(options) {
@@ -103,9 +92,8 @@ Page({
           // 开启卡包
           const openResult = await packManager.openPack(this.data.packInfo.id);
           
-          wx.hideLoading();
-          
           if (!openResult) {
+            wx.hideLoading();
             wx.showToast({
               title: '开启失败',
               icon: 'error'
@@ -113,7 +101,39 @@ Page({
             return;
           }
 
-          console.log('开包结果详情:', {
+          // 一次性更新所有数据
+          try {
+            // 1. 更新本地数据
+            const albumId = albumManager.currentAlbum.id;
+            
+            // 更新收集的卡牌
+            for (const card of openResult.newCards) {
+              const setId = card.card_id.split('_').slice(0, -1).join('_');
+              syncManager.localData.albumData.collectedCards.push(card.card_id);
+              
+              // 检查套牌是否集齐
+              const allSetCards = await syncManager.getAllSetCards(setId);
+              const collectedSetCards = syncManager.localData.albumData.collectedCards.filter(id => id.startsWith(setId));
+              if (allSetCards.length === collectedSetCards.length && 
+                  !syncManager.localData.albumData.completedSets.includes(setId)) {
+                syncManager.localData.albumData.completedSets.push(setId);
+              }
+            }
+
+            // 更新星星数量
+            if (openResult.totalStars > 0) {
+              syncManager.localData.albumData.stars += openResult.totalStars;
+            }
+
+            // 2. 一次性同步到云端
+            await syncManager.syncToCloud();
+          } catch (error) {
+            console.error('同步数据失败：', error);
+          }
+
+          wx.hideLoading();
+          
+          console.log('开包结果:', {
             总卡牌数: openResult.cards.length,
             新卡数量: openResult.newCards.length,
             获得星星: openResult.totalStars,
@@ -131,48 +151,7 @@ Page({
           break;
 
         case 'opened':
-          console.log('进入转化阶段前的状态:', {
-            新卡列表: this.data.openResult.newCards.map(card => card.card_id),
-            所有卡牌: this.data.openResult.cards.map(card => ({
-              card_id: card.card_id,
-              是否新卡: this.isNewCard(card.card_id)
-            }))
-          });
-          
-          // 如果全是新卡，直接跳到完成状态
-          if (this.data.openResult.cards.length === this.data.openResult.newCards.length) {
-            console.log('全是新卡，跳过转化阶段');
-            this.setData({
-              stage: 'completed',
-              showHint: true
-            });
-          } else {
-            console.log('存在重复卡牌，进入转化阶段');
-            this.setData({
-              stage: 'converting',
-              showHint: true
-            });
-          }
-          break;
-
-        case 'converting':
-          console.log('转化阶段的状态:', {
-            新卡列表: this.data.openResult.newCards.map(card => card.card_id),
-            所有卡牌: this.data.openResult.cards.map(card => ({
-              card_id: card.card_id,
-              是否新卡: this.isNewCard(card.card_id)
-            }))
-          });
-          
-          console.log('转化完成，进入完成状态');
-          this.setData({
-            stage: 'completed',
-            showHint: true
-          });
-          break;
-
-        case 'completed':
-          // 返回卡包列表页
+          // 直接返回卡包列表页
           wx.navigateBack();
           break;
       }
@@ -184,32 +163,5 @@ Page({
         icon: 'error'
       });
     }
-  },
-
-  // 检查是否有集齐的套牌
-  checkCompletedSet(newCards) {
-    if (!newCards || newCards.length === 0) return null;
-
-    const currentSets = albumManager.getCurrentSets();
-    if (!currentSets || currentSets.length === 0) return null;
-
-    for (const set of currentSets) {
-      if (!set || !set.set_id) continue;
-      
-      const setCards = albumManager.getSetCards(set.set_id);
-      if (!setCards || setCards.length === 0) continue;
-
-      const userCards = albumManager.getUserCardStatus(set.set_id);
-      if (!userCards) continue;
-
-      const isCompleted = setCards.every(card => 
-        userCards.includes(card.card_id)
-      );
-      
-      if (isCompleted) {
-        return set;
-      }
-    }
-    return null;
   }
 }) 
