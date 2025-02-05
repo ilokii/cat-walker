@@ -1,9 +1,16 @@
 <view class="container" bindtap="handleTap">
   <view class="title">{{setInfo.name}}</view>
-  <image class="set-icon" src="{{setInfo.icon}}" mode="aspectFit"></image>
+  
+  <!-- Set封面 -->
+  <view class="set-cover-container">
+    <image class="set-cover" src="{{setInfo.res}}" mode="aspectFit"></image>
+  </view>
+  
+  <!-- 奖励部分 -->
   <view class="reward">
     <image class="reward-icon" src="{{setInfo.reward}}" mode="aspectFit"></image>
   </view>
+  
   <view class="description">恭喜！您已集齐该套牌，获得勋章碎片</view>
   <view class="hint">点击继续</view>
 </view> 

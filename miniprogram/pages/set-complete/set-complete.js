@@ -47,15 +47,13 @@ Page({
 
   handleTap: function() {
     if (this.data.isAlbumCompleted) {
-      // 显示卡册集齐界面
+      // 如果相册已完成，跳转到相册完成界面
       wx.navigateTo({
         url: '/pages/album-complete/album-complete'
       })
     } else {
-      // 返回主界面
-      wx.navigateBack({
-        delta: 2 // 返回两层，跳过卡包开启界面
-      })
+      // 返回到开包界面，让开包界面处理下一个完成的套牌
+      wx.navigateBack()
     }
   }
 }) 

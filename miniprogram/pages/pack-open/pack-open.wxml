@@ -10,12 +10,12 @@
   <!-- 开启状态 -->
   <block wx:if="{{stage === 'opened'}}">
     <view class="cards-grid">
-      <block wx:for="{{openResult.cards}}" wx:key="card_id" wx:for-index="cardIndex">
+      <block wx:for="{{openResult.cards}}" wx:key="cardIndex" wx:for-index="cardIndex">
         <view class="card-item">
           <view class="card-frame">
             <image class="card-image" src="{{item.res}}" mode="aspectFit"></image>
             <view class="card-stars">
-              <text class="star" wx:for="{{item.star}}" wx:key="*this">★</text>
+              <text class="star" wx:for="{{item.star}}" wx:for-item="starItem" wx:for-index="starIndex" wx:key="starIndex">★</text>
             </view>
             <view class="card-name">{{item.name}}</view>
             <image wx:if="{{isNewCard(item.card_id, cardIndex)}}" 

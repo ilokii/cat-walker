@@ -12,40 +12,44 @@ Page({
     packInfo: null,
     stage: 'unopened', // unopened, opened
     openResult: null,
-    showHint: true
+    showHint: true,
+    initialSetStatus: {}, // 记录开卡前的套牌完成状态
+    newlyCompletedSets: [], // 记录本次开卡完成的套牌
+    currentCompletedSetIndex: 0, // 当前展示的完成套牌索引
   },
 
   // 判断是否为新卡
   isNewCard: function(cardId, cardIndex) {
-    if (!this.data.openResult || !this.data.openResult.newCards) {
-      return false;
-    }
-
-    // 检查是否是新卡
-    const isNew = this.data.openResult.newCards.some(function(card) {
-      return card.card_id === cardId;
-    });
-
-    if (!isNew) {
-      return false;
-    }
-
+    if (!this.data.openResult || !this.data.openResult.newCards) return false;
+    const isNew = this.data.openResult.newCards.some(card => card.card_id === cardId);
+    if (!isNew) return false;
     // 检查在当前卡之前是否已经出现过相同的卡
     for (let i = 0; i < cardIndex; i++) {
-      if (this.data.openResult.cards[i].card_id === cardId) {
-        return false;  // 如果之前出现过相同的卡，就不算新卡
-      }
+      if (this.data.openResult.cards[i].card_id === cardId) return false;
     }
-
     return true;
+  },
+
+  // 获取所有套牌的完成状态
+  getSetCompletionStatus() {
+    const currentSets = albumManager.getCurrentSets();
+    const collectedCards = syncManager.getCollectedCards();
+    const completedSets = syncManager.getCompletedSets();
+    
+    const status = {};
+    for (const set of currentSets) {
+      const setCards = albumManager.getSetCards(set.set_id);
+      status[set.set_id] = {
+        isCompleted: setCards.every(card => collectedCards.includes(card.card_id)),
+        inCompletedList: completedSets.includes(set.set_id)
+      };
+    }
+    return status;
   },
 
   async onLoad(options) {
     if (!options || !options.id) {
-      wx.showToast({
-        title: '参数错误',
-        icon: 'error'
-      });
+      wx.showToast({ title: '参数错误', icon: 'error' });
       setTimeout(() => wx.navigateBack(), 1500);
       return;
     }
@@ -59,122 +63,132 @@ Page({
     const packInfo = packManager.getPackInfo(packId);
     
     if (!packInfo) {
-      wx.showToast({
-        title: '卡包不存在',
-        icon: 'error'
-      });
+      wx.showToast({ title: '卡包不存在', icon: 'error' });
       setTimeout(() => wx.navigateBack(), 1500);
       return;
     }
 
-    this.setData({ packInfo });
+    // 记录开卡前的套牌完成状态
+    const initialSetStatus = this.getSetCompletionStatus();
+    console.log('开卡前套牌状态:', initialSetStatus);
+
+    this.setData({ 
+      packInfo,
+      initialSetStatus
+    });
   },
 
   async handleTap() {
     try {
-      // 检查数据是否正确加载
       if (!this.data.packInfo) {
-        wx.showToast({
-          title: '卡包数据错误',
-          icon: 'error'
-        });
+        wx.showToast({ title: '卡包数据错误', icon: 'error' });
         setTimeout(() => wx.navigateBack(), 1500);
         return;
       }
 
       switch (this.data.stage) {
         case 'unopened':
-          wx.showLoading({
-            title: '开启中...',
-            mask: true
-          });
+          wx.showLoading({ title: '开启中...', mask: true });
 
           // 开启卡包
           const openResult = await packManager.openPack(this.data.packInfo.id);
-          
           if (!openResult) {
             wx.hideLoading();
-            wx.showToast({
-              title: '开启失败',
-              icon: 'error'
-            });
+            wx.showToast({ title: '开启失败', icon: 'error' });
             return;
           }
 
-          // 一次性更新所有数据
           try {
             // 1. 更新本地数据
-            const albumId = albumManager.currentAlbum.id;
-            
-            // 先获取最新的云端数据
             await syncManager.syncFromCloud();
             
-            // 更新收集的卡牌
+            // 2. 更新收集的卡牌
             for (const card of openResult.newCards) {
-              const setId = card.card_id.split('_').slice(0, -1).join('_');
-              
-              // 检查卡片是否已经在收集列表中
               if (!syncManager.localData.albumData.collectedCards.includes(card.card_id)) {
                 syncManager.localData.albumData.collectedCards.push(card.card_id);
-                
-                // 检查套牌是否集齐
-                const allSetCards = await syncManager.getAllSetCards(setId);
-                const collectedSetCards = syncManager.localData.albumData.collectedCards.filter(id => id.startsWith(setId));
-                if (allSetCards.length === collectedSetCards.length && 
-                    !syncManager.localData.albumData.completedSets.includes(setId)) {
+              }
+            }
+
+            // 3. 更新星星数量
+            if (openResult.totalStars > 0) {
+              syncManager.localData.albumData.stars += openResult.totalStars;
+            }
+
+            // 4. 获取开卡后的套牌状态
+            const currentSetStatus = this.getSetCompletionStatus();
+            console.log('开卡后套牌状态:', currentSetStatus);
+
+            // 5. 找出新完成的套牌
+            const newlyCompletedSets = [];
+            const currentSets = albumManager.getCurrentSets();
+            
+            for (const set of currentSets) {
+              const setId = set.set_id;
+              // 只判断套牌是否从未完成变为完成，不考虑是否在完成列表中
+              if (!this.data.initialSetStatus[setId].isCompleted && 
+                  currentSetStatus[setId].isCompleted) {
+                newlyCompletedSets.push(setId);
+                // 将新完成的套牌添加到完成列表（如果还不在列表中）
+                if (!syncManager.localData.albumData.completedSets.includes(setId)) {
                   syncManager.localData.albumData.completedSets.push(setId);
                 }
               }
             }
 
-            // 更新星星数量
-            if (openResult.totalStars > 0) {
-              syncManager.localData.albumData.stars += openResult.totalStars;
-            }
-
-            // 2. 保存本地数据到云端
+            // 6. 保存数据到云端
             await syncManager.saveLocalData();
-
-            // 3. 再次从云端同步，确保数据一致
             await syncManager.syncFromCloud();
+
+            console.log('新完成的套牌:', newlyCompletedSets);
+
+            wx.hideLoading();
+          
+            this.setData({
+              openResult,
+              stage: 'opened',
+              showHint: true,
+              newlyCompletedSets,
+              currentCompletedSetIndex: 0
+            }, () => {
+              console.log('页面数据更新完成:', {
+                newlyCompletedSets: this.data.newlyCompletedSets,
+                currentIndex: this.data.currentCompletedSetIndex
+              });
+            });
 
           } catch (error) {
             console.error('同步数据失败：', error);
           }
-
-          wx.hideLoading();
-          
-          // 设置数据，这样isNewCard方法可以正确工作
-          this.setData({
-            openResult,
-            stage: 'opened',
-            showHint: true
-          });
-
-          // 在设置数据后再输出日志，确保isNewCard方法可用
-          console.log('开包结果:', {
-            总卡牌数: openResult.cards.length,
-            新卡数量: openResult.newCards.length,
-            获得星星: openResult.totalStars,
-            所有卡牌: openResult.cards.map((card, index) => ({
-              card_id: card.card_id,
-              是否新卡: this.isNewCard(card.card_id, index)
-            }))
-          });
           break;
 
         case 'opened':
-          // 直接返回卡包列表页
-          wx.navigateBack();
+          // 处理套牌完成界面的展示
+          if (this.data.newlyCompletedSets.length > 0 && 
+              this.data.currentCompletedSetIndex < this.data.newlyCompletedSets.length) {
+            const currentSetId = this.data.newlyCompletedSets[this.data.currentCompletedSetIndex];
+            console.log('准备展示套牌完成界面:', currentSetId);
+            
+            wx.navigateTo({
+              url: `/pages/set-complete/set-complete?setId=${currentSetId}`,
+              success: () => {
+                console.log('跳转到套牌完成页面成功');
+                // 更新索引为下一个要展示的套牌
+                this.setData({
+                  currentCompletedSetIndex: this.data.currentCompletedSetIndex + 1
+                });
+              },
+              fail: (err) => console.error('跳转到套牌完成页面失败:', err)
+            });
+          } else {
+            console.log('没有新完成的套牌，直接返回');
+            wx.navigateBack();
+          }
           break;
       }
     } catch (error) {
       console.error('开启卡包失败：', error);
       wx.hideLoading();
-      wx.showToast({
-        title: '开启失败',
-        icon: 'error'
-      });
+      wx.showToast({ title: '开启失败', icon: 'error' });
     }
   }
 }) 
