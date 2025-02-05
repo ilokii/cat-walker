@@ -115,13 +115,22 @@ class AlbumManager {
 
   // 确定当前赛季
   determineCurrentAlbum() {
+    console.log('开始确定当前赛季...')
     const now = Math.floor(Date.now() / 1000)
+    console.log('当前时间戳:', now)
+    
     this.currentAlbum = this.albumData.albums.find(
       album => now >= album.start_time && now <= album.end_time
     )
+    console.log('找到的当前赛季:', this.currentAlbum)
+    
     if (this.currentAlbum) {
+      console.log('正在初始化赛季数据:', this.currentAlbum.id)
       // 如果找到当前赛季，初始化赛季数据，但不保存
       syncManager.initSeasonData(this.currentAlbum.id, false)
+      console.log('赛季数据初始化完成')
+    } else {
+      console.log('未找到当前赛季')
     }
     return this.currentAlbum
   }

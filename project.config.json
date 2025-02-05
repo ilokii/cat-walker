@@ -1,9 +1,5 @@
 {
   "description": "小猫计步器 - 用步数丈量中国",
-  "packOptions": {
-    "ignore": [],
-    "include": []
-  },
   "miniprogramRoot": "miniprogram/",
   "cloudfunctionRoot": "cloudfunctions/",
   "setting": {
@@ -38,21 +34,25 @@
       "ignore": [],
       "disablePlugins": [],
       "outputPath": ""
-    }
+    },
+    "packNpmRelationList": []
   },
   "compileType": "miniprogram",
-  "libVersion": "3.7.3",
-  "appid": "wxf9c8052ea783be1c",
-  "projectname": "cat-pedometer",
   "condition": {},
   "srcMiniprogramRoot": "miniprogram/",
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
-  "scripts": {
-    "beforeUpload": "npm run tsc"
-  },
   "cloudbaseRoot": "cloudbase/",
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
+  },
+  "libVersion": "3.7.7",
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "appid": "wxf9c8052ea783be1c",
+  "scripts": {
+    "beforeUpload": "npm run tsc"
   }
 }
