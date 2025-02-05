@@ -817,6 +817,39 @@ class SyncManager {
   getStars() {
     return this.localData.albumData.stars || 0
   }
+
+  // 重置赛季数据
+  async resetSeasonData() {
+    try {
+      console.log('开始重置赛季数据...')
+      console.log('重置前状态:', {
+        collectedCards: this.localData.albumData.collectedCards.length,
+        completedSets: this.localData.albumData.completedSets.length,
+        collectionLevel: this.localData.albumData.collectionLevel
+      })
+
+      // 重置所有相关数据
+      this.localData.albumData.collectedCards = []
+      this.localData.albumData.completedSets = []
+      this.localData.albumData.collectionLevel = 1
+      this.localData.albumData.currentSeasonId = ''
+
+      console.log('重置后状态:', {
+        collectedCards: this.localData.albumData.collectedCards.length,
+        completedSets: this.localData.albumData.completedSets.length,
+        collectionLevel: this.localData.albumData.collectionLevel
+      })
+
+      // 保存到云端
+      await this.saveLocalData()
+      await this.syncFromCloud()
+
+      return true
+    } catch (error) {
+      console.error('重置赛季数据失败：', error)
+      return false
+    }
+  }
 }
 
 module.exports = new SyncManager() 

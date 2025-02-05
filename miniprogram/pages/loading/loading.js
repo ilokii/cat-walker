@@ -46,6 +46,10 @@ Page({
       const initResult = await albumManager.init()
       console.log('卡册管理器初始化结果:', initResult)
 
+      // 检查赛季是否结束
+      console.log('检查赛季状态...')
+      await albumManager.checkSeasonEnd()
+
       // 标记初始化完成
       app.globalData.isInitialized = true
       console.log('全局初始化标记设置完成')

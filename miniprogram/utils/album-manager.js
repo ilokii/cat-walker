@@ -230,6 +230,42 @@ class AlbumManager {
   getSeasonCollectionLevel(seasonId) {
     return syncManager.getCollectionLevel(seasonId)
   }
+
+  // 检查赛季是否结束
+  async checkSeasonEnd() {
+    console.log('检查赛季是否结束...')
+    if (!this.currentAlbum) {
+      console.log('当前没有进行中的赛季')
+      return false
+    }
+    
+    const now = Math.floor(Date.now() / 1000)
+    console.log('当前时间:', now)
+    console.log('赛季结束时间:', this.currentAlbum.end_time)
+    
+    if (now > this.currentAlbum.end_time) {
+      console.log('赛季已结束，开始处理...')
+      
+      // 1. 清空当前收集数据
+      await syncManager.resetSeasonData()
+      
+      // 2. 重新确定当前赛季
+      this.determineCurrentAlbum()
+      
+      // 3. 如果有新赛季，初始化新赛季数据
+      if (this.currentAlbum) {
+        console.log('发现新赛季:', this.currentAlbum.id)
+        await syncManager.initSeasonData(this.currentAlbum.id, true)
+        return true
+      } else {
+        console.log('没有找到新赛季')
+        return false
+      }
+    }
+    
+    console.log('赛季仍在进行中')
+    return false
+  }
 }
 
 // 创建单例实例

@@ -82,8 +82,6 @@ Page({
 
   async initManagers() {
     try {
-      // 初始化相册管理器
-      await albumManager.init()
       // 初始化卡包管理器
       await packManager.init()
       // 加载卡包数据

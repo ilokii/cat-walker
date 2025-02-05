@@ -18,6 +18,14 @@ Page({
     this.loadAlbumData();
   },
 
+  onShow() {
+    console.log('album onShow')
+    // 检查赛季是否结束
+    albumManager.checkSeasonEnd()
+    // 刷新数据
+    this.refreshData()
+  },
+
   loadAlbumData() {
     // 获取当前赛季卡册
     const currentAlbum = albumManager.currentAlbum;
