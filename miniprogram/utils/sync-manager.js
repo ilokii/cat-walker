@@ -21,7 +21,7 @@ const defaultLocalData = {
   albumData: {
     currentSeasonId: '', // 当前赛季ID
     collectedCards: [], // 已收集的卡牌id列表
-    completedSets: [], // 已完成的套牌id列表
+    completedSets: [], // 已完成的套牌id列表，移除null默认值
     collectionLevel: 1, // 当前收集等级
     stars: 0 // 当前星星数量
   }
@@ -640,24 +640,46 @@ class SyncManager {
       const setsData = await this.readJSONFile(tempFilePath)
       const seasonSets = setsData.find(sets => sets.id === this.localData.albumData.currentSeasonId)
       
-      if (seasonSets && this.localData.albumData.completedSets.length === seasonSets.sets.length) {
+      // 过滤掉null值并比较长度
+      const validCompletedSets = this.localData.albumData.completedSets.filter(Boolean)
+      
+      if (seasonSets && validCompletedSets.length === seasonSets.sets.length) {
         // 所有套牌都已集齐，可以升级
         if (this.localData.albumData.collectionLevel < 3) { // 最高3级
+          console.log('开始升级收集等级...')
+          console.log('升级前状态:', {
+            level: this.localData.albumData.collectionLevel,
+            collectedCards: this.localData.albumData.collectedCards.length,
+            completedSets: validCompletedSets.length
+          })
+
+          // 1. 提升收集等级
           this.localData.albumData.collectionLevel++
-          this.localData.albumData.collectedCards = [] // 重置收集进度
-          this.localData.albumData.completedSets = [] // 重置完成套牌
+
+          // 2. 清除所有已收集的卡牌
+          this.localData.albumData.collectedCards = []
+
+          // 3. 清除所有已完成的套牌
+          this.localData.albumData.completedSets = []
+
+          console.log('升级后状态:', {
+            level: this.localData.albumData.collectionLevel,
+            collectedCards: this.localData.albumData.collectedCards.length,
+            completedSets: this.localData.albumData.completedSets.length
+          })
           
+          // 保存更新后的数据
           await this.saveLocalData()
-          await this.syncToCloud()
+          await this.syncFromCloud()
           
           return true
         }
       }
+      return false
     } catch (error) {
       console.error('检查收集等级升级失败：', error)
+      return false
     }
-    
-    return false
   }
 
   // 获取收集等级

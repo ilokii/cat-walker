@@ -8,6 +8,7 @@ Page({
   },
 
   onLoad: async function(options) {
+    console.log('set-complete onLoad开始，参数:', options)
     const { setId } = options
     if (!setId) {
       wx.showToast({
@@ -18,6 +19,11 @@ Page({
     }
 
     const currentSets = albumManager.getCurrentSets()
+    console.log('当前所有套牌:', currentSets.map(set => ({
+      set_id: set.set_id,
+      name: set.name
+    })))
+
     const setInfo = currentSets.find(set => set.set_id === setId)
     if (!setInfo) {
       wx.showToast({
@@ -28,15 +34,36 @@ Page({
     }
 
     // 检查是否集齐整个卡册
+    const collectedCards = syncManager.getCollectedCards()
+    console.log('已收集的卡牌数量:', collectedCards.length)
+    console.log('已收集的卡牌:', collectedCards)
+
+    const completedSets = syncManager.getCompletedSets()
+    console.log('已完成的套牌:', completedSets)
+
+    // 检查每个套牌的完成状态
+    const setCompletionStatus = {}
     const isAlbumCompleted = currentSets.every(set => {
       const setCards = albumManager.getSetCards(set.set_id)
-      const collectedCards = syncManager.getCollectedCards()
-      return setCards.every(card => collectedCards.includes(card.card_id))
+      const isSetCompleted = setCards.every(card => collectedCards.includes(card.card_id))
+      setCompletionStatus[set.set_id] = {
+        total: setCards.length,
+        collected: setCards.filter(card => collectedCards.includes(card.card_id)).length,
+        isCompleted: isSetCompleted
+      }
+      return isSetCompleted
     })
+
+    console.log('各套牌完成状态:', setCompletionStatus)
+    console.log('整个卡册是否完成:', isAlbumCompleted)
 
     // 如果所有套牌都集齐了，检查是否可以升级
     if (isAlbumCompleted) {
-      await syncManager.checkCollectionLevelUp()
+      console.log('开始检查是否可以升级...')
+      const currentLevel = syncManager.getCollectionLevel()
+      console.log('当前收集等级:', currentLevel)
+      const result = await syncManager.checkCollectionLevelUp()
+      console.log('升级检查结果:', result)
     }
 
     this.setData({

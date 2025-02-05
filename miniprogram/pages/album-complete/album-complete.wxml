@@ -4,5 +4,6 @@
     <image class="reward-icon" src="{{rewardIcon}}" mode="aspectFit"></image>
   </view>
   <view class="description">恭喜！您已集齐所有套牌，这是给你的奖励！</view>
+  <view class="description">接下来会开始新一轮的收集，你将获得更好看的徽章！</view>
   <view class="hint">点击继续</view>
 </view> 
