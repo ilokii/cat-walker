@@ -18,8 +18,9 @@
 .login-btn {
   width: 400rpx;
   height: 100rpx;
-  line-height: 100rpx;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: #4CAF50;
   color: white;
   border-radius: 50rpx;

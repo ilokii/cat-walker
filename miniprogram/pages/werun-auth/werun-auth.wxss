@@ -25,7 +25,9 @@
 .auth-btn {
   width: 80%;
   height: 88rpx;
-  line-height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 44rpx;
   background: #07c160;
   color: #fff;
