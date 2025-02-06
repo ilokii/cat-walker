@@ -3,52 +3,98 @@ const syncManager = require('../utils/sync-manager')
 
 class DailyTaskManager {
   constructor() {
+    console.log('每日任务管理器 - 构造函数')
     this.todaySteps = 0
     this.todayKm = 0
     this.completedTasks = new Set()
     this.lastCompletedDate = null
+    this.isInitialized = false
   }
 
   // 初始化每日任务数据
   async initialize() {
-    await this.loadCompletedTasks()
-    await this.checkAndResetDaily()
-    await this.updateTodaySteps()
+    if (this.isInitialized) {
+      console.log('每日任务管理器 - 已经初始化过，跳过初始化')
+      return
+    }
+
+    console.log('每日任务管理器 - 开始初始化')
+    try {
+      await this.loadCompletedTasks()
+      await this.checkAndResetDaily()
+      await this.updateTodaySteps()
+      this.isInitialized = true
+      console.log('每日任务管理器 - 初始化完成:', {
+        todaySteps: this.todaySteps,
+        todayKm: this.todayKm,
+        completedTasks: Array.from(this.completedTasks),
+        lastCompletedDate: this.lastCompletedDate
+      })
+    } catch (error) {
+      console.error('每日任务管理器 - 初始化失败:', error)
+      throw error
+    }
   }
 
   // 加载已完成的任务
   async loadCompletedTasks() {
+    console.log('每日任务管理器 - 开始加载已完成任务')
     try {
       const storage = wx.getStorageSync('dailyTasks') || {}
       this.completedTasks = new Set(storage.completedTasks || [])
       this.lastCompletedDate = storage.lastCompletedDate
+      console.log('每日任务管理器 - 加载已完成任务成功:', {
+        completedTasks: Array.from(this.completedTasks),
+        lastCompletedDate: this.lastCompletedDate
+      })
     } catch (error) {
-      console.error('加载每日任务数据失败：', error)
+      console.error('每日任务管理器 - 加载已完成任务失败:', error)
+      throw error
     }
   }
 
   // 检查并重置每日任务
   async checkAndResetDaily() {
+    console.log('每日任务管理器 - 开始检查是否需要重置')
     const today = new Date().toDateString()
     if (this.lastCompletedDate !== today) {
+      console.log('每日任务管理器 - 需要重置任务:', {
+        lastCompletedDate: this.lastCompletedDate,
+        today: today
+      })
       this.completedTasks.clear()
       this.lastCompletedDate = today
       await this.saveCompletedTasks()
+      console.log('每日任务管理器 - 重置完成')
+    } else {
+      console.log('每日任务管理器 - 不需要重置')
     }
   }
 
   // 更新今日步数
   async updateTodaySteps() {
+    console.log('每日任务管理器 - 开始更新今日步数')
     try {
       const weRunData = await syncManager.getWeRunData()
+      console.log('每日任务管理器 - 获取微信运动数据:', weRunData)
+      
       if (weRunData && weRunData.length > 0) {
-        // 获取最后一条数据（今日数据）
         const todayData = weRunData[weRunData.length - 1]
+        console.log('每日任务管理器 - 今日步数数据:', todayData)
+        
         this.todaySteps = todayData.step
         this.todayKm = (this.todaySteps * 0.7 / 1000).toFixed(2) // 按照0.7米/步计算
+        
+        console.log('每日任务管理器 - 更新步数完成:', {
+          todaySteps: this.todaySteps,
+          todayKm: this.todayKm
+        })
+      } else {
+        console.warn('每日任务管理器 - 未获取到步数数据')
       }
     } catch (error) {
-      console.error('获取今日步数失败：', error)
+      console.error('每日任务管理器 - 更新今日步数失败:', error)
+      throw error
     }
   }
 

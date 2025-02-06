@@ -1,5 +1,6 @@
 const syncManager = require('../../utils/sync-manager')
 const albumManager = require('../../utils/album-manager')
+const dailyTaskManager = require('../../managers/daily-task-manager')
 
 Page({
   data: {
@@ -76,6 +77,12 @@ Page({
       console.log('正在处理微信运动数据...')
       await syncManager.handleWeRunData()
       console.log('微信运动数据处理完成')
+
+      // 初始化每日任务
+      this.setData({ loadingText: '正在初始化每日任务...' })
+      console.log('正在初始化每日任务...')
+      await dailyTaskManager.initialize()
+      console.log('每日任务初始化完成')
 
       // 更新最后刷新时间
       syncManager.updateLastRefreshTime()
