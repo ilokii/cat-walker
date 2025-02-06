@@ -10,16 +10,19 @@ const CLOUD_PATH = {
 
 class PackManager {
   constructor() {
+    console.log('卡包管理器 - 构造函数')
     this.packsData = null
   }
 
   // 初始化卡包数据
   async init() {
+    console.log('卡包管理器 - 开始初始化')
     try {
       await this.loadPacksData()
+      console.log('卡包管理器 - 初始化完成')
       return true
     } catch (error) {
-      console.error('初始化卡包数据失败：', error)
+      console.error('卡包管理器 - 初始化失败：', error)
       return false
     }
   }
@@ -45,20 +48,22 @@ class PackManager {
 
   // 加载卡包数据
   async loadPacksData() {
+    console.log('卡包管理器 - 开始加载卡包数据')
     try {
       const { tempFilePath } = await wx.cloud.downloadFile({
         fileID: CLOUD_PATH.PACKS
       })
       this.packsData = await this.readJSONFile(tempFilePath)
+      console.log('卡包管理器 - 加载卡包数据成功:', this.packsData)
     } catch (error) {
-      console.error('加载卡包数据失败：', error)
+      console.error('卡包管理器 - 加载卡包数据失败：', error)
       throw error
     }
   }
 
   // 获取卡包信息
   getPackInfo(packId) {
-    return this.packsData.find(pack => pack.id === packId)
+    return this.packsData?.find(pack => pack.id === packId)
   }
 
   // 随机选择星级
@@ -86,7 +91,7 @@ class PackManager {
     })
     
     if (allCards.length === 0) {
-      console.warn(`没有找到${rarity}星级的卡牌`)
+      console.warn(`卡包管理器 - 没有找到${rarity}星级的卡牌`)
       return null
     }
     
@@ -96,6 +101,7 @@ class PackManager {
 
   // 获取用户未收集的卡牌
   _getUncollectedCards() {
+    console.log('卡包管理器 - 获取未收集的卡牌')
     const currentSets = albumManager.getCurrentSets()
     const collectedCards = syncManager.getCollectedCards()
     const uncollectedCards = []
@@ -109,58 +115,67 @@ class PackManager {
       })
     })
     
+    console.log('卡包管理器 - 未收集的卡牌数量:', uncollectedCards.length)
     return uncollectedCards
   }
 
   // 开启卡包
   async openPack(packId) {
-    const packInfo = this.packsData.find(pack => pack.id === packId)
+    console.log('卡包管理器 - 开始开启卡包:', packId)
+    const packInfo = this.getPackInfo(packId)
     if (!packInfo) {
-      console.error('未找到卡包信息:', packId)
+      console.error('卡包管理器 - 未找到卡包信息:', packId)
       return null
     }
 
     const result = {
+      cards: [],
       newCards: [],
-      totalStars: 0,
-      cards: []
+      totalStars: 0
     }
 
-    console.log(`开始开启卡包: ${packInfo.name}`)
+    console.log(`卡包管理器 - 开始开启卡包: ${packInfo.name}`)
     const collectedCards = new Set(syncManager.getCollectedCards())
     
     for (let i = 0; i < packInfo.quantity; i++) {
-      const card = this._drawCard(packInfo)
-      if (!card) continue
+      let card
       
-      result.cards.push(card)
+      // 检查是否需要保底
+      if (packInfo.guaranteed && i === packInfo.quantity - 1 && result.newCards.length === 0) {
+        console.log('卡包管理器 - 触发保底机制')
+        card = await this._drawNewCard()
+        if (!card) {
+          card = this._drawCard(packInfo)
+        }
+      } else {
+        card = this._drawCard(packInfo)
+      }
+
+      if (!card) continue
 
       // 检查是否为新卡
       const isNewCard = !collectedCards.has(card.card_id)
       if (isNewCard) {
         result.newCards.push(card)
-        console.log(`获得新卡: ${card.name}`)
-        collectedCards.add(card.card_id) // 更新本地缓存
+        console.log(`卡包管理器 - 获得新卡: ${card.name}`)
+        // 同步新卡到云端
+        await albumManager.addCard(card.card_id, card.card_id.split('_').slice(0, -1).join('_'))
+        collectedCards.add(card.card_id)
       } else {
         // 转换为星星
         result.totalStars += card.star
-        console.log(`重复卡转化为${card.star}星星: ${card.name}`)
+        console.log(`卡包管理器 - 重复卡转化为${card.star}星星: ${card.name}`)
       }
+
+      result.cards.push(card)
     }
 
-    // 保底机制检查
-    if (result.newCards.length === 0 && packInfo.guaranteed) {
-      console.log('触发保底机制')
-      const guaranteedCard = this._drawNewCard()
-      if (guaranteedCard) {
-        const replacedCard = result.cards[result.cards.length - 1]
-        result.cards[result.cards.length - 1] = guaranteedCard
-        result.newCards.push(guaranteedCard)
-        console.log(`保底获得新卡: ${guaranteedCard.name}`)
-      }
+    // 同步星星到云端
+    if (result.totalStars > 0) {
+      await syncManager.addStars(result.totalStars)
     }
 
-    console.log(`开包完成，获得${result.newCards.length}张新卡，${result.totalStars}颗星星`)
+    console.log(`卡包管理器 - 开包完成，获得${result.newCards.length}张新卡，${result.totalStars}颗星星`)
     return result
   }
 
@@ -176,21 +191,21 @@ class PackManager {
   }
 
   // 抽取一张新卡（用于保底机制）
-  _drawNewCard(packInfo) {
-    console.log('开始抽取保底新卡')
+  _drawNewCard() {
+    console.log('卡包管理器 - 开始抽取保底新卡')
     // 获取所有未收集的卡牌
     const uncollectedCards = this._getUncollectedCards()
-    console.log('未收集的卡牌:', uncollectedCards)
+    console.log('卡包管理器 - 未收集的卡牌:', uncollectedCards)
     
     if (uncollectedCards.length === 0) {
-      console.warn('没有未收集的卡牌')
+      console.warn('卡包管理器 - 没有未收集的卡牌')
       return null
     }
     
     // 随机选择一张未收集的卡牌
     const randomIndex = Math.floor(Math.random() * uncollectedCards.length)
     const selectedCard = uncollectedCards[randomIndex]
-    console.log('选中的保底新卡:', selectedCard)
+    console.log('卡包管理器 - 选中的保底新卡:', selectedCard)
     return selectedCard
   }
 

@@ -1,5 +1,5 @@
-const dailyTaskManager = require('../../managers/daily-task-manager')
-const packManager = require('../../managers/pack-manager')
+const dailyTaskManager = require('../../utils/daily-task-manager')
+const packManager = require('../../utils/pack-manager')
 
 Component({
   properties: {},

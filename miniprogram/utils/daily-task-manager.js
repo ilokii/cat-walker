@@ -1,5 +1,5 @@
 const dailyTasks = require('../data/dailyTasks')
-const syncManager = require('../utils/sync-manager')
+const syncManager = require('./sync-manager')
 
 class DailyTaskManager {
   constructor() {

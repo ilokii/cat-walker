@@ -1,6 +1,6 @@
 const syncManager = require('../../utils/sync-manager')
 const albumManager = require('../../utils/album-manager')
-const dailyTaskManager = require('../../managers/daily-task-manager')
+const dailyTaskManager = require('../../utils/daily-task-manager')
 
 Page({
   data: {
