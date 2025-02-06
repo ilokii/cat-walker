@@ -137,11 +137,9 @@ Page({
             
             for (const set of currentSets) {
               const setId = set.set_id;
-              // 只判断套牌是否从未完成变为完成，不考虑是否在完成列表中
               if (!this.data.initialSetStatus[setId].isCompleted && 
                   currentSetStatus[setId].isCompleted) {
                 newlyCompletedSets.push(setId);
-                // 将新完成的套牌添加到完成列表（如果还不在列表中）
                 if (!syncManager.localData.albumData.completedSets.includes(setId)) {
                   syncManager.localData.albumData.completedSets.push(setId);
                 }
@@ -152,7 +150,14 @@ Page({
             await syncManager.saveLocalData();
             await syncManager.syncFromCloud();
 
-            console.log('新完成的套牌:', newlyCompletedSets);
+            // 7. 如果是从每日任务来的，标记任务完成
+            if (this.data.taskId) {
+              console.log('卡包开启页面 - 标记任务完成:', this.data.taskId)
+              const taskResult = await dailyTaskManager.claimTaskReward(this.data.taskId)
+              if (!taskResult.success) {
+                console.error('卡包开启页面 - 标记任务完成失败:', taskResult.message)
+              }
+            }
 
             wx.hideLoading();
           
@@ -163,14 +168,17 @@ Page({
               newlyCompletedSets,
               currentCompletedSetIndex: 0
             }, () => {
-              console.log('页面数据更新完成:', {
-                newlyCompletedSets: this.data.newlyCompletedSets,
-                currentIndex: this.data.currentCompletedSetIndex
-              });
+              // 通知主页更新UI
+              const eventChannel = this.getOpenerEventChannel()
+              if (eventChannel && eventChannel.emit) {
+                eventChannel.emit('packOpenSuccess')
+              }
             });
 
           } catch (error) {
             console.error('同步数据失败：', error);
+            wx.hideLoading();
+            wx.showToast({ title: '同步失败', icon: 'error' });
           }
           break;
 
@@ -179,13 +187,9 @@ Page({
           if (this.data.newlyCompletedSets.length > 0 && 
               this.data.currentCompletedSetIndex < this.data.newlyCompletedSets.length) {
             const currentSetId = this.data.newlyCompletedSets[this.data.currentCompletedSetIndex];
-            console.log('准备展示套牌完成界面:', currentSetId);
-            
             wx.navigateTo({
               url: `/pages/set-complete/set-complete?setId=${currentSetId}`,
               success: () => {
-                console.log('跳转到套牌完成页面成功');
-                // 更新索引为下一个要展示的套牌
                 this.setData({
                   currentCompletedSetIndex: this.data.currentCompletedSetIndex + 1
                 });
@@ -193,7 +197,6 @@ Page({
               fail: (err) => console.error('跳转到套牌完成页面失败:', err)
             });
           } else {
-            console.log('没有新完成的套牌，直接返回');
             wx.navigateBack();
           }
           break;

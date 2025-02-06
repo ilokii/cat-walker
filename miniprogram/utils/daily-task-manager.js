@@ -40,9 +40,17 @@ class DailyTaskManager {
   async loadCompletedTasks() {
     console.log('每日任务管理器 - 开始加载已完成任务')
     try {
+      // 从本地存储加载数据
       const storage = wx.getStorageSync('dailyTasks') || {}
-      this.completedTasks = new Set(storage.completedTasks || [])
-      this.lastCompletedDate = storage.lastCompletedDate
+      
+      // 从云端同步数据
+      const localData = syncManager.getLocalData()
+      const cloudData = localData.dailyTasks || {}
+      
+      // 使用云端数据，如果没有则使用本地数据
+      this.completedTasks = new Set(cloudData.completedTasks || storage.completedTasks || [])
+      this.lastCompletedDate = cloudData.lastCompletedDate || storage.lastCompletedDate
+
       console.log('每日任务管理器 - 加载已完成任务成功:', {
         completedTasks: Array.from(this.completedTasks),
         lastCompletedDate: this.lastCompletedDate
@@ -122,6 +130,7 @@ class DailyTaskManager {
 
   // 领取任务奖励
   async claimTaskReward(taskId) {
+    console.log('每日任务管理器 - 开始领取任务奖励:', taskId)
     const status = this.checkTaskStatus(taskId)
     if (status !== 'available') {
       return {
@@ -133,17 +142,22 @@ class DailyTaskManager {
     try {
       const task = dailyTasks.find(t => t.id === taskId)
       this.completedTasks.add(taskId)
+      this.lastCompletedDate = new Date().toDateString()
+      
+      // 保存到本地和云端
       await this.saveCompletedTasks()
       
-      // 同步到云端
-      await this.syncToCloud()
+      console.log('每日任务管理器 - 领取任务奖励成功:', {
+        taskId,
+        reward: task.reward
+      })
       
       return {
         success: true,
         reward: task.reward
       }
     } catch (error) {
-      console.error('领取奖励失败：', error)
+      console.error('每日任务管理器 - 领取奖励失败:', error)
       return {
         success: false,
         message: '领取奖励失败，请稍后重试'
@@ -151,15 +165,31 @@ class DailyTaskManager {
     }
   }
 
-  // 保存完成的任务到本地
+  // 保存完成的任务到本地和云端
   async saveCompletedTasks() {
     try {
+      // 保存到本地存储
       wx.setStorageSync('dailyTasks', {
         completedTasks: Array.from(this.completedTasks),
         lastCompletedDate: this.lastCompletedDate
       })
+
+      // 更新syncManager中的数据
+      syncManager.localData.dailyTasks = {
+        completedTasks: Array.from(this.completedTasks),
+        lastCompletedDate: this.lastCompletedDate
+      }
+
+      // 保存到云端
+      await syncManager.saveLocalData()
+      
+      console.log('每日任务管理器 - 保存任务数据成功:', {
+        completedTasks: Array.from(this.completedTasks),
+        lastCompletedDate: this.lastCompletedDate
+      })
     } catch (error) {
-      console.error('保存每日任务数据失败：', error)
+      console.error('每日任务管理器 - 保存任务数据失败:', error)
+      throw error
     }
   }
 
