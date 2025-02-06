@@ -103,20 +103,46 @@ Component({
       const { taskId } = e.currentTarget.dataset
       console.log('每日任务组件 - 点击任务:', taskId)
 
-      const result = await dailyTaskManager.claimTaskReward(taskId)
-      console.log('每日任务组件 - 领取结果:', result)
+      const status = dailyTaskManager.checkTaskStatus(taskId)
+      console.log('每日任务组件 - 任务状态:', status)
 
-      if (!result.success) {
+      if (status === 'locked') {
         wx.showToast({
-          title: result.message,
+          title: '你尚未完成该任务，请继续走路吧',
           icon: 'none'
         })
         return
       }
 
-      // 打开卡包
-      await packManager.openPack(result.reward)
-      this.updateUI()
+      if (status === 'completed') {
+        wx.showToast({
+          title: '该奖励已经领取，请明天再来吧',
+          icon: 'none'
+        })
+        return
+      }
+
+      if (status === 'available') {
+        const task = dailyTaskManager.getTask(taskId)
+        if (!task) {
+          console.error('每日任务组件 - 未找到任务:', taskId)
+          return
+        }
+
+        // 跳转到卡包开启页面
+        wx.navigateTo({
+          url: `/pages/pack-open/pack-open?id=${task.reward}&taskId=${taskId}`,
+          events: {
+            // 监听卡包开启成功事件
+            packOpenSuccess: () => {
+              console.log('每日任务组件 - 收到卡包开启成功事件')
+              this.updateUI()
+            }
+          },
+          success: () => console.log('每日任务组件 - 跳转到卡包开启页面'),
+          fail: error => console.error('每日任务组件 - 跳转失败:', error)
+        })
+      }
     }
   }
 }) 

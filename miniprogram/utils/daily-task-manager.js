@@ -180,6 +180,11 @@ class DailyTaskManager {
     }
   }
 
+  // 获取任务信息
+  getTask(taskId) {
+    return dailyTasks.find(t => t.id === taskId)
+  }
+
   // 获取所有任务数据
   getAllTasks() {
     return dailyTasks

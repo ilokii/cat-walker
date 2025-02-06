@@ -1,6 +1,7 @@
 const packManager = require('../../utils/pack-manager')
 const albumManager = require('../../utils/album-manager')
 const syncManager = require('../../utils/sync-manager')
+const dailyTaskManager = require('../../utils/daily-task-manager')
 
 // 云存储文件路径配置
 const CLOUD_PATH = {
@@ -16,6 +17,7 @@ Page({
     initialSetStatus: {}, // 记录开卡前的套牌完成状态
     newlyCompletedSets: [], // 记录本次开卡完成的套牌
     currentCompletedSetIndex: 0, // 当前展示的完成套牌索引
+    taskId: null // 存储任务ID
   },
 
   // 判断是否为新卡
@@ -47,35 +49,46 @@ Page({
     return status;
   },
 
-  async onLoad(options) {
-    if (!options || !options.id) {
-      wx.showToast({ title: '参数错误', icon: 'error' });
-      setTimeout(() => wx.navigateBack(), 1500);
-      return;
+  onLoad: async function(options) {
+    console.log('卡包开启页面 - 加载参数:', options)
+    const { id, taskId } = options
+    
+    if (!id) {
+      console.error('卡包开启页面 - 未提供卡包ID')
+      wx.showToast({
+        title: '参数错误',
+        icon: 'error'
+      })
+      wx.navigateBack()
+      return
     }
 
-    // 确保 packManager 已初始化
-    if (!packManager.packsData) {
-      await packManager.init();
+    // 保存任务ID
+    if (taskId) {
+      this.setData({ taskId: parseInt(taskId) })
     }
 
-    const packId = parseInt(options.id);
-    const packInfo = packManager.getPackInfo(packId);
+    // 获取卡包信息
+    const packId = parseInt(id)
+    const packInfo = packManager.getPackInfo(packId)
     
     if (!packInfo) {
-      wx.showToast({ title: '卡包不存在', icon: 'error' });
-      setTimeout(() => wx.navigateBack(), 1500);
-      return;
+      console.error('卡包开启页面 - 未找到卡包信息:', packId)
+      wx.showToast({
+        title: '卡包不存在',
+        icon: 'error'
+      })
+      wx.navigateBack()
+      return
     }
 
     // 记录开卡前的套牌完成状态
-    const initialSetStatus = this.getSetCompletionStatus();
-    console.log('开卡前套牌状态:', initialSetStatus);
-
-    this.setData({ 
+    const initialSetStatus = this.getSetCompletionStatus()
+    
+    this.setData({
       packInfo,
       initialSetStatus
-    });
+    })
   },
 
   async handleTap() {
@@ -189,6 +202,54 @@ Page({
       console.error('开启卡包失败：', error);
       wx.hideLoading();
       wx.showToast({ title: '开启失败', icon: 'error' });
+    }
+  },
+
+  // 处理开包结果
+  async handleOpenResult(result) {
+    console.log('卡包开启页面 - 处理开包结果:', result)
+    
+    if (!result) {
+      console.error('卡包开启页面 - 开包结果为空')
+      return
+    }
+
+    this.setData({
+      openResult: result,
+      stage: 'opened'
+    })
+
+    // 如果是从每日任务来的，标记任务完成
+    if (this.data.taskId) {
+      try {
+        console.log('卡包开启页面 - 标记任务完成:', this.data.taskId)
+        const result = await dailyTaskManager.claimTaskReward(this.data.taskId)
+        if (!result.success) {
+          console.error('卡包开启页面 - 标记任务完成失败:', result.message)
+        }
+      } catch (error) {
+        console.error('卡包开启页面 - 标记任务完成出错:', error)
+      }
+    }
+
+    // 检查是否有新完成的套牌
+    const currentSetStatus = this.getSetCompletionStatus()
+    const newlyCompletedSets = []
+    
+    for (const [setId, status] of Object.entries(currentSetStatus)) {
+      if (status.isCompleted && !this.data.initialSetStatus[setId]?.isCompleted) {
+        newlyCompletedSets.push(setId)
+      }
+    }
+
+    if (newlyCompletedSets.length > 0) {
+      this.setData({ newlyCompletedSets })
+    }
+
+    // 通知主页更新UI
+    const eventChannel = this.getOpenerEventChannel()
+    if (eventChannel && eventChannel.emit) {
+      eventChannel.emit('packOpenSuccess')
     }
   }
 }) 
