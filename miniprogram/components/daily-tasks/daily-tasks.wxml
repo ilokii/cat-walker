@@ -1,0 +1,36 @@
+<view class="daily-tasks">
+  <view class="title">每日任务</view>
+  
+  <view class="stats">
+    <view class="stat-item">今日步数：{{todaySteps}}</view>
+    <view class="stat-item">今日公里数：{{todayKm}}</view>
+  </view>
+
+  <view class="progress-container">
+    <view class="rewards">
+      <block wx:for="{{tasks}}" wx:key="id">
+        <view class="reward-item {{item.status}}" data-task-id="{{item.id}}" bindtap="onTaskTap">
+          <image class="pack-icon" src="{{item.packInfo.res}}" mode="aspectFit"></image>
+          <view class="status-icon" wx:if="{{item.status === 'available'}}">
+            <view class="red-dot"></view>
+          </view>
+          <view class="status-icon" wx:if="{{item.status === 'completed'}}">
+            <image class="check-icon" src="/images/check.png" mode="aspectFit"></image>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{progress}}%"></view>
+    </view>
+
+    <view class="steps-marks">
+      <block wx:for="{{tasks}}" wx:key="id">
+        <view class="step-mark" style="left: {{item.steps / tasks[tasks.length-1].steps * 100}}%">
+          {{item.steps}}步
+        </view>
+      </block>
+    </view>
+  </view>
+</view> 

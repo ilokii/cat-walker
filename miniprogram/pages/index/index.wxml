@@ -43,6 +43,9 @@
     </view>
   </view>
 
+  <!-- 每日任务区域 -->
+  <daily-tasks></daily-tasks>
+
   <!-- 统计区域 -->
   <view class="stats-section">
     <view class="section-title">数据统计</view>
