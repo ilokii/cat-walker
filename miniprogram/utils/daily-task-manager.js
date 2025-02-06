@@ -40,16 +40,12 @@ class DailyTaskManager {
   async loadCompletedTasks() {
     console.log('每日任务管理器 - 开始加载已完成任务')
     try {
-      // 从本地存储加载数据
-      const storage = wx.getStorageSync('dailyTasks') || {}
-      
-      // 从云端同步数据
+      // 从syncManager获取数据
       const localData = syncManager.getLocalData()
-      const cloudData = localData.dailyTasks || {}
+      const dailyTaskData = localData.dailyTaskData || {}
       
-      // 使用云端数据，如果没有则使用本地数据
-      this.completedTasks = new Set(cloudData.completedTasks || storage.completedTasks || [])
-      this.lastCompletedDate = cloudData.lastCompletedDate || storage.lastCompletedDate
+      this.completedTasks = new Set(dailyTaskData.completedTasks || [])
+      this.lastCompletedDate = dailyTaskData.lastCompletedDate
 
       console.log('每日任务管理器 - 加载已完成任务成功:', {
         completedTasks: Array.from(this.completedTasks),
@@ -71,7 +67,7 @@ class DailyTaskManager {
         today: today
       })
       this.completedTasks.clear()
-      this.lastCompletedDate = today
+      this.lastCompletedDate = null
       await this.saveCompletedTasks()
       console.log('每日任务管理器 - 重置完成')
     } else {
@@ -144,7 +140,7 @@ class DailyTaskManager {
       this.completedTasks.add(taskId)
       this.lastCompletedDate = new Date().toDateString()
       
-      // 保存到本地和云端
+      // 保存到云端
       await this.saveCompletedTasks()
       
       console.log('每日任务管理器 - 领取任务奖励成功:', {
@@ -165,17 +161,11 @@ class DailyTaskManager {
     }
   }
 
-  // 保存完成的任务到本地和云端
+  // 保存完成的任务
   async saveCompletedTasks() {
     try {
-      // 保存到本地存储
-      wx.setStorageSync('dailyTasks', {
-        completedTasks: Array.from(this.completedTasks),
-        lastCompletedDate: this.lastCompletedDate
-      })
-
       // 更新syncManager中的数据
-      syncManager.localData.dailyTasks = {
+      syncManager.localData.dailyTaskData = {
         completedTasks: Array.from(this.completedTasks),
         lastCompletedDate: this.lastCompletedDate
       }

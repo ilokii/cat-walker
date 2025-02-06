@@ -24,6 +24,12 @@ const defaultLocalData = {
     completedSets: [], // 已完成的套牌id列表，移除null默认值
     collectionLevel: 1, // 当前收集等级
     stars: 0 // 当前星星数量
+  },
+
+  // 每日任务数据
+  dailyTaskData: {
+    lastCompletedDate: null, // 最后完成任务的日期
+    completedTasks: [], // 已完成的任务ID列表
   }
 }
 
@@ -116,6 +122,10 @@ class SyncManager {
             completedSets: userData.albumData?.completedSets || [],
             collectionLevel: userData.albumData?.collectionLevel || 1,
             stars: userData.albumData?.stars || 0
+          },
+          dailyTaskData: {
+            lastCompletedDate: userData.dailyTaskData?.lastCompletedDate || null,
+            completedTasks: userData.dailyTaskData?.completedTasks || []
           }
         }
       } else {
@@ -153,6 +163,10 @@ class SyncManager {
           completedSets: [],
           collectionLevel: 1,
           stars: 0
+        },
+        dailyTaskData: {
+          lastCompletedDate: null,
+          completedTasks: []
         },
         createTime: this.db.serverDate(),
         updateTime: this.db.serverDate()
@@ -204,6 +218,10 @@ class SyncManager {
             completedSets: userData.albumData?.completedSets || [],
             collectionLevel: userData.albumData?.collectionLevel || 1,
             stars: userData.albumData?.stars || 0
+          },
+          dailyTaskData: {
+            lastCompletedDate: userData.dailyTaskData?.lastCompletedDate || null,
+            completedTasks: userData.dailyTaskData?.completedTasks || []
           }
         }
 
@@ -715,6 +733,7 @@ class SyncManager {
       }).update({
         data: {
           albumData: this.localData.albumData,
+          dailyTaskData: this.localData.dailyTaskData,
           updateTime: this.db.serverDate()
         }
       })
