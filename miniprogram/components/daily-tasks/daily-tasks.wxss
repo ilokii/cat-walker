@@ -106,3 +106,29 @@
   font-size: 24rpx;
   color: #999;
 } 
+
+.section-title {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 40rpx;
+  display: block;
+  position: relative;
+  padding-left: 24rpx;
+}
+
+.section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8rpx;
+  height: 32rpx;
+  background: #07c160;
+  border-radius: 4rpx;
+}
+
+.section-title.center {
+  text-align: center;
+}

@@ -1,9 +1,9 @@
 <view class="daily-tasks">
-  <view class="title">每日任务</view>
+  <view class="section-title">每日任务</view>
   
   <view class="stats">
     <view class="stat-item">今日步数：{{todaySteps}}</view>
-    <view class="stat-item">今日公里数：{{todayKm}}</view>
+    <view class="stat-item">今日公里数：{{todayKm}} km</view>
   </view>
 
   <view class="progress-container">
