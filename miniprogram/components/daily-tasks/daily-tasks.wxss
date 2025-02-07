@@ -1,117 +1,16 @@
 .daily-tasks {
-  background: #fff;
-  padding: 20rpx;
-  margin: 20rpx;
-  border-radius: 12rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
-}
-
-.title {
-  font-size: 32rpx;
-  font-weight: bold;
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  padding: 30rpx 30rpx 20rpx;
   margin-bottom: 20rpx;
-  color: #333;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.06);
 }
-
-.stats {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 30rpx;
-}
-
-.stat-item {
-  font-size: 28rpx;
-  color: #666;
-}
-
-.progress-container {
-  position: relative;
-  padding: 40rpx 0;
-}
-
-.rewards {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20rpx;
-  padding: 0 20rpx;
-}
-
-.reward-item {
-  position: relative;
-  width: 80rpx;
-  height: 80rpx;
-}
-
-.pack-icon {
-  width: 100%;
-  height: 100%;
-  opacity: 0.8;
-}
-
-.reward-item.locked .pack-icon {
-  filter: grayscale(100%);
-  opacity: 0.5;
-}
-
-.reward-item.available .pack-icon {
-  opacity: 1;
-}
-
-.reward-item.completed .pack-icon {
-  opacity: 1;
-}
-
-.status-icon {
-  position: absolute;
-  top: -6rpx;
-  right: -6rpx;
-}
-
-.red-dot {
-  width: 16rpx;
-  height: 16rpx;
-  background: #ff4444;
-  border-radius: 50%;
-}
-
-.check-icon {
-  width: 24rpx;
-  height: 24rpx;
-}
-
-.progress-bar {
-  height: 16rpx;
-  background: #f0f0f0;
-  border-radius: 8rpx;
-  overflow: hidden;
-  margin: 0 20rpx;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(to right, #4CAF50, #8BC34A);
-  border-radius: 8rpx;
-  transition: width 0.3s ease;
-}
-
-.steps-marks {
-  position: relative;
-  margin-top: 10rpx;
-  height: 40rpx;
-}
-
-.step-mark {
-  position: absolute;
-  transform: translateX(-50%);
-  font-size: 24rpx;
-  color: #999;
-} 
 
 .section-title {
   font-size: 40rpx;
   font-weight: bold;
   color: #333;
-  margin-bottom: 40rpx;
+  margin-bottom: 20rpx;
   display: block;
   position: relative;
   padding-left: 24rpx;
@@ -131,4 +30,133 @@
 
 .section-title.center {
   text-align: center;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0rpx;
+}
+
+.stat-item {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.progress-container {
+  position: relative;
+  padding: 20rpx 20rpx;
+}
+
+/* 进度条样式 */
+.progress-bar {
+  height: 24rpx;
+  background: #f0f0f0;
+  border-radius: 12rpx;
+  overflow: visible;
+  position: absolute;
+  bottom: 80rpx;
+  left: 0;
+  right: 0;
+  z-index: 1;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #4CAF50, #8BC34A);
+  border-radius: 12rpx;
+  transition: width 0.3s ease;
+}
+
+/* 任务列表样式 */
+.task-list {
+  position: relative;
+  height: 200rpx;
+  margin-bottom: 20rpx;
+  z-index: 2;
+}
+
+.task-item {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120rpx;
+}
+
+/* 奖励图标样式 */
+.reward-wrapper {
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 16rpx;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pack-icon {
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+}
+
+.reward-wrapper.locked .pack-icon {
+  opacity: 1;
+}
+
+.reward-wrapper.available .pack-icon {
+  opacity: 1;
+}
+
+.reward-wrapper.completed .pack-icon {
+  opacity: 1;
+}
+
+/* 状态图标样式 */
+.status-icon {
+  position: absolute;
+  top: -10rpx;
+  right: 10rpx;
+  z-index: 3;
+}
+
+.status-icon.completed {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 0%);
+}
+
+.red-dot {
+  width: 24rpx;
+  height: 24rpx;
+  background: #ff4444;
+  border-radius: 50%;
+  border: 2rpx solid #fff;
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.2);
+}
+
+.check-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+/* 进度点样式 */
+.progress-dot {
+  width: 16rpx;
+  height: 16rpx;
+  background: #fff;
+  border: 4rpx solid #4CAF50;
+  border-radius: 50%;
+  margin: 2rpx 0;
+  z-index: 2;
+}
+
+/* 步数要求样式 */
+.step-requirement {
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
+  margin: 16rpx 0;
 }
