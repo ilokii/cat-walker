@@ -4,6 +4,7 @@
   <!-- 未开启状态 -->
   <block wx:if="{{stage === 'unopened'}}">
     <image class="pack-icon" src="{{packInfo.res}}" mode="aspectFit"></image>
+    <view class="pack-desc">{{packInfo.desc}}</view>
     <view class="hint">点击开启</view>
   </block>
   

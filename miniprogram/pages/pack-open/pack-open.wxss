@@ -1,9 +1,9 @@
 .container {
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
   padding: 40rpx;
   box-sizing: border-box;
   background: #f8f8f8;
@@ -20,13 +20,23 @@
 .pack-icon {
   width: 400rpx;
   height: 400rpx;
-  margin-bottom: 60rpx;
+  margin-bottom: 40rpx;
+}
+
+.pack-desc {
+  font-size: 32rpx;
+  color: #666;
+  text-align: center;
+  margin: 0 60rpx 40rpx;
+  line-height: 1.6;
+  max-width: 600rpx;
 }
 
 .hint {
-  font-size: 32rpx;
-  color: #666;
-  margin-top: 40rpx;
+  font-size: 36rpx;
+  color: #333;
+  margin-top: 20rpx;
+  opacity: 0.8;
 }
 
 .cards-grid {
