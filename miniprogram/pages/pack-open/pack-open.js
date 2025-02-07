@@ -53,7 +53,7 @@ Page({
 
   onLoad: async function(options) {
     console.log('卡包开启页面 - 加载参数:', options)
-    const { id, fromStarShop, starCost } = options
+    const { id, taskId, fromStarShop, starCost } = options
     
     if (!id) {
       console.error('卡包开启页面 - 未提供卡包ID')
@@ -63,6 +63,11 @@ Page({
       })
       wx.navigateBack()
       return
+    }
+
+    // 保存任务ID
+    if (taskId) {
+      this.setData({ taskId: parseInt(taskId) })
     }
 
     // 保存星星兑换相关信息
@@ -105,6 +110,19 @@ Page({
       packInfo,
       initialSetStatus
     })
+
+    // 如果是从每日任务来的，先检查任务状态
+    if (this.data.taskId) {
+      const taskStatus = dailyTaskManager.checkTaskStatus(this.data.taskId)
+      if (taskStatus !== 'available') {
+        wx.showToast({
+          title: taskStatus === 'completed' ? '该奖励已经领取' : '任务未完成',
+          icon: 'none'
+        })
+        wx.navigateBack()
+        return
+      }
+    }
   },
 
   async handleTap() {
@@ -119,68 +137,73 @@ Page({
         case 'unopened':
           wx.showLoading({ title: '开启中...', mask: true });
 
-          // 开启卡包
-          const openResult = await packManager.openPack(this.data.packInfo.id);
-          if (!openResult) {
-            wx.hideLoading();
-            wx.showToast({ title: '开启失败', icon: 'error' });
-            return;
-          }
-
           try {
-            // 1. 更新本地数据
-            await syncManager.syncFromCloud();
-            
-            // 2. 更新收集的卡牌
-            for (const card of openResult.newCards) {
-              if (!syncManager.localData.albumData.collectedCards.includes(card.card_id)) {
-                syncManager.localData.albumData.collectedCards.push(card.card_id);
-              }
-            }
-
-            // 3. 如果是星星兑换，扣除星星
-            if (this.data.fromStarShop) {
-              await syncManager.addStars(-this.data.starCost);
-            }
-
-            // 4. 更新星星数量（从重复卡获得的星星）
-            if (openResult.totalStars > 0) {
-              syncManager.localData.albumData.stars += openResult.totalStars;
-            }
-
-            // 5. 获取开卡后的套牌状态
-            const currentSetStatus = this.getSetCompletionStatus();
-            console.log('开卡后套牌状态:', currentSetStatus);
-
-            // 6. 找出新完成的套牌
-            const newlyCompletedSets = [];
-            const currentSets = albumManager.getCurrentSets();
-            
-            for (const set of currentSets) {
-              const setId = set.set_id;
-              if (!this.data.initialSetStatus[setId].isCompleted && 
-                  currentSetStatus[setId].isCompleted) {
-                newlyCompletedSets.push(setId);
-                if (!syncManager.localData.albumData.completedSets.includes(setId)) {
-                  syncManager.localData.albumData.completedSets.push(setId);
-                }
-              }
-            }
-
-            // 7. 保存数据到云端
-            await syncManager.saveLocalData();
-            await syncManager.syncFromCloud();
-
-            // 8. 如果是从每日任务来的，标记任务完成
+            // 1. 如果是从每日任务来的，先标记任务完成
             if (this.data.taskId) {
               console.log('卡包开启页面 - 标记任务完成:', this.data.taskId)
               const taskResult = await dailyTaskManager.claimTaskReward(this.data.taskId)
               if (!taskResult.success) {
-                console.error('卡包开启页面 - 标记任务完成失败:', taskResult.message)
+                wx.hideLoading()
+                wx.showToast({
+                  title: taskResult.message,
+                  icon: 'none'
+                })
+                return
               }
             }
 
-            wx.hideLoading();
+            // 2. 如果是星星兑换，先扣除星星
+            if (this.data.fromStarShop) {
+              await syncManager.addStars(-this.data.starCost)
+            }
+
+            // 3. 开启卡包
+            const openResult = await packManager.openPack(this.data.packInfo.id)
+            if (!openResult) {
+              wx.hideLoading()
+              wx.showToast({ title: '开启失败', icon: 'error' })
+              return
+            }
+
+            // 4. 更新本地数据
+            await syncManager.syncFromCloud()
+            
+            // 5. 更新收集的卡牌
+            for (const card of openResult.newCards) {
+              if (!syncManager.localData.albumData.collectedCards.includes(card.card_id)) {
+                syncManager.localData.albumData.collectedCards.push(card.card_id)
+              }
+            }
+
+            // 6. 更新星星数量（从重复卡获得的星星）
+            if (openResult.totalStars > 0) {
+              syncManager.localData.albumData.stars += openResult.totalStars
+            }
+
+            // 7. 获取开卡后的套牌状态
+            const currentSetStatus = this.getSetCompletionStatus()
+            console.log('开卡后套牌状态:', currentSetStatus)
+
+            // 8. 找出新完成的套牌
+            const newlyCompletedSets = []
+            const currentSets = albumManager.getCurrentSets()
+            
+            for (const set of currentSets) {
+              const setId = set.set_id
+              if (!this.data.initialSetStatus[setId].isCompleted && 
+                  currentSetStatus[setId].isCompleted) {
+                newlyCompletedSets.push(setId)
+                if (!syncManager.localData.albumData.completedSets.includes(setId)) {
+                  syncManager.localData.albumData.completedSets.push(setId)
+                }
+              }
+            }
+
+            // 9. 保存数据到云端
+            await syncManager.saveLocalData()
+            await syncManager.syncFromCloud()
+
+            wx.hideLoading()
           
             this.setData({
               openResult,
@@ -194,14 +217,14 @@ Page({
               if (eventChannel && eventChannel.emit) {
                 eventChannel.emit('packOpenSuccess')
               }
-            });
+            })
 
           } catch (error) {
-            console.error('同步数据失败：', error);
-            wx.hideLoading();
-            wx.showToast({ title: '同步失败', icon: 'error' });
+            console.error('开启卡包失败：', error)
+            wx.hideLoading()
+            wx.showToast({ title: '开启失败', icon: 'error' })
           }
-          break;
+          break
 
         case 'opened':
           // 处理套牌完成界面的展示
