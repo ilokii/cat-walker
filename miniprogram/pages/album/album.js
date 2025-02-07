@@ -11,7 +11,8 @@ Page({
       collected: 0,
       total: 0
     },
-    totalProgressPercentage: 0
+    totalProgressPercentage: 0,
+    showStarShopModal: false
   },
 
   onLoad() {
@@ -24,6 +25,8 @@ Page({
     albumManager.checkSeasonEnd()
     // 刷新数据
     this.refreshData()
+    // 刷新星星商店入口状态
+    this.updateStarShopEntry()
   },
 
   refreshData() {
@@ -134,5 +137,27 @@ Page({
     if (this.countdownTimer) {
       clearInterval(this.countdownTimer);
     }
+  },
+
+  // 更新星星商店入口状态
+  updateStarShopEntry() {
+    const starShopEntry = this.selectComponent('#starShopEntry')
+    if (starShopEntry) {
+      starShopEntry.updateStars()
+    }
+  },
+
+  // 显示星星商店
+  showStarShop() {
+    this.setData({
+      showStarShopModal: true
+    })
+  },
+
+  // 隐藏星星商店
+  hideStarShop() {
+    this.setData({
+      showStarShopModal: false
+    })
   }
 }); 

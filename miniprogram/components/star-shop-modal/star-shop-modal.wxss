@@ -1,0 +1,99 @@
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 600rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.modal-header {
+  position: relative;
+  padding: 30rpx;
+  text-align: center;
+  border-bottom: 1rpx solid #eee;
+}
+
+.title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.close-btn {
+  position: absolute;
+  right: 30rpx;
+  top: 30rpx;
+  width: 40rpx;
+  height: 40rpx;
+  line-height: 40rpx;
+  text-align: center;
+  font-size: 40rpx;
+  color: #999;
+}
+
+.modal-body {
+  padding: 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.description {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 30rpx;
+}
+
+.pack-icon {
+  width: 200rpx;
+  height: 200rpx;
+  margin: 20rpx 0;
+}
+
+.pack-desc {
+  font-size: 26rpx;
+  color: #666;
+  text-align: center;
+  margin: 20rpx 0 40rpx;
+}
+
+.exchange-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 300rpx;
+  height: 80rpx;
+  background: #4CAF50;
+  border-radius: 40rpx;
+  color: white;
+  font-size: 28rpx;
+  border: none;
+  padding: 0;
+}
+
+.exchange-btn.disabled {
+  background: #ccc;
+  color: #fff;
+}
+
+.exchange-btn .star-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 10rpx;
+}
+
+.exchange-btn text {
+  line-height: 80rpx;
+} 

@@ -1,3 +1,6 @@
 {
-  "usingComponents": {}
+  "usingComponents": {
+    "star-shop-entry": "/components/star-shop-entry/star-shop-entry",
+    "star-shop-modal": "/components/star-shop-modal/star-shop-modal"
+  }
 }

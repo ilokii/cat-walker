@@ -176,4 +176,13 @@
   font-size: 36rpx;
   margin: 40rpx 0;
   font-weight: bold;
+}
+
+.star-shop-entry-container {
+  position: absolute;
+  right: -40rpx;
+  top: 120rpx;
+  z-index: 100;
+  transform: scale(1.2);
+  transform-origin: right top;
 } 

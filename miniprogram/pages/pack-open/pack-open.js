@@ -17,7 +17,9 @@ Page({
     initialSetStatus: {}, // 记录开卡前的套牌完成状态
     newlyCompletedSets: [], // 记录本次开卡完成的套牌
     currentCompletedSetIndex: 0, // 当前展示的完成套牌索引
-    taskId: null // 存储任务ID
+    taskId: null, // 存储任务ID
+    fromStarShop: false,
+    starCost: 0
   },
 
   // 判断是否为新卡
@@ -51,7 +53,7 @@ Page({
 
   onLoad: async function(options) {
     console.log('卡包开启页面 - 加载参数:', options)
-    const { id, taskId } = options
+    const { id, fromStarShop, starCost } = options
     
     if (!id) {
       console.error('卡包开启页面 - 未提供卡包ID')
@@ -63,9 +65,23 @@ Page({
       return
     }
 
-    // 保存任务ID
-    if (taskId) {
-      this.setData({ taskId: parseInt(taskId) })
+    // 保存星星兑换相关信息
+    this.setData({
+      fromStarShop: fromStarShop === 'true',
+      starCost: parseInt(starCost) || 0
+    })
+
+    // 如果是星星兑换，检查星星是否足够
+    if (this.data.fromStarShop) {
+      const stars = syncManager.getStars()
+      if (stars < this.data.starCost) {
+        wx.showToast({
+          title: '星星不足',
+          icon: 'error'
+        })
+        wx.navigateBack()
+        return
+      }
     }
 
     // 获取卡包信息
@@ -122,16 +138,21 @@ Page({
               }
             }
 
-            // 3. 更新星星数量
+            // 3. 如果是星星兑换，扣除星星
+            if (this.data.fromStarShop) {
+              await syncManager.addStars(-this.data.starCost);
+            }
+
+            // 4. 更新星星数量（从重复卡获得的星星）
             if (openResult.totalStars > 0) {
               syncManager.localData.albumData.stars += openResult.totalStars;
             }
 
-            // 4. 获取开卡后的套牌状态
+            // 5. 获取开卡后的套牌状态
             const currentSetStatus = this.getSetCompletionStatus();
             console.log('开卡后套牌状态:', currentSetStatus);
 
-            // 5. 找出新完成的套牌
+            // 6. 找出新完成的套牌
             const newlyCompletedSets = [];
             const currentSets = albumManager.getCurrentSets();
             
@@ -146,11 +167,11 @@ Page({
               }
             }
 
-            // 6. 保存数据到云端
+            // 7. 保存数据到云端
             await syncManager.saveLocalData();
             await syncManager.syncFromCloud();
 
-            // 7. 如果是从每日任务来的，标记任务完成
+            // 8. 如果是从每日任务来的，标记任务完成
             if (this.data.taskId) {
               console.log('卡包开启页面 - 标记任务完成:', this.data.taskId)
               const taskResult = await dailyTaskManager.claimTaskReward(this.data.taskId)
