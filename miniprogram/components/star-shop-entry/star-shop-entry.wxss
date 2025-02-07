@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   padding: 12rpx 24rpx;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(186, 174, 255, 0.9);
   border-radius: 36rpx;
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
   min-width: 160rpx;
@@ -11,25 +11,26 @@
 
 .red-dot {
   position: absolute;
-  top: -8rpx;
-  left: -8rpx;
-  width: 20rpx;
-  height: 20rpx;
+  top: 5rpx;
+  left: 5rpx;
+  width: 30rpx;
+  height: 30rpx;
   background: #ff4444;
   border-radius: 50%;
 }
 
 .star-icon {
-  width: 48rpx;
-  height: 48rpx;
+  width: 50rpx;
+  height: 50rpx;
   margin-right: 12rpx;
+  margin-top: -8rpx;
   flex-shrink: 0;
 }
 
 .star-count {
-  font-size: 32rpx;
+  font-size: 36rpx;
   color: #333;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 48rpx;
   min-width: 64rpx;
   text-align: left;

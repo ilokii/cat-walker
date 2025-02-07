@@ -181,7 +181,7 @@
 .star-shop-entry-container {
   position: absolute;
   right: -40rpx;
-  top: 120rpx;
+  top: 50rpx;
   z-index: 100;
   transform: scale(1.2);
   transform-origin: right top;

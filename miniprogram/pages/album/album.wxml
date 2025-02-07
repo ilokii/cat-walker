@@ -53,7 +53,4 @@
 
   <!-- 星星商店弹窗 -->
   <star-shop-modal wx:if="{{showStarShopModal}}" bind:close="hideStarShop" />
-  
-  <!-- 关闭按钮 -->
-  <view class="close-btn" bindtap="onClose">X</view>
 </view> 
