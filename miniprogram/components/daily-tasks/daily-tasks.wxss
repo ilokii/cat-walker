@@ -123,9 +123,9 @@
 }
 
 .status-icon.completed {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, 0%);
+  top: 90%;
+  left: 53%;
+  transform: translate(-50%, -50%);
 }
 
 .red-dot {
@@ -140,6 +140,7 @@
 .check-icon {
   width: 40rpx;
   height: 40rpx;
+  display: block;
 }
 
 /* 进度点样式 */
