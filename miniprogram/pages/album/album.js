@@ -15,7 +15,7 @@ Page({
   },
 
   onLoad() {
-    this.loadAlbumData();
+    this.refreshData();
   },
 
   onShow() {
@@ -26,7 +26,7 @@ Page({
     this.refreshData()
   },
 
-  loadAlbumData() {
+  refreshData() {
     // 获取当前赛季卡册
     const currentAlbum = albumManager.currentAlbum;
     console.log('当前卡册:', currentAlbum);
