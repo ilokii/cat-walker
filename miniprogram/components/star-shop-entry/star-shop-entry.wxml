@@ -1,5 +1,5 @@
-<view class="star-shop-entry" bind:tap="onTap">
+<view class="star-shop-entry" bindtap="showStarShop">
   <view class="red-dot" wx:if="{{showRedDot}}"></view>
   <image class="star-icon" src="/images/star.png" mode="aspectFit" />
-  <text class="star-count">{{stars}}</text>
+  <text class="star-count">{{starCount}}</text>
 </view> 
