@@ -946,6 +946,36 @@ class SyncManager {
       throw error
     }
   }
+
+  // 处理开包结果
+  async handlePackResult(packResult) {
+    console.log('同步管理器 - 开始处理开包结果:', packResult)
+    try {
+      // 1. 添加新卡到收集列表
+      for (const card of packResult.newCards) {
+        if (!this.localData.albumData.collectedCards.includes(card.cardId)) {
+          this.localData.albumData.collectedCards.push(card.cardId)
+          console.log(`同步管理器 - 添加新卡到收集列表: ${card.cardId}`)
+        }
+      }
+
+      // 2. 添加星星
+      if (packResult.totalStars > 0) {
+        this.localData.albumData.stars += packResult.totalStars
+        console.log(`同步管理器 - 添加${packResult.totalStars}颗星星`)
+      }
+
+      // 3. 一次性同步到云端
+      console.log('同步管理器 - 开始同步到云端...')
+      await this.saveLocalData()
+      console.log('同步管理器 - 同步完成')
+
+      return true
+    } catch (error) {
+      console.error('同步管理器 - 处理开包结果失败:', error)
+      throw error
+    }
+  }
 }
 
 module.exports = new SyncManager() 

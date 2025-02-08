@@ -128,20 +128,22 @@ class PackManager {
       return null
     }
 
-    const result = {
-      cards: [],
-      newCards: [],
-      totalStars: 0
+    // 创建临时对象存储开卡数据
+    const packResult = {
+      newCards: [],      // 新获得的卡牌信息 {cardId, setId}
+      totalStars: 0,     // 获得的星星总数
+      displayCards: []   // 用于界面显示的卡牌信息
     }
 
     console.log(`卡包管理器 - 开始开启卡包: ${packInfo.name}`)
     const collectedCards = new Set(syncManager.getCollectedCards())
+    console.log('卡包管理器 - 当前已收集的卡牌:', Array.from(collectedCards))
     
     for (let i = 0; i < packInfo.quantity; i++) {
       let card
       
       // 检查是否需要保底
-      if (packInfo.guaranteed && i === packInfo.quantity - 1 && result.newCards.length === 0) {
+      if (packInfo.guaranteed && i === packInfo.quantity - 1 && packResult.newCards.length === 0) {
         console.log('卡包管理器 - 触发保底机制')
         card = await this._drawNewCard()
         if (!card) {
@@ -156,23 +158,45 @@ class PackManager {
       // 检查是否为新卡
       const isNewCard = !collectedCards.has(card.card_id)
       if (isNewCard) {
-        result.newCards.push(card)
-        console.log(`卡包管理器 - 获得新卡: ${card.name}`)
-        // 同步新卡到云端
-        await albumManager.addCard(card.card_id, card.card_id.split('_').slice(0, -1).join('_'))
+        const setId = card.card_id.split('_').slice(0, -1).join('_')
+        packResult.newCards.push({
+          cardId: card.card_id,
+          setId: setId
+        })
+        console.log(`卡包管理器 - 获得新卡: ${card.name}, ID: ${card.card_id}, SetID: ${setId}`)
         collectedCards.add(card.card_id)
       } else {
-        // 转换为星星
-        result.totalStars += card.star
+        packResult.totalStars += card.star
         console.log(`卡包管理器 - 重复卡转化为${card.star}星星: ${card.name}`)
       }
 
-      result.cards.push(card)
+      packResult.displayCards.push(card)
     }
 
-    // 同步星星到云端
-    if (result.totalStars > 0) {
-      await syncManager.addStars(result.totalStars)
+    console.log('卡包管理器 - 开包结果:', {
+      newCardsCount: packResult.newCards.length,
+      newCards: packResult.newCards,
+      totalStars: packResult.totalStars,
+      displayCardsCount: packResult.displayCards.length
+    })
+
+    // 一次性提交开包结果给syncManager处理
+    console.log('卡包管理器 - 开始处理开包结果...')
+    try {
+      await syncManager.handlePackResult(packResult)
+      console.log('卡包管理器 - 开包结果处理完成')
+    } catch (error) {
+      console.error('卡包管理器 - 处理开包结果失败:', error)
+      throw error
+    }
+
+    // 返回界面显示所需的数据
+    const result = {
+      cards: packResult.displayCards,
+      newCards: packResult.newCards.map(item => 
+        packResult.displayCards.find(card => card.card_id === item.cardId)
+      ),
+      totalStars: packResult.totalStars
     }
 
     console.log(`卡包管理器 - 开包完成，获得${result.newCards.length}张新卡，${result.totalStars}颗星星`)
