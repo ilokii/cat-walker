@@ -4,12 +4,14 @@ const syncManager = require('../../utils/sync-manager')
 Page({
   data: {
     setInfo: null,
-    isAlbumCompleted: false
+    isAlbumCompleted: false,
+    currentIndex: 0,
+    setIds: []
   },
 
   onLoad: async function(options) {
     console.log('set-complete onLoad开始，参数:', options)
-    const { setId } = options
+    const { setId, currentIndex, setIds } = options
     if (!setId) {
       wx.showToast({
         title: '参数错误',
@@ -17,6 +19,12 @@ Page({
       })
       return
     }
+
+    // 解析传入的套牌列表和索引信息
+    this.setData({
+      currentIndex: parseInt(currentIndex) || 0,
+      setIds: setIds ? JSON.parse(setIds) : []
+    })
 
     const currentSets = albumManager.getCurrentSets()
     console.log('当前所有套牌:', currentSets.map(set => ({
@@ -75,12 +83,24 @@ Page({
   handleTap: function() {
     if (this.data.isAlbumCompleted) {
       // 如果相册已完成，跳转到相册完成界面
-      wx.navigateTo({
+      wx.redirectTo({
         url: '/pages/album-complete/album-complete'
       })
     } else {
-      // 返回到开包界面，让开包界面处理下一个完成的套牌
-      wx.navigateBack()
+      // 检查是否还有未展示的已完成套牌
+      const nextIndex = this.data.currentIndex + 1
+      if (nextIndex < this.data.setIds.length) {
+        // 还有未展示的套牌，跳转到下一个set-complete界面
+        const nextSetId = this.data.setIds[nextIndex]
+        wx.redirectTo({
+          url: `/pages/set-complete/set-complete?setId=${nextSetId}&currentIndex=${nextIndex}&setIds=${JSON.stringify(this.data.setIds)}`
+        })
+      } else {
+        // 所有套牌都已展示完，返回主界面
+        wx.navigateBack({
+          delta: 2  // 返回两层，跳过pack-open界面
+        })
+      }
     }
   }
 }) 

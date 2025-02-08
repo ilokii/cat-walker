@@ -228,16 +228,12 @@ Page({
 
         case 'opened':
           // 处理套牌完成界面的展示
-          if (this.data.newlyCompletedSets.length > 0 && 
-              this.data.currentCompletedSetIndex < this.data.newlyCompletedSets.length) {
-            const currentSetId = this.data.newlyCompletedSets[this.data.currentCompletedSetIndex];
-            wx.navigateTo({
-              url: `/pages/set-complete/set-complete?setId=${currentSetId}`,
-              success: () => {
-                this.setData({
-                  currentCompletedSetIndex: this.data.currentCompletedSetIndex + 1
-                });
-              },
+          if (this.data.newlyCompletedSets.length > 0) {
+            // 获取第一个需要展示的套牌ID
+            const firstSetId = this.data.newlyCompletedSets[0];
+            // 关闭当前界面，打开第一个set-complete界面，并传递所有新集齐的套牌信息
+            wx.redirectTo({
+              url: `/pages/set-complete/set-complete?setId=${firstSetId}&currentIndex=0&setIds=${JSON.stringify(this.data.newlyCompletedSets)}`,
               fail: (err) => console.error('跳转到套牌完成页面失败:', err)
             });
           } else {
