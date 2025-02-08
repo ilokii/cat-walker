@@ -9,8 +9,8 @@
       <image class="pack-icon" src="{{packInfo.res}}" mode="aspectFit" />
       <text class="pack-desc">{{packInfo.desc}}</text>
       <button class="exchange-btn {{!canExchange ? 'disabled' : ''}}" bind:tap="onExchange">
-        <image class="star-icon" src="/images/star.png" mode="aspectFit" />
-        <text>{{STAR_SHOP_CONFIG.EXCHANGE_PRICE}}</text>
+        <image class="exchange-btn-star-icon" src="/images/star.png" mode="aspectFit" />
+        <text class="exchange-btn-text">{{STAR_SHOP_CONFIG.EXCHANGE_PRICE}}</text>
       </button>
     </view>
   </view>

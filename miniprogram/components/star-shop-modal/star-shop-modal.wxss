@@ -98,7 +98,7 @@
   box-shadow: none;
 }
 
-.exchange-btn .star-icon {
+.exchange-btn-star-icon {
   width: 50rpx;
   height: 50rpx;
   margin-right: 12rpx;
@@ -106,6 +106,6 @@
   flex-shrink: 0;
 }
 
-.exchange-btn text {
+.exchange-btn-text {
   line-height: 96rpx;
 } 
