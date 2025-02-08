@@ -31,40 +31,16 @@ Component({
     async initialize() {
       console.log('每日任务组件 - 开始初始化')
       try {
-        // 先更新UI，确保基础数据显示
-        this.updateUI()
-        console.log('每日任务组件 - 基础UI更新完成')
+        // 从 globalData 获取卡包配置
+        const app = getApp()
+        this.setData({ packsConfig: app.globalData.packsConfig })
+        console.log('每日任务组件 - 获取卡包配置:', this.data.packsConfig)
 
-        // 然后加载卡包配置
-        await this.loadPacksConfig()
-        console.log('每日任务组件 - 卡包配置加载完成')
-
-        // 再次更新UI以显示卡包图标
+        // 更新UI
         this.updateUI()
-        console.log('每日任务组件 - 完整UI更新完成')
+        console.log('每日任务组件 - UI更新完成')
       } catch (error) {
         console.error('每日任务组件初始化失败：', error)
-      }
-    },
-
-    async loadPacksConfig() {
-      console.log('每日任务组件 - 开始加载卡包配置')
-      try {
-        const result = await wx.cloud.downloadFile({
-          fileID: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/config/pack.json'
-        })
-        console.log('每日任务组件 - 卡包配置下载成功')
-
-        const fs = wx.getFileSystemManager()
-        const content = fs.readFileSync(result.tempFilePath, 'utf8')
-        const config = JSON.parse(content)
-        console.log('每日任务组件 - 卡包配置解析成功:', config)
-
-        this.setData({
-          packsConfig: config
-        })
-      } catch (error) {
-        console.error('每日任务组件 - 加载卡包配置失败：', error)
       }
     },
 

@@ -5,7 +5,9 @@ App({
   globalData: {
     openid: null,
     envId: 'cat-walker-1gnvj0y102f12cab', // 云环境ID
-    isInitialized: false
+    isInitialized: false,
+    packsConfig: null,  // 存储卡包配置
+    isPacksConfigLoaded: false  // 标记卡包配置加载状态
   },
 
   onLaunch: function() {

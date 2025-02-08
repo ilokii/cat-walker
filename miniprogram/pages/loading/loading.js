@@ -1,6 +1,7 @@
 const syncManager = require('../../utils/sync-manager')
 const albumManager = require('../../utils/album-manager')
 const dailyTaskManager = require('../../utils/daily-task-manager')
+const packManager = require('../../utils/pack-manager')
 
 Page({
   data: {
@@ -40,6 +41,31 @@ Page({
       console.log('正在初始化数据管理器...')
       await syncManager.initialize()
       console.log('数据管理器初始化完成')
+
+      // 预加载卡包配置
+      this.setData({ loadingText: '正在加载卡包配置...' })
+      console.log('正在加载卡包配置...')
+      try {
+        const result = await wx.cloud.downloadFile({
+          fileID: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/config/pack.json'
+        })
+        console.log('卡包配置下载成功')
+
+        const fs = wx.getFileSystemManager()
+        const content = fs.readFileSync(result.tempFilePath, 'utf8')
+        const config = JSON.parse(content)
+        console.log('卡包配置解析成功:', config)
+
+        app.globalData.packsConfig = config
+        app.globalData.isPacksConfigLoaded = true
+        console.log('卡包配置加载完成')
+
+        // 初始化卡包管理器
+        packManager.packsData = config
+        console.log('卡包管理器初始化完成')
+      } catch (error) {
+        console.error('加载卡包配置失败：', error)
+      }
 
       // 初始化徽章系统
       this.setData({ loadingText: '正在加载徽章数据...' })
