@@ -8,9 +8,14 @@
   <!-- 卡册集齐奖励 -->
   <view class="album-reward-container">
     <view class="album-reward">
-      <image class="reward-badge" src="{{currentAlbum.rewards[collectionLevel]}}" mode="aspectFit"></image>
+      <image class="reward-badge" 
+             src="{{badgeIcon}}" 
+             mode="aspectFit"
+             wx:if="{{badgeIcon}}">
+      </image>
+      <view class="no-badge" wx:else>暂无勋章</view>
     </view>
-    <view class="reward-tip">集齐所有卡牌将会获得勋章</view>
+    <view class="reward-tip">集齐所有套牌可以获得勋章奖励</view>
   </view>
 
   <!-- 总进度条 -->

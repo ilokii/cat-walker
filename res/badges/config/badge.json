@@ -1,0 +1,38 @@
+{
+  "data": [
+    {
+      "id": 202501,
+      "levels": [
+        {
+          "level": 1,
+          "icon": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/badges/badge_20250101.png"
+        },
+        {
+          "level": 2,
+          "icon": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/badges/badge_20250102.png"
+        },
+        {
+          "level": 3,
+          "icon": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/badges/badge_20250103.png"
+        }
+      ]
+    },
+    {
+      "id": 202502,
+      "levels": [
+        {
+          "level": 1,
+          "icon": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/badges/badge_20250201.png"
+        },
+        {
+          "level": 2,
+          "icon": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/badges/badge_20250202.png"
+        },
+        {
+          "level": 3,
+          "icon": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/badges/badge_20250203.png"
+        }
+      ]
+    }
+  ]
+}

@@ -12,7 +12,10 @@ Page({
       total: 0
     },
     totalProgressPercentage: 0,
-    showStarShopModal: false
+    showStarShopModal: false,
+    badgeIcon: '', // 当前等级对应的勋章图标
+    badgeId: null, // 当前等级对应的勋章ID
+    badgeLevel: null // 当前等级对应的勋章等级
   },
 
   onLoad() {
@@ -29,7 +32,7 @@ Page({
     this.updateStarShopEntry()
   },
 
-  refreshData() {
+  async refreshData() {
     // 获取当前赛季卡册
     const currentAlbum = albumManager.currentAlbum;
     console.log('当前卡册:', currentAlbum);
@@ -69,6 +72,32 @@ Page({
       percentage: totalProgressPercentage
     });
 
+    // 获取当前等级对应的勋章信息
+    let badgeIcon = ''
+    let badgeId = null
+    let badgeLevel = null
+
+    if (currentAlbum && currentAlbum.rewards && currentAlbum.rewards[collectionLevel]) {
+      const rewardString = currentAlbum.rewards[collectionLevel]
+      const [id, level] = rewardString.split('#').map(Number)
+      badgeId = id
+      badgeLevel = level
+
+      // 获取勋章配置
+      const badgeConfig = await syncManager.getBadgeConfig()
+      if (badgeConfig && badgeConfig.data) {
+        const badge = badgeConfig.data.find(b => b.id === badgeId)
+        if (badge) {
+          const badgeLevelInfo = badge.levels.find(l => l.level === badgeLevel)
+          if (badgeLevelInfo) {
+            // 直接使用完整的云存储路径
+            badgeIcon = badgeLevelInfo.icon
+            console.log('获取到徽章图标路径:', badgeIcon)
+          }
+        }
+      }
+    }
+
     this.setData({
       currentAlbum,
       sets,
@@ -77,7 +106,10 @@ Page({
         collected: totalCollected,
         total: totalCards
       },
-      totalProgressPercentage
+      totalProgressPercentage,
+      badgeIcon,
+      badgeId,
+      badgeLevel
     });
 
     // 更新倒计时

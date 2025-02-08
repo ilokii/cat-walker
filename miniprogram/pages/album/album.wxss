@@ -38,17 +38,37 @@
 
 .album-reward {
   margin-bottom: 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 180rpx;
 }
 
 .reward-badge {
-  width: 140rpx;
-  height: 140rpx;
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 90rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.no-badge {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 90rpx;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 24rpx;
 }
 
 .reward-tip {
-  font-size: 28rpx;
+  font-size: 32rpx;
   color: #666;
   text-align: center;
+  margin-top: 20rpx;
 }
 
 /* 总进度条样式 */
