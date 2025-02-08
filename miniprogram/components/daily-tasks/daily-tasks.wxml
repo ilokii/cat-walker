@@ -26,7 +26,7 @@
           <view class="progress-dot"></view>
           
           <!-- 步数要求 -->
-          <view class="step-requirement">{{item.steps}}</view>
+          <view class="step-requirement">{{item.steps === 0 ? '登录' : item.steps}}</view>
         </view>
       </block>
     </view>
