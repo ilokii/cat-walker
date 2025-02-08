@@ -268,29 +268,10 @@ Page({
   // 刷新按钮点击处理
   onRefresh() {
     if (syncManager.isRefreshCooldown()) {
-      // 在冷却中，显示loading
-      wx.showLoading({
-        title: '数据同步中',
-        mask: true
-      })
-
-      // 随机等待1-3秒
-      const waitTime = Math.floor(Math.random() * 2000) + 1000 // 1000-3000ms
-      setTimeout(() => {
-        // 隐藏loading
-        wx.hideLoading()
-        
-        // 显示刷新成功提示
-        wx.showToast({
-          title: '数据刷新成功',
-          icon: 'success',
-          duration: 2000
-        })
-      }, waitTime)
       return
     }
 
-    // 不在冷却中，直接跳转到loading页面
+    // 不在冷却中，跳转到loading页面
     wx.redirectTo({
       url: '/pages/loading/loading'
     })

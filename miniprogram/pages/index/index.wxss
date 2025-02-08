@@ -288,34 +288,6 @@
   box-shadow: 0 4rpx 10rpx rgba(76, 175, 80, 0.2);
 }
 
-/* 悬浮刷新按钮 */
-.floating-refresh-btn {
-  position: fixed;
-  right: 40rpx;
-  bottom: 40rpx;
-  width: 100rpx;
-  height: 100rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #ffffff;
-  border-radius: 50rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15);
-  z-index: 100;
-}
-
-.refresh-icon {
-  font-size: 50rpx;
-  color: #666;
-  font-weight: bold;
-}
-
-.floating-refresh-btn:active {
-  background-color: #f8f9fa;
-  transform: scale(0.95);
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
-}
-
 /* 底部功能区 */
 .bottom-panel {
   position: fixed;

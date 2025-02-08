@@ -89,11 +89,6 @@
     </view>
   </view>
 
-  <!-- 悬浮刷新按钮 -->
-  <view class="floating-refresh-btn" bindtap="onRefresh">
-    <text class="refresh-icon">↻</text>
-  </view>
-
   <!-- 底部功能区 -->
   <view class="bottom-panel">
     <!-- 卡册入口 -->
