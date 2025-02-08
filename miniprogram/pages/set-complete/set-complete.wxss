@@ -36,19 +36,6 @@
   object-fit: contain;
 }
 
-.reward {
-  margin: 20rpx 0 40rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.reward-icon {
-  width: 240rpx;
-  height: 240rpx;
-  animation: shine 2s infinite;
-}
-
 .description {
   font-size: 36rpx;
   color: #333;
@@ -62,19 +49,4 @@
   color: #999;
   margin-top: 40rpx;
   opacity: 0.8;
-}
-
-@keyframes shine {
-  0% {
-    transform: scale(1) rotate(0deg);
-    opacity: 0.8;
-  }
-  50% {
-    transform: scale(1.1) rotate(180deg);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1) rotate(360deg);
-    opacity: 0.8;
-  }
 } 

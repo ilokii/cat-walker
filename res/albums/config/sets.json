@@ -5,32 +5,17 @@
             {
                 "set_id": "2025Q1_1",
                 "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/sets/2025Q1/2025Q1_1.png",
-                "name": "火焰套牌",
-                "rewards": {
-                  "1": "badge_2025Q1_copper_1",
-                  "2": "badge_2025Q1_silver_1",
-                  "3": "badge_2025Q1_gold_1"
-                }
+                "name": "火焰套牌"
             },
             {
                 "set_id": "2025Q1_2",
                 "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/sets/2025Q1/2025Q1_2.png",
-                "name": "冰雪套牌",
-                "rewards": {
-                  "1": "badge_2025Q1_copper_2",
-                  "2": "badge_2025Q1_silver_2",
-                  "3": "badge_2025Q1_gold_2"
-                }
+                "name": "冰雪套牌"
             },
             {
                 "set_id": "2025Q1_3",
                 "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/sets/2025Q1/2025Q1_3.png",
-                "name": "风之套牌",
-                "rewards": {
-                  "1": "badge_2025Q1_copper_3",
-                  "2": "badge_2025Q1_silver_3",
-                  "3": "badge_2025Q1_gold_3"
-                }
+                "name": "风之套牌"
             }
         ]
     },
@@ -40,32 +25,17 @@
             {
                 "set_id": "2025Q2_1",
                 "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/sets/2025Q2/2025Q2_1.png",
-                "name": "雷电套牌",
-                "rewards": {
-                  "1": "badge_2025Q2_copper_1",
-                  "2": "badge_2025Q2_silver_1",
-                  "3": "badge_2025Q2_gold_1"
-                }
+                "name": "雷电套牌"
             },
             {
                 "set_id": "2025Q2_2",
                 "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/sets/2025Q2/2025Q2_2.png",
-                "name": "大地套牌",
-                "rewards": {
-                  "1": "badge_2025Q2_copper_2",
-                  "2": "badge_2025Q2_silver_2",
-                  "3": "badge_2025Q2_gold_2"
-                }
+                "name": "大地套牌"
             },
             {
                 "set_id": "2025Q2_3",
                 "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/sets/2025Q2/2025Q2_3.png",
-                "name": "光明套牌",
-                "rewards": {
-                  "1": "badge_2025Q2_copper_3",
-                  "2": "badge_2025Q2_silver_3",
-                  "3": "badge_2025Q2_gold_3"
-                }
+                "name": "光明套牌"
             }
         ]
     }

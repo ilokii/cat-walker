@@ -2,19 +2,6 @@
   <!-- 套牌标题 -->
   <view class="set-title">{{setInfo.name}}</view>
   
-  <!-- 套牌奖励 -->
-  <view class="set-reward-container">
-    <view class="set-reward">
-      <image class="reward-badge" 
-             src="{{rewardPath}}" 
-             mode="aspectFit" 
-             binderror="onImageError" 
-             data-type="reward">
-      </image>
-    </view>
-    <view class="reward-tip">完成套牌收集即可获得勋章碎片</view>
-  </view>
-  
   <!-- 套牌收集进度 -->
   <view class="progress-container">
     <view class="progress-bar">

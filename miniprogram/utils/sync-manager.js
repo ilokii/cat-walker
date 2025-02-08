@@ -39,13 +39,17 @@ const CLOUD_PATH = {
   SETS: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/config/sets.json',
   CARDS: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/config/cards.json',
   UNCOLLECTED_CARD: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/commons/uncollect_card.png',
-  ALBUM_ICON: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/commons/album.png'
+  ALBUM_ICON: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/commons/album.png',
+  BADGES: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/config/badge.json'
 }
 
 class SyncManager {
   constructor() {
     this.db = null
-    this.localData = { ...defaultLocalData }
+    this.localData = { 
+      ...defaultLocalData,
+      badges: null // 初始化徽章列表为 null
+    }
     this.isInitialized = false
     this.REFRESH_COOLDOWN = 10 * 60 * 1000
   }
@@ -126,7 +130,8 @@ class SyncManager {
           dailyTaskData: {
             lastCompletedDate: userData.dailyTaskData?.lastCompletedDate || null,
             completedTasks: userData.dailyTaskData?.completedTasks || []
-          }
+          },
+          badges: userData.badges || [] // 同步徽章数据
         }
       } else {
         // 如果没有找到用户数据，创建新用户
@@ -168,6 +173,7 @@ class SyncManager {
           lastCompletedDate: null,
           completedTasks: []
         },
+        badges: [], // 初始化空的徽章列表
         createTime: this.db.serverDate(),
         updateTime: this.db.serverDate()
       }
@@ -222,7 +228,8 @@ class SyncManager {
           dailyTaskData: {
             lastCompletedDate: userData.dailyTaskData?.lastCompletedDate || null,
             completedTasks: userData.dailyTaskData?.completedTasks || []
-          }
+          },
+          badges: userData.badges || [] // 同步徽章数据
         }
 
         console.log('同步云端数据 - 更新本地数据完成')
@@ -734,6 +741,7 @@ class SyncManager {
         data: {
           albumData: this.localData.albumData,
           dailyTaskData: this.localData.dailyTaskData,
+          badges: this.localData.badges, // 添加徽章数据
           updateTime: this.db.serverDate()
         }
       })
@@ -867,6 +875,75 @@ class SyncManager {
     } catch (error) {
       console.error('重置赛季数据失败：', error)
       return false
+    }
+  }
+
+  // 徽章相关方法
+  
+  // 获取徽章配置
+  async getBadgeConfig() {
+    try {
+      const { tempFilePath } = await wx.cloud.downloadFile({
+        fileID: CLOUD_PATH.BADGES
+      })
+      return await this.readJSONFile(tempFilePath)
+    } catch (error) {
+      console.error('获取徽章配置失败：', error)
+      return null
+    }
+  }
+
+  // 初始化用户徽章数据
+  async initBadges() {
+    if (this.localData.badges === null) {
+      this.localData.badges = []
+      await this.saveLocalData()
+      await this.syncToCloud()
+    }
+  }
+
+  // 获取用户所有徽章
+  getBadges() {
+    return this.localData.badges || []
+  }
+
+  // 获取指定徽章信息
+  getBadge(badgeId) {
+    return this.localData.badges?.find(b => b.id === badgeId) || null
+  }
+
+  // 添加或更新徽章
+  async addBadge(badgeId, level) {
+    try {
+      // 确保徽章列表已初始化
+      if (!this.localData.badges) {
+        await this.initBadges()
+      }
+
+      const existingBadge = this.localData.badges.find(b => b.id === badgeId)
+      let isUpdated = false
+
+      if (!existingBadge) {
+        // 新徽章
+        this.localData.badges.push({ id: badgeId, level })
+        isUpdated = true
+        console.log(`添加新徽章 - ID: ${badgeId}, 等级: ${level}`)
+      } else if (level > existingBadge.level) {
+        // 升级徽章
+        existingBadge.level = level
+        isUpdated = true
+        console.log(`升级徽章 - ID: ${badgeId}, 新等级: ${level}`)
+      }
+
+      if (isUpdated) {
+        await this.saveLocalData()
+        await this.syncToCloud()
+      }
+
+      return isUpdated
+    } catch (error) {
+      console.error('添加/更新徽章失败：', error)
+      throw error
     }
   }
 }

@@ -41,6 +41,18 @@ Page({
       await syncManager.initialize()
       console.log('数据管理器初始化完成')
 
+      // 初始化徽章系统
+      this.setData({ loadingText: '正在加载徽章数据...' })
+      console.log('正在初始化徽章系统...')
+      const badgeConfig = await syncManager.getBadgeConfig()
+      if (badgeConfig) {
+        console.log('徽章配置加载成功:', badgeConfig)
+        await syncManager.initBadges()
+        console.log('徽章系统初始化完成')
+      } else {
+        console.warn('徽章配置加载失败')
+      }
+
       // 预加载卡牌配置数据
       this.setData({ loadingText: '正在加载卡册数据...' })
       console.log('正在初始化卡册管理器...')

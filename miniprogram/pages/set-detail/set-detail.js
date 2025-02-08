@@ -4,7 +4,6 @@ const syncManager = require('../../utils/sync-manager')
 // 云存储文件路径配置
 const CLOUD_PATH = {
   UNCOLLECTED_CARD: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/commons/uncollect_card.png',
-  DEFAULT_REWARD: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/commons/default_reward.png',
   BASE_CARDS: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/cards'
 }
 
@@ -16,7 +15,6 @@ Page({
     collectedCards: [],
     collectionLevel: 1,
     uncollectedCardPath: CLOUD_PATH.UNCOLLECTED_CARD,
-    rewardPath: '',
     progress: {
       collected: 0,
       total: 0
@@ -52,20 +50,9 @@ Page({
       return;
     }
 
-    // 处理奖励图片路径
-    let rewardPath = CLOUD_PATH.DEFAULT_REWARD;
-    const rewardId = setInfo.rewards?.[this.data.collectionLevel];
-    if (rewardId) {
-      // 将相对路径转换为完整的云存储路径
-      const [season, metal, level] = rewardId.split('_');
-      rewardPath = `${CLOUD_PATH.BASE_CARDS}/${season}/${rewardId}.png`;
-    }
-    console.log('奖励图片路径:', rewardPath);
-
     this.setData({ 
       setId,
-      setInfo,
-      rewardPath
+      setInfo
     });
 
     await this.loadSetData();

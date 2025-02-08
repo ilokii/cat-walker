@@ -1,0 +1,38 @@
+{
+  "data": [
+    {
+      "id": 202501,
+      "levels": [
+        {
+          "level": 1,
+          "icon": "badge_202501_1.png"
+        },
+        {
+          "level": 2,
+          "icon": "badge_202501_2.png"
+        },
+        {
+          "level": 3,
+          "icon": "badge_202501_3.png"
+        }
+      ]
+    },
+    {
+      "id": 202502,
+      "levels": [
+        {
+          "level": 1,
+          "icon": "badge_202502_1.png"
+        },
+        {
+          "level": 2,
+          "icon": "badge_202502_2.png"
+        },
+        {
+          "level": 3,
+          "icon": "badge_202502_3.png"
+        }
+      ]
+    }
+  ]
+}
