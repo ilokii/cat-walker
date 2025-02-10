@@ -27,7 +27,6 @@
 }
 
 /* 通用区域样式 */
-.stats-section,
 .travel-section {
   background-color: #ffffff;
   border-radius: 24rpx;
@@ -56,57 +55,6 @@
   height: 32rpx;
   background: #07c160;
   border-radius: 4rpx;
-}
-
-.section-title.center {
-  text-align: center;
-}
-
-.section-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  margin-bottom: 20rpx;
-}
-
-/* 统计区域样式 */
-.stats-content {
-  display: flex;
-  flex-direction: column;
-  gap: 20rpx;
-}
-
-.stats-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 40rpx;
-  min-height: 90rpx;
-}
-
-.stats-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8rpx;
-  min-height: 90rpx;
-  justify-content: center;
-}
-
-.stats-label {
-  font-size: 28rpx;
-  color: #666;
-  font-weight: 500;
-  flex-shrink: 0;
-}
-
-.stats-value {
-  font-size: 36rpx;
-  color: #333;
-  font-weight: bold;
-  flex-shrink: 0;
-  margin-top: 4rpx;
 }
 
 /* 城市信息区域样式 */
@@ -221,7 +169,7 @@
   font-weight: 500;
 }
 
-/* 到达提示弹窗样式 */
+/* 到达提示弹窗 */
 .arrival-modal {
   position: fixed;
   top: 0;

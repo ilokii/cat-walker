@@ -1,3 +1,4 @@
+const app = getApp()
 const syncManager = require('../../utils/sync-manager')
 const { provincesData } = require('../../data/provinces')
 const { citiesData } = require('../../data/cities')
@@ -10,15 +11,6 @@ const ANIMATION_STEPS = 30 // 动画的步骤数
 
 Page({
   data: {
-    // 统计数据
-    totalKilometers: '0.00',
-    totalSteps: 0,
-    visitedProvinces: 0,
-    totalProvinces: Object.keys(provincesData).length,
-    visitedCities: 0,
-    totalCities: Object.keys(citiesData).length,
-    
-    // 当前旅行数据
     currentCity: null,
     currentProvince: null,
     targetCity: null,
@@ -27,19 +19,17 @@ Page({
     progressSteps: 0,
     totalRequiredSteps: 0,
     showArrivalModal: false,
-    animatingProgress: false,
-    
-    // 添加后台切换标记
+    travelDays: 0,
+    testPackId: '',
     hasBeenInBackground: false,
     envId: '',
-    testPackId: '1', // 默认卡包ID
     userInfo: null,
     hasUserInfo: false,
     canIUseGetUserProfile: false,
     packs: []
   },
 
-  async onLoad() {
+  onLoad: function() {
     if (wx.getUserProfile) {
       this.setData({
         canIUseGetUserProfile: true
@@ -49,11 +39,10 @@ Page({
     this.setData({
       envId: getApp().globalData.envId
     })
-    await this.initializeData()
+    this.initializeData()
   },
 
-  onShow() {
-    // 如果之前进入过后台，则触发刷新
+  onShow: function() {
     if (this.data.hasBeenInBackground) {
       this.onRefresh()
       this.setData({ hasBeenInBackground: false })
@@ -62,7 +51,6 @@ Page({
   },
 
   onHide() {
-    // 标记已进入后台
     this.setData({ hasBeenInBackground: true })
   },
 
@@ -70,7 +58,7 @@ Page({
     try {
       await syncManager.initialize()
       await this.initManagers()
-      this.refreshData()
+      await this.refreshData()
     } catch (err) {
       console.error('初始化数据失败：', err)
       wx.showToast({
@@ -82,9 +70,7 @@ Page({
 
   async initManagers() {
     try {
-      // 初始化卡包管理器
       await packManager.init()
-      // 加载卡包数据
       const packs = packManager.packsData || []
       this.setData({ packs })
     } catch (error) {
@@ -96,127 +82,84 @@ Page({
     }
   },
 
-  refreshData() {
-    const localData = syncManager.getLocalData()
-    
-    // 计算总公里数（1步 = 0.75米）
-    const totalKilometers = (localData.totalSteps * 0.75 / 1000).toFixed(2)
-    
-    // 计算已访问省份数（去重）
-    let visitedProvinces = 0
-    if (localData.visitedCities && Array.isArray(localData.visitedCities)) {
-      const validCities = localData.visitedCities.filter(city => {
-        const isValid = citiesData[city] && citiesData[city].province
-        if (!isValid) {
-          console.warn('城市数据无效：', city)
-        }
-        return isValid
-      })
-      visitedProvinces = new Set(validCities.map(city => citiesData[city].province)).size
-    }
-    
-    // 获取当前城市和目标城市信息
-    let currentCity = null
-    if (localData.currentCity) {
-      const cityData = citiesData[localData.currentCity]
-      if (cityData) {
-        currentCity = {
-          name: localData.currentCity,
-          province: cityData.province,
-          icon: cityData.icon
-        }
-      } else {
-        console.warn('当前城市数据无效：', localData.currentCity)
-      }
-    }
-    
-    let targetCity = null
-    if (localData.targetCity) {
-      const cityData = citiesData[localData.targetCity]
-      if (cityData) {
-        targetCity = {
-          name: localData.targetCity,
-          province: cityData.province,
-          icon: cityData.icon
-        }
-      } else {
-        console.warn('目标城市数据无效：', localData.targetCity)
-      }
-    }
-    
-    // 计算进度
-    let progress = 0
-    let progressSteps = 0
-    let totalRequiredSteps = 0
-    let hasArrived = false
-    let travelDays = 0
-    
-    if (currentCity && targetCity) {
-      const distance = citiesData[currentCity.name]?.neighbors?.[targetCity.name]
+  async refreshData() {
+    try {
+      const localData = syncManager.getLocalData()
+      if (!localData) return
       
-      if (distance) {
-        totalRequiredSteps = distance.steps
-        const tempSteps = syncManager.getTotalStepsTemp()
-        const finalSteps = localData.totalSteps
-        
-        // 计算当前显示的进度
-        progressSteps = Math.max(0, tempSteps - localData.startSteps)
-        progress = ((progressSteps / totalRequiredSteps) * 100).toFixed(2)
-        
-        // 计算最终进度
-        const finalProgressSteps = Math.max(0, finalSteps - localData.startSteps)
-        
-        // 检查是否需要播放动画
-        if (tempSteps !== finalSteps && !this.data.animatingProgress) {
-          this.playProgressAnimation(progressSteps, finalProgressSteps, totalRequiredSteps)
-        } else if (finalProgressSteps >= totalRequiredSteps && !this.data.animatingProgress) {
-          // 如果已经到达目标城市，且不在动画中，直接显示到达弹窗
-          hasArrived = true
+      // 获取当前城市和目标城市信息
+      let currentCity = null
+      let currentProvince = null
+      if (localData.currentCity) {
+        const cityData = citiesData[localData.currentCity]
+        if (cityData) {
+          currentCity = {
+            name: localData.currentCity
+          }
+          currentProvince = provincesData[cityData.province]
         }
-        
-        // 检查是否到达目标城市
-        if (finalProgressSteps >= totalRequiredSteps) {
-          // 计算旅行天数
-          const startDate = new Date(localData.startDate)
-          const currentDate = new Date()
-          const startDay = Math.floor(startDate.getTime() / (24 * 60 * 60 * 1000))
-          const currentDay = Math.floor(currentDate.getTime() / (24 * 60 * 60 * 1000))
-          travelDays = currentDay - startDay
-        }
-      } else {
-        console.warn('找不到城市间距离信息：', {
-          from: currentCity.name,
-          to: targetCity.name
-        })
       }
-    }
-    
-    // 只在非动画状态下更新showArrivalModal
-    const updates = {
-      totalKilometers,
-      totalSteps: localData.totalSteps,
-      visitedProvinces,
-      visitedCities: localData.visitedCities && Array.isArray(localData.visitedCities) ? 
-        localData.visitedCities.filter(city => citiesData[city]).length : 0,
-      currentCity,
-      currentProvince: currentCity ? provincesData[currentCity.province] : null,
-      targetCity,
-      targetProvince: targetCity ? provincesData[targetCity.province] : null,
-      progress: progress || 0,
-      progressSteps: progressSteps || 0,
-      totalRequiredSteps: totalRequiredSteps || 0,
-      travelDays: travelDays || 0
-    }
+      
+      let targetCity = null
+      let targetProvince = null
+      if (localData.targetCity) {
+        const cityData = citiesData[localData.targetCity]
+        if (cityData) {
+          targetCity = {
+            name: localData.targetCity
+          }
+          targetProvince = provincesData[cityData.province]
+        }
+      }
 
-    // 只在非动画状态下更新showArrivalModal
-    if (!this.data.animatingProgress) {
-      updates.showArrivalModal = hasArrived
+      // 计算进度
+      let progress = 0
+      let progressSteps = 0
+      let totalRequiredSteps = 0
+      let travelDays = 0
+      let isArrived = false
+
+      if (currentCity && targetCity) {
+        const distance = citiesData[currentCity.name]?.neighbors?.[targetCity.name]
+        if (distance) {
+          totalRequiredSteps = distance.steps
+          const tempSteps = syncManager.getTotalStepsTemp()
+          progressSteps = Math.max(0, tempSteps - localData.startSteps)
+          progress = ((progressSteps / totalRequiredSteps) * 100).toFixed(2)
+
+          // 检查是否到达目标城市
+          if (progressSteps >= totalRequiredSteps) {
+            isArrived = true
+            // 计算旅行天数
+            const startDate = new Date(localData.startDate)
+            const currentDate = new Date()
+            const startDay = Math.floor(startDate.getTime() / (24 * 60 * 60 * 1000))
+            const currentDay = Math.floor(currentDate.getTime() / (24 * 60 * 60 * 1000))
+            travelDays = currentDay - startDay
+          }
+        }
+      }
+
+      this.setData({
+        currentCity,
+        currentProvince,
+        targetCity,
+        targetProvince,
+        progress: progress || 0,
+        progressSteps: progressSteps || 0,
+        totalRequiredSteps: totalRequiredSteps || 0,
+        showArrivalModal: isArrived,
+        travelDays: travelDays || 0
+      })
+    } catch (error) {
+      console.error('刷新数据失败：', error)
+      wx.showToast({
+        title: '数据刷新失败',
+        icon: 'none'
+      })
     }
-    
-    this.setData(updates)
   },
 
-  // 播放进度条动画
   playProgressAnimation(startSteps, endSteps, totalRequiredSteps) {
     this.setData({ animatingProgress: true })
     
@@ -225,7 +168,6 @@ Page({
     
     const updateProgress = () => {
       if (currentStep >= ANIMATION_STEPS) {
-        // 动画结束
         this.setData({ 
           progressSteps: endSteps,
           progress: ((endSteps / totalRequiredSteps) * 100).toFixed(2),
@@ -233,7 +175,6 @@ Page({
         })
         syncManager.setTotalStepsTemp(syncManager.getLocalData().totalSteps)
         
-        // 检查是否需要显示到达弹窗
         if (endSteps >= totalRequiredSteps) {
           setTimeout(() => {
             this.setData({ showArrivalModal: true })
@@ -242,7 +183,6 @@ Page({
         return
       }
       
-      // 使用缓动函数计算当前进度
       const progress = currentStep / ANIMATION_STEPS
       const easeProgress = this.easeOutCubic(progress)
       const currentSteps = startSteps + (endSteps - startSteps) * easeProgress
@@ -260,118 +200,52 @@ Page({
     updateProgress()
   },
 
-  // 缓动函数
   easeOutCubic(x) {
     return 1 - Math.pow(1 - x, 3)
   },
 
-  // 刷新按钮点击处理
   onRefresh() {
     if (syncManager.isRefreshCooldown()) {
       return
     }
 
-    // 不在冷却中，跳转到loading页面
     wx.redirectTo({
       url: '/pages/loading/loading'
     })
   },
 
-  async onPlanNextTravel() {
-    try {
-      // 获取当前日期的步数
-      const weRunData = await syncManager.getWeRunData()
-      const serverDate = syncManager.getServerDate()
-      
-      const todaySteps = syncManager.getTodaySteps(weRunData)
-      const localData = syncManager.getLocalData()
-      
-      // 更新最后步数信息
-      await syncManager.updateLastStepInfo(serverDate, todaySteps)
-      
-      // 更新当前城市
-      await syncManager.updateCurrentCity(localData.targetCity)
-      
-      // 添加已访问城市
-      await syncManager.addVisitedCity(localData.targetCity)
-      
-      // 关闭弹窗
-      this.setData({
-        showArrivalModal: false
-      })
-      
-      // 跳转到城市选择页面
-      wx.navigateTo({
-        url: '/pages/city/city'
-      })
-    } catch (err) {
-      console.error('处理到达城市失败：', err)
-      wx.showToast({
-        title: '处理失败，请重试',
-        icon: 'none'
-      })
-    }
+  onPlanNextTravel() {
+    this.setData({
+      showArrivalModal: false
+    })
+    wx.navigateTo({
+      url: '/pages/city/city'
+    })
   },
 
-  // 打开卡册
   onAlbumTap() {
-    const app = getApp()
-    if (!app.globalData.isInitialized) {
-      wx.showToast({
-        title: '数据加载中...',
-        icon: 'loading',
-        duration: 2000
-      })
-      return
-    }
     wx.navigateTo({
       url: '/pages/album/album'
     })
   },
 
-  // 测试卡包ID输入处理
   onTestPackIdInput(e) {
     this.setData({
       testPackId: e.detail.value
     })
   },
 
-  // 测试开启卡包
-  async onTestOpenPack() {
-    console.log('点击开包按钮')
-    console.log('当前输入ID:', this.data.testPackId)
-    console.log('packManager状态:', packManager.packsData)
-
-    const packId = parseInt(this.data.testPackId)
-    if (!packId || packId < 1 || packId > 5) {
-      console.log('ID验证失败:', packId)
+  onTestOpenPack() {
+    if (!this.data.testPackId) {
       wx.showToast({
-        title: '请输入1-5的数字',
+        title: '请输入ID',
         icon: 'none'
       })
       return
     }
 
-    // 检查packManager是否初始化
-    if (!packManager.packsData) {
-      console.log('packManager未初始化')
-      try {
-        await packManager.init()
-      } catch (error) {
-        console.error('packManager初始化失败:', error)
-        wx.showToast({
-          title: '加载失败，请重试',
-          icon: 'none'
-        })
-        return
-      }
-    }
-
-    console.log('准备跳转到卡包页面')
     wx.navigateTo({
-      url: `/pages/pack-open/pack-open?id=${packId}`,
-      success: () => console.log('跳转成功'),
-      fail: (error) => console.error('跳转失败:', error)
+      url: `/pages/pack-open/pack-open?packId=${this.data.testPackId}`
     })
   },
 
@@ -385,12 +259,10 @@ Page({
       return
     }
 
-    // 检查 packManager 是否已初始化
     if (!packManager.packsData) {
       console.log('packManager未初始化，尝试重新初始化')
       await packManager.init()
       
-      // 再次检查初始化结果
       if (!packManager.packsData) {
         console.error('packManager初始化失败')
         wx.showToast({
