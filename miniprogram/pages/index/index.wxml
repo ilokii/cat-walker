@@ -4,6 +4,9 @@
     <view class="nav-title">猫咪漫游记</view>
   </view>
 
+  <!-- 用户入口 -->
+  <user-entry></user-entry>
+
   <!-- 当前旅行区域 -->
   <view class="travel-section">
     <view class="section-title">当前旅行</view>

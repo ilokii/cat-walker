@@ -1,6 +1,7 @@
 {
   "navigationStyle": "custom",
   "usingComponents": {
-    "daily-tasks": "../../components/daily-tasks/daily-tasks"
+    "daily-tasks": "/components/daily-tasks/daily-tasks",
+    "user-entry": "/components/user-entry/user-entry"
   }
 }

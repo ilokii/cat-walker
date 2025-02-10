@@ -30,7 +30,10 @@ const defaultLocalData = {
   dailyTaskData: {
     lastCompletedDate: null, // 最后完成任务的日期
     completedTasks: [], // 已完成的任务ID列表
-  }
+  },
+
+  // 当前佩戴的勋章
+  currentBadge: null // { id: number, level: number }
 }
 
 // 云存储文件路径配置
@@ -131,7 +134,8 @@ class SyncManager {
             lastCompletedDate: userData.dailyTaskData?.lastCompletedDate || null,
             completedTasks: userData.dailyTaskData?.completedTasks || []
           },
-          badges: userData.badges || [] // 同步徽章数据
+          badges: userData.badges || [], // 同步徽章数据
+          currentBadge: userData.currentBadge || null // 同步当前佩戴的勋章
         }
       } else {
         // 如果没有找到用户数据，创建新用户
@@ -174,6 +178,7 @@ class SyncManager {
           completedTasks: []
         },
         badges: [], // 初始化空的徽章列表
+        currentBadge: null, // 初始化当前佩戴的勋章
         createTime: this.db.serverDate(),
         updateTime: this.db.serverDate()
       }
@@ -229,7 +234,8 @@ class SyncManager {
             lastCompletedDate: userData.dailyTaskData?.lastCompletedDate || null,
             completedTasks: userData.dailyTaskData?.completedTasks || []
           },
-          badges: userData.badges || [] // 同步徽章数据
+          badges: userData.badges || [], // 同步徽章数据
+          currentBadge: userData.currentBadge || null // 同步当前佩戴的勋章
         }
 
         console.log('同步云端数据 - 更新本地数据完成')
@@ -741,7 +747,8 @@ class SyncManager {
         data: {
           albumData: this.localData.albumData,
           dailyTaskData: this.localData.dailyTaskData,
-          badges: this.localData.badges, // 添加徽章数据
+          badges: this.localData.badges,
+          currentBadge: this.localData.currentBadge, // 添加当前佩戴的勋章
           updateTime: this.db.serverDate()
         }
       })
@@ -936,6 +943,10 @@ class SyncManager {
       }
 
       if (isUpdated) {
+        // 更新当前佩戴的勋章
+        this.localData.currentBadge = { id: badgeId, level }
+        console.log('更新当前佩戴的勋章:', this.localData.currentBadge)
+        
         await this.saveLocalData()
         await this.syncToCloud()
       }
@@ -945,6 +956,11 @@ class SyncManager {
       console.error('添加/更新徽章失败：', error)
       throw error
     }
+  }
+
+  // 获取当前佩戴的勋章
+  getCurrentBadge() {
+    return this.localData.currentBadge
   }
 }
 

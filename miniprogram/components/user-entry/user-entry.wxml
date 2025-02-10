@@ -1,0 +1,22 @@
+<view class="user-entry">
+  <view class="user-info">
+    <!-- 用户头像 -->
+    <image class="user-avatar" 
+           src="{{userAvatar}}" 
+           mode="aspectFill">
+    </image>
+    
+    <!-- 用户徽章 -->
+    <image class="user-badge" 
+           src="{{badgeIcon}}" 
+           mode="aspectFit">
+    </image>
+  </view>
+
+  <!-- 详情按钮 -->
+  <image class="detail-btn"
+         src="/images/detail.png"
+         mode="aspectFit"
+         bindtap="onDetailTap">
+  </image>
+</view> 
