@@ -1,4 +1,6 @@
 {
   "component": true,
-  "usingComponents": {}
+  "usingComponents": {
+    "user-modal": "/components/user-modal/user-modal"
+  }
 } 

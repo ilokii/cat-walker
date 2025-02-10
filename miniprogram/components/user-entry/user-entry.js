@@ -7,7 +7,8 @@ Component({
   data: {
     userAvatar: null,
     currentBadge: null,
-    badgeIcon: ''
+    badgeIcon: '',
+    showUserModal: false
   },
 
   lifetimes: {
@@ -50,9 +51,20 @@ Component({
 
     // 打开账户界面
     onDetailTap() {
-      wx.navigateTo({
-        url: '/pages/user/user'
+      this.setData({
+        showUserModal: true
       })
+    },
+
+    // 关闭账户界面
+    onModalClose(e) {
+      this.setData({
+        showUserModal: false
+      })
+      // 如果需要刷新，则更新用户信息
+      if (e.detail.needRefresh) {
+        this.updateUserInfo()
+      }
     }
   }
 }) 

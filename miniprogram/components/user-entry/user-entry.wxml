@@ -19,4 +19,7 @@
          mode="aspectFit"
          bindtap="onDetailTap">
   </image>
+
+  <!-- 用户弹窗 -->
+  <user-modal show="{{showUserModal}}" bind:close="onModalClose"></user-modal>
 </view> 

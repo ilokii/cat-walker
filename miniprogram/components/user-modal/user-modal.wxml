@@ -1,0 +1,61 @@
+<view class="modal" wx:if="{{show}}">
+  <view class="modal-content">
+    <!-- 标题和关闭按钮 -->
+    <view class="modal-header">
+      <text class="modal-title">账户</text>
+      <view class="close-btn" bindtap="onClose">×</view>
+    </view>
+
+    <!-- 用户头像 -->
+    <view class="avatar-section">
+      <image class="user-avatar" src="{{userAvatar}}" mode="aspectFill"></image>
+    </view>
+
+    <!-- 统计区域 -->
+    <view class="stats-section">
+      <view class="stat-item">
+        <text class="stat-label">已加入天数</text>
+        <text class="stat-value">{{joinDays}}天</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">已行走步数</text>
+        <text class="stat-value">{{totalSteps}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">已行走公里数</text>
+        <text class="stat-value">{{totalKm}}km</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">已访问城市</text>
+        <text class="stat-value">{{visitedCities}}({{visitedCitiesPercentage}}%)</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">已访问省份</text>
+        <text class="stat-value">{{visitedProvinces}}({{visitedProvincesPercentage}}%)</text>
+      </view>
+    </view>
+
+    <!-- 徽章选择区域 -->
+    <view class="badges-section">
+      <text class="section-title">我的徽章</text>
+      <scroll-view class="badges-list" scroll-y wx:if="{{badges.length > 0}}">
+        <view class="badges-grid">
+          <view class="badge-item {{badge.id === selectedBadgeId ? 'selected' : ''}}" 
+                wx:for="{{badges}}" 
+                wx:key="id" 
+                wx:for-item="badge"
+                bindtap="onBadgeSelect"
+                data-badge-id="{{badge.id}}">
+            <image class="badge-icon" 
+                   src="{{badge.icon}}" 
+                   mode="aspectFit">
+            </image>
+          </view>
+        </view>
+      </scroll-view>
+      <view class="no-badges" wx:else>
+        <button class="get-badges-btn" bindtap="onGetBadges">前往获取</button>
+      </view>
+    </view>
+  </view>
+</view> 
