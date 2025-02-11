@@ -200,7 +200,7 @@ Component({
                 })
                 
                 // 通知父组件关闭并刷新
-                this.triggerEvent('close', { detail: { needRefresh: true } })
+                this.triggerEvent('close', { needRefresh: true })
                 return
               } else {
                 throw new Error('数据库更新失败')
@@ -214,19 +214,19 @@ Component({
               title: '更新徽章失败',
               icon: 'error'
             })
-            this.triggerEvent('close', { detail: { needRefresh: false } })
+            this.triggerEvent('close', { needRefresh: false })
             return
           }
         } else {
           console.warn('未找到选中的徽章信息')
-          this.triggerEvent('close', { detail: { needRefresh: false } })
+          this.triggerEvent('close', { needRefresh: false })
           return
         }
       } else {
         console.log('徽章未发生变更，无需更新')
       }
       
-      this.triggerEvent('close', { detail: { needRefresh: false } })
+      this.triggerEvent('close', { needRefresh: false })
     }
   }
 }) 
