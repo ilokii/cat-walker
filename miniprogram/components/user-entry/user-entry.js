@@ -74,6 +74,13 @@ Component({
       })
     },
 
+    // 打开卡牌界面
+    onAlbumTap() {
+      wx.navigateTo({
+        url: '/pages/album/album'
+      })
+    },
+
     // 关闭账户界面
     onModalClose(e) {
       console.log('收到关闭事件:', e)

@@ -215,11 +215,8 @@ Page({
   },
 
   onPlanNextTravel() {
-    this.setData({
-      showArrivalModal: false
-    })
     wx.navigateTo({
-      url: '/pages/city/city'
+      url: '/pages/travel-plan/travel-plan'
     })
   },
 
@@ -236,17 +233,11 @@ Page({
   },
 
   onTestOpenPack() {
-    if (!this.data.testPackId) {
-      wx.showToast({
-        title: '请输入ID',
-        icon: 'none'
+    if (this.data.testPackId) {
+      wx.navigateTo({
+        url: `/pages/pack-opening/pack-opening?packId=${this.data.testPackId}`
       })
-      return
     }
-
-    wx.navigateTo({
-      url: `/pages/pack-open/pack-open?packId=${this.data.testPackId}`
-    })
   },
 
   async handlePackTap(e) {

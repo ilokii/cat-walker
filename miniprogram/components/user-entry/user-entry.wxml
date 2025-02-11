@@ -14,12 +14,23 @@
     </view>
   </view>
 
+  <!-- 卡牌按钮 -->
+  <view class="album-btn-container" bindtap="onAlbumTap">
+    <image class="album-btn-icon"
+           src="/images/album.png"
+           mode="aspectFit">
+    </image>
+    <text class="album-btn-text">卡牌</text>
+  </view>
+
   <!-- 详情按钮 -->
-  <image class="detail-btn"
-         src="/images/detail.png"
-         mode="aspectFit"
-         bindtap="onDetailTap">
-  </image>
+  <view class="detail-btn-container" bindtap="onDetailTap">
+    <image class="detail-btn-icon"
+           src="/images/detail.png"
+           mode="aspectFit">
+    </image>
+    <text class="detail-btn-text">详情</text>
+  </view>
 
   <!-- 用户弹窗 -->
   <user-modal show="{{showUserModal}}" bind:close="onModalClose"></user-modal>

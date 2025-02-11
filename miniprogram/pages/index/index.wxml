@@ -61,11 +61,6 @@
 
   <!-- 底部功能区 -->
   <view class="bottom-panel">
-    <!-- 卡册入口 -->
-    <view class="album-entry" bindtap="onAlbumTap">
-      <image class="album-icon" src="/images/album.png" mode="aspectFit"></image>
-    </view>
-
     <!-- 测试组件 -->
     <view class="test-panel">
       <input class="test-input" type="number" value="{{testPackId}}" bindinput="onTestPackIdInput" placeholder="ID"/>
