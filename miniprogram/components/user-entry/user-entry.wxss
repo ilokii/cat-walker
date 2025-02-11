@@ -82,7 +82,7 @@
   width: 80rpx;
   height: 120rpx;
   padding: 10rpx;
-  gap: 8rpx;
+  gap: 16rpx;
   border: 2rpx solid rgba(0, 0, 0, 0.2);
   box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
   position: absolute;
@@ -98,16 +98,17 @@
 }
 
 .detail-btn-icon, .album-btn-icon {
-  width: 50rpx;
-  height: 50rpx;
+  width: 56rpx;
+  height: 56rpx;
   opacity: 0.7;
-  margin-top: 10rpx;
+  margin-top: 6rpx;
 }
 
 .detail-btn-text, .album-btn-text {
-  font-size: 24rpx;
+  font-size: 28rpx;
   color: #666;
-  margin-bottom: 10rpx;
+  margin-bottom: 6rpx;
+  font-weight: 500;
 }
 
 .detail-btn {
