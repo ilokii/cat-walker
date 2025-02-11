@@ -16,6 +16,7 @@ const defaultLocalData = {
   },
   startDate: new Date(1900, 0, 1, 0, 0, 0),
   lastRefreshTime: 0,
+  registerDate: null, // 添加注册日期字段
   
   // 卡牌收集数据
   albumData: {
@@ -123,6 +124,7 @@ class SyncManager {
           },
           startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0),
           lastRefreshTime: 0,
+          registerDate: userData.registerDate || null,
           albumData: {
             currentSeasonId: userData.albumData?.currentSeasonId || '',
             collectedCards: userData.albumData?.collectedCards || [],
@@ -152,6 +154,7 @@ class SyncManager {
   async createNewUser() {
     try {
       const collection = this.db.collection('users')
+      const serverDate = this.db.serverDate()
       const data = {
         userAvatar: null,
         currentCity: null,
@@ -166,6 +169,7 @@ class SyncManager {
         },
         startDate: new Date(1900, 0, 1, 0, 0, 0),
         lastRefreshTime: 0,
+        registerDate: serverDate, // 添加注册日期
         albumData: {
           currentSeasonId: '',
           collectedCards: [],
@@ -179,8 +183,8 @@ class SyncManager {
         },
         badges: [], // 初始化空的徽章列表
         currentBadge: null, // 初始化当前佩戴的勋章
-        createTime: this.db.serverDate(),
-        updateTime: this.db.serverDate()
+        createTime: serverDate,
+        updateTime: serverDate
       }
       
       await collection.add({ data })
@@ -223,6 +227,7 @@ class SyncManager {
           },
           startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0),
           lastRefreshTime: this.localData.lastRefreshTime,
+          registerDate: userData.registerDate || null,
           albumData: {
             currentSeasonId: userData.albumData?.currentSeasonId || '',
             collectedCards: userData.albumData?.collectedCards || [],

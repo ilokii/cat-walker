@@ -21,6 +21,7 @@
   display: flex;
   flex-direction: column;
   gap: 40rpx;
+  position: relative;
 }
 
 .modal-header {
@@ -33,9 +34,14 @@
   font-size: 40rpx;
   font-weight: bold;
   color: #333;
+  text-align: center;
+  margin-bottom: 20rpx;
 }
 
 .close-btn {
+  position: absolute;
+  right: 30rpx;
+  top: 30rpx;
   width: 60rpx;
   height: 60rpx;
   display: flex;
@@ -46,16 +52,64 @@
   font-weight: 300;
 }
 
-.avatar-section {
+.user-info {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  padding: 20rpx 10rpx;
+  gap: 40rpx;
+}
+
+.avatar-container {
+  position: relative;
+  width: 130rpx;
+  height: 130rpx;
+  flex-shrink: 0;
+  margin-left: 0;
 }
 
 .user-avatar {
-  width: 160rpx;
-  height: 160rpx;
-  border-radius: 80rpx;
+  width: 100%;
+  height: 100%;
+  border-radius: 24rpx;
   background: #f0f0f0;
+  border: 6rpx solid rgb(8, 143, 13);
+  box-sizing: border-box;
+}
+
+.user-badge {
+  position: absolute;
+  right: -25rpx;
+  bottom: -25rpx;
+  width: 70rpx;
+  height: 70rpx;
+  border-radius: 35rpx;
+  background: #f0f0f0;
+  border: 4rpx solid #ffffff;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.register-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  flex-grow: 1;
+  padding-right: 10rpx;
+  min-width: 0;
+  padding-left: 20rpx;
+}
+
+.register-date {
+  font-size: 32rpx;
+  color: #666;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.join-days {
+  font-size: 32rpx;
+  color: #666;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .stats-section {
@@ -70,18 +124,28 @@
 .stat-item {
   display: flex;
   flex-direction: column;
-  gap: 8rpx;
+  gap: 12rpx;
+  align-items: center;
+  justify-content: center;
 }
 
 .stat-label {
-  font-size: 28rpx;
-  color: #666;
+  font-size: 34rpx;
+  color: #333;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .stat-value {
   font-size: 32rpx;
-  color: #333;
+  color: #666;
   font-weight: 500;
+  line-height: 1.4;
+}
+
+.stat-value .percentage {
+  font-size: 28rpx;
+  color: #999;
 }
 
 .badges-section {

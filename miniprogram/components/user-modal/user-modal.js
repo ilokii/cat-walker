@@ -11,6 +11,7 @@ Component({
 
   data: {
     userAvatar: null,
+    registerDate: '',
     joinDays: 0,
     totalSteps: 0,
     totalKm: '0.00',
@@ -19,7 +20,10 @@ Component({
     visitedProvinces: 0,
     visitedProvincesPercentage: '0.00',
     badges: [],
-    selectedBadgeId: null
+    selectedBadgeId: null,
+    currentBadge: {
+      icon: ''
+    }
   },
 
   lifetimes: {
@@ -33,6 +37,17 @@ Component({
       if (show) {
         this.updateUserInfo()
       }
+    },
+    'selectedBadgeId': function(badgeId) {
+      // 当选中的徽章ID变化时，更新显示的徽章
+      if (badgeId) {
+        const selectedBadge = this.data.badges.find(b => b.id === badgeId)
+        if (selectedBadge) {
+          this.setData({
+            'currentBadge.icon': selectedBadge.icon
+          })
+        }
+      }
     }
   },
 
@@ -43,8 +58,15 @@ Component({
       // 获取用户头像
       const userAvatar = localData.userAvatar
 
+      // 格式化注册日期
+      let registerDateStr = '暂无数据'
+      if (localData.registerDate) {
+        const date = new Date(localData.registerDate)
+        registerDateStr = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`
+      }
+
       // 计算加入天数
-      const startDate = new Date(localData.startDate)
+      const startDate = new Date(localData.registerDate)
       const now = new Date()
       const joinDays = Math.ceil((now - startDate) / (1000 * 60 * 60 * 24)) + 1
 
@@ -105,8 +127,13 @@ Component({
         selectedBadgeId = badges[0].id
       }
 
+      // 设置当前显示的徽章
+      const selectedBadge = badges.find(b => b.id === selectedBadgeId)
+      const currentBadgeIcon = selectedBadge ? selectedBadge.icon : ''
+
       this.setData({
         userAvatar,
+        registerDate: registerDateStr,
         joinDays,
         totalSteps,
         totalKm,
@@ -115,7 +142,8 @@ Component({
         visitedProvinces,
         visitedProvincesPercentage,
         badges,
-        selectedBadgeId
+        selectedBadgeId,
+        'currentBadge.icon': currentBadgeIcon
       })
     },
 
