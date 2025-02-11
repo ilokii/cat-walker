@@ -1,16 +1,17 @@
 <view class="user-entry">
   <view class="user-info">
-    <!-- 用户头像 -->
-    <image class="user-avatar" 
-           src="{{userAvatar}}" 
-           mode="aspectFill">
-    </image>
-    
-    <!-- 用户徽章 -->
-    <image class="user-badge" 
-           src="{{badgeIcon}}" 
-           mode="aspectFit">
-    </image>
+    <!-- 用户头像区域 -->
+    <view class="avatar-container">
+      <image class="user-avatar" 
+             src="{{userAvatar}}" 
+             mode="aspectFill">
+      </image>
+      <!-- 用户徽章 -->
+      <image class="user-badge" 
+             src="{{badgeIcon}}" 
+             mode="aspectFit">
+      </image>
+    </view>
   </view>
 
   <!-- 详情按钮 -->
