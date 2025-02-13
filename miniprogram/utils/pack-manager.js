@@ -150,6 +150,9 @@ class PackManager {
     // 本次开包获得的卡片集合（用于判断重复）
     const currentDrawnCards = new Set()
     
+    // 记录重复卡牌的索引
+    const duplicateCardIndexes = []
+    
     console.log(`卡包管理器 - 开始开启卡包: ${packInfo.name}，数量: ${packInfo.quantity}`)
     for (let i = 0; i < packInfo.quantity; i++) {
       let card
@@ -179,11 +182,23 @@ class PackManager {
         // 转换为星星
         result.totalStars += card.star
         console.log(`卡包管理器 - 重复卡转化为${card.star}星星: ${card.name}`)
+        // 记录重复卡牌索引
+        duplicateCardIndexes.push(i)
       }
 
       // 添加到本次抽卡结果和当前抽到的卡片集合
       result.cards.push(card)
       currentDrawnCards.add(card.card_id)
+    }
+
+    // 打印重复卡牌信息
+    if (duplicateCardIndexes.length > 0) {
+      console.log('卡包管理器 - 重复卡牌索引:', duplicateCardIndexes)
+      console.log('卡包管理器 - 重复卡牌详情:')
+      duplicateCardIndexes.forEach(index => {
+        const card = result.cards[index]
+        console.log(`  索引 ${index}: ${card.name}（${card.star}星）`)
+      })
     }
 
     // 批量同步新卡和星星
