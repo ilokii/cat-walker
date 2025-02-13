@@ -63,6 +63,13 @@
   box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
 }
 
+.card-frame.converting .card-image,
+.card-frame.converting .card-stars,
+.card-frame.converting .card-name,
+.card-frame.converting .new-tag {
+  display: none;
+}
+
 .card-image {
   width: 100%;
   height: 100%;
@@ -116,10 +123,17 @@
 }
 
 .star-reward {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 2;
 }
 
 .star-icon {
@@ -132,6 +146,7 @@
   font-size: 36rpx;
   color: #ffd700;
   font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .converting {

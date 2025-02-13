@@ -11,7 +11,7 @@ const CLOUD_PATH = {
 Page({
   data: {
     packInfo: null,
-    stage: 'unopened', // unopened, opened
+    stage: 'unopened', // unopened, opened, converting, completed
     openResult: null,
     showHint: true,
     initialSetStatus: {}, // 记录开卡前的套牌完成状态
@@ -32,6 +32,31 @@ Page({
       if (this.data.openResult.cards[i].card_id === cardId) return false;
     }
     return true;
+  },
+
+  // 判断是否是重复卡
+  isDuplicateCard: function(index) {
+    console.log(`卡包开启页面 - [${this.data.stage}] 检查索引 ${index} 是否为重复卡`)
+    if (!this.data.openResult) {
+      console.log(`卡包开启页面 - [${this.data.stage}] openResult 为空，返回 false`)
+      return false
+    }
+    if (!this.data.openResult.duplicateIndexes) {
+      console.log(`卡包开启页面 - [${this.data.stage}] duplicateIndexes 为空，返回 false`)
+      return false
+    }
+    const isDuplicate = this.data.openResult.duplicateIndexes.includes(index)
+    console.log(`卡包开启页面 - [${this.data.stage}] 索引 ${index} ${isDuplicate ? '是' : '不是'}重复卡`)
+    if (isDuplicate) {
+      const card = this.data.openResult.cards[index]
+      console.log(`卡包开启页面 - [${this.data.stage}] 重复卡详情: ${card.name}（${card.star}星）`)
+      // 添加渲染相关的日志
+      console.log(`卡包开启页面 - [${this.data.stage}] 渲染检查:`)
+      console.log(`  当前阶段: ${this.data.stage}`)
+      console.log(`  条件1(非重复卡显示): ${this.data.stage === 'opened' || (this.data.stage === 'converting' && !isDuplicate)}`)
+      console.log(`  条件2(重复卡星星): ${this.data.stage === 'converting' && isDuplicate}`)
+    }
+    return isDuplicate
   },
 
   // 获取所有套牌的完成状态
@@ -125,14 +150,9 @@ Page({
     }
   },
 
-  async handleTap() {
+  // 处理点击事件
+  handleTap: async function() {
     try {
-      if (!this.data.packInfo) {
-        wx.showToast({ title: '卡包数据错误', icon: 'error' });
-        setTimeout(() => wx.navigateBack(), 1500);
-        return;
-      }
-
       switch (this.data.stage) {
         case 'unopened':
           wx.showLoading({ title: '开启中...', mask: true });
@@ -227,24 +247,72 @@ Page({
           break
 
         case 'opened':
-          // 处理套牌完成界面的展示
-          if (this.data.newlyCompletedSets.length > 0) {
-            // 获取第一个需要展示的套牌ID
-            const firstSetId = this.data.newlyCompletedSets[0];
-            // 关闭当前界面，打开第一个set-complete界面，并传递所有新集齐的套牌信息
-            wx.redirectTo({
-              url: `/pages/set-complete/set-complete?setId=${firstSetId}&currentIndex=0&setIds=${JSON.stringify(this.data.newlyCompletedSets)}`,
-              fail: (err) => console.error('跳转到套牌完成页面失败:', err)
+          // 检查是否有重复卡需要转化
+          console.log('卡包开启页面 - 当前状态: opened')
+          console.log('卡包开启页面 - 开包结果:', this.data.openResult)
+          
+          if (this.data.openResult.duplicateIndexes && 
+              this.data.openResult.duplicateIndexes.length > 0) {
+            console.log('卡包开启页面 - 检测到重复卡片:')
+            console.log('  重复卡索引:', this.data.openResult.duplicateIndexes)
+            this.data.openResult.duplicateIndexes.forEach(index => {
+              const card = this.data.openResult.cards[index]
+              console.log(`  索引 ${index}: ${card.name}（${card.star}星）`)
+            })
+            
+            this.setData({ 
+              stage: 'converting',
+              showHint: true
+            }, () => {
+              console.log('卡包开启页面 - 状态已更新为 converting')
+              console.log('卡包开启页面 - 立即检查渲染状态:')
+              // 立即检查每张卡片的渲染状态
+              this.data.openResult.cards.forEach((card, index) => {
+                const isDuplicate = this.isDuplicateCard(index)
+                console.log(`卡片 ${index}: ${card.name}`)
+                console.log(`  当前阶段: ${this.data.stage}`)
+                console.log(`  是否重复: ${isDuplicate}`)
+                console.log(`  条件1(非重复卡显示): ${this.data.stage === 'opened' || (this.data.stage === 'converting' && !isDuplicate)}`)
+                console.log(`  条件2(重复卡星星): ${this.data.stage === 'converting' && isDuplicate}`)
+              })
             });
           } else {
-            wx.navigateBack();
+            console.log('卡包开启页面 - 没有检测到重复卡片，直接进入完成流程')
+            this.handleSetComplete();
           }
+          break;
+
+        case 'converting':
+          console.log('卡包开启页面 - 当前状态: converting')
+          console.log('卡包开启页面 - 重新检查所有卡片状态:')
+          this.data.openResult.cards.forEach((card, index) => {
+            const isDuplicate = this.isDuplicateCard(index)
+            console.log(`卡片 ${index}: ${card.name}`)
+            console.log(`  是否重复: ${isDuplicate}`)
+            console.log(`  当前显示模式: ${isDuplicate ? '应显示星星' : '应显示卡片'}`)
+          })
+          console.log('卡包开启页面 - 转化完成，准备进入完成流程')
+          this.handleSetComplete();
           break;
       }
     } catch (error) {
-      console.error('开启卡包失败：', error);
-      wx.hideLoading();
-      wx.showToast({ title: '开启失败', icon: 'error' });
+      console.error('处理点击事件失败：', error);
+      wx.showToast({ title: '操作失败', icon: 'error' });
+    }
+  },
+
+  // 处理套牌完成逻辑
+  handleSetComplete: function() {
+    if (this.data.newlyCompletedSets.length > 0) {
+      // 获取第一个需要展示的套牌ID
+      const firstSetId = this.data.newlyCompletedSets[0];
+      // 关闭当前界面，打开第一个set-complete界面，并传递所有新集齐的套牌信息
+      wx.redirectTo({
+        url: `/pages/set-complete/set-complete?setId=${firstSetId}&currentIndex=0&setIds=${JSON.stringify(this.data.newlyCompletedSets)}`,
+        fail: (err) => console.error('跳转到套牌完成页面失败:', err)
+      });
+    } else {
+      wx.navigateBack();
     }
   },
 

@@ -8,26 +8,37 @@
     <view class="hint">点击开启</view>
   </block>
   
-  <!-- 开启状态 -->
-  <block wx:if="{{stage === 'opened'}}">
+  <!-- 开启状态和转化状态 -->
+  <block wx:if="{{stage === 'opened' || stage === 'converting'}}">
     <view class="cards-grid">
       <block wx:for="{{openResult.cards}}" wx:key="cardIndex" wx:for-index="cardIndex">
         <view class="card-item">
-          <view class="card-frame">
-            <image class="card-image" src="{{item.res}}" mode="aspectFit"></image>
-            <view class="card-stars">
-              <text class="star" wx:for="{{item.star}}" wx:for-item="starItem" wx:for-index="starIndex" wx:key="starIndex">★</text>
-            </view>
-            <view class="card-name">{{item.name}}</view>
-            <image wx:if="{{isNewCard(item.card_id, cardIndex)}}" 
-                   class="new-tag" 
-                   src="/miniprogram/images/albums/new.png" 
-                   mode="aspectFit">
-            </image>
+          <!-- 使用单一条件判断 -->
+          <view class="card-frame {{stage === 'converting' && isDuplicateCard(cardIndex) ? 'converting' : ''}}">
+            <!-- 星星显示（仅在转化阶段且是重复卡时显示） -->
+            <block wx:if="{{stage === 'converting' && isDuplicateCard(cardIndex)}}">
+              <view class="star-reward">
+                <image class="star-icon" src="/images/albums/commons/star.png" mode="aspectFit"></image>
+                <text class="star-count">×{{item.star}}</text>
+              </view>
+            </block>
+            <!-- 卡片显示（在其他情况下显示） -->
+            <block wx:else>
+              <image class="card-image" src="{{item.res}}" mode="aspectFit"></image>
+              <view class="card-stars">
+                <text class="star" wx:for="{{item.star}}" wx:for-item="starItem" wx:for-index="starIndex" wx:key="starIndex">★</text>
+              </view>
+              <view class="card-name">{{item.name}}</view>
+              <image wx:if="{{isNewCard(item.card_id, cardIndex)}}" 
+                     class="new-tag" 
+                     src="/images/albums/new.png" 
+                     mode="aspectFit">
+              </image>
+            </block>
           </view>
         </view>
       </block>
     </view>
-    <view class="hint" wx:if="{{showHint}}">点击返回</view>
+    <view class="hint" wx:if="{{showHint}}">点击继续</view>
   </block>
 </view> 
