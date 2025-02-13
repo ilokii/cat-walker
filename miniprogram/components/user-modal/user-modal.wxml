@@ -15,7 +15,7 @@
                mode="aspectFill">
         </image>
         <image class="user-badge" 
-               src="{{currentBadge.icon}}" 
+               src="{{currentBadge.icon || '/images/nobadge.png'}}" 
                mode="aspectFit">
         </image>
       </view>

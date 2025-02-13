@@ -78,14 +78,14 @@
 
 .user-badge {
   position: absolute;
-  right: -25rpx;
-  bottom: -25rpx;
-  width: 70rpx;
-  height: 70rpx;
-  border-radius: 35rpx;
-  background: #f0f0f0;
+  right: -10rpx;
+  bottom: -10rpx;
+  width: 50rpx;
+  height: 50rpx;
+  border-radius: 25rpx;
   border: 4rpx solid #ffffff;
-  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  background: #ffffff;
 }
 
 .register-info {
