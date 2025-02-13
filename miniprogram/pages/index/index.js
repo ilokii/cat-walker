@@ -309,11 +309,34 @@ Page({
       console.log('首页 - 获取本地数据:', localData)
 
       // 更新城市信息
+      let currentCity = null
+      let currentProvince = null
+      let targetCity = null
+      let targetProvince = null
+
+      if (localData.currentCity) {
+        const cityData = citiesData[localData.currentCity]
+        currentCity = {
+          ...cityData,
+          name: localData.currentCity
+        }
+        currentProvince = provincesData[cityData.province]
+      }
+
+      if (localData.targetCity) {
+        const cityData = citiesData[localData.targetCity]
+        targetCity = {
+          ...cityData,
+          name: localData.targetCity
+        }
+        targetProvince = provincesData[cityData.province]
+      }
+
       this.setData({
-        currentCity: localData.currentCity ? citiesData[localData.currentCity] : null,
-        currentProvince: localData.currentCity ? provincesData[citiesData[localData.currentCity].province] : null,
-        targetCity: localData.targetCity ? citiesData[localData.targetCity] : null,
-        targetProvince: localData.targetCity ? provincesData[citiesData[localData.targetCity].province] : null
+        currentCity,
+        currentProvince,
+        targetCity,
+        targetProvince
       })
 
       // 计算进度
@@ -329,7 +352,11 @@ Page({
         })
       }
 
-      console.log('首页 - 旅行数据更新完成')
+      console.log('首页 - 旅行数据更新完成:', {
+        currentCity,
+        targetCity,
+        progress: this.data.progress
+      })
     } catch (error) {
       console.error('首页 - 更新旅行数据失败:', error)
     }
