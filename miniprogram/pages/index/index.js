@@ -11,6 +11,15 @@ const ANIMATION_STEPS = 30 // 动画的步骤数
 
 Page({
   data: {
+    // 统计数据
+    totalKilometers: '0.00',
+    totalSteps: 0,
+    visitedProvinces: 0,
+    totalProvinces: Object.keys(provincesData).length,
+    visitedCities: 0,
+    totalCities: Object.keys(citiesData).length,
+    
+    // 当前旅行数据
     currentCity: null,
     currentProvince: null,
     targetCity: null,
@@ -19,10 +28,12 @@ Page({
     progressSteps: 0,
     totalRequiredSteps: 0,
     showArrivalModal: false,
-    travelDays: 0,
-    testPackId: '',
+    animatingProgress: false,
+    
+    // 添加后台切换标记
     hasBeenInBackground: false,
     envId: '',
+    testPackId: '1', // 默认卡包ID
     userInfo: null,
     hasUserInfo: false,
     canIUseGetUserProfile: false,
@@ -42,12 +53,10 @@ Page({
     this.initializeData()
   },
 
-  onShow: function() {
-    if (this.data.hasBeenInBackground) {
-      this.onRefresh()
-      this.setData({ hasBeenInBackground: false })
-    }
-    this.refreshData()
+  onShow() {
+    console.log('首页 - 页面显示')
+    // 更新旅行数据
+    this.updateTravelData()
   },
 
   onHide() {
@@ -289,5 +298,40 @@ Page({
       userInfo: e.detail.userInfo,
       hasUserInfo: true
     })
+  },
+
+  // 更新旅行数据
+  async updateTravelData() {
+    console.log('首页 - 开始更新旅行数据')
+    try {
+      // 从本地获取最新数据
+      const localData = syncManager.getLocalData()
+      console.log('首页 - 获取本地数据:', localData)
+
+      // 更新城市信息
+      this.setData({
+        currentCity: localData.currentCity ? citiesData[localData.currentCity] : null,
+        currentProvince: localData.currentCity ? provincesData[citiesData[localData.currentCity].province] : null,
+        targetCity: localData.targetCity ? citiesData[localData.targetCity] : null,
+        targetProvince: localData.targetCity ? provincesData[citiesData[localData.targetCity].province] : null
+      })
+
+      // 计算进度
+      if (localData.currentCity && localData.targetCity) {
+        const totalSteps = citiesData[localData.currentCity].neighbors[localData.targetCity].steps
+        const currentSteps = localData.totalSteps - localData.startSteps
+        const progress = Math.min(100, (currentSteps / totalSteps) * 100)
+
+        this.setData({
+          progress: progress.toFixed(1),
+          progressSteps: currentSteps,
+          totalRequiredSteps: totalSteps
+        })
+      }
+
+      console.log('首页 - 旅行数据更新完成')
+    } catch (error) {
+      console.error('首页 - 更新旅行数据失败:', error)
+    }
   }
 }) 
