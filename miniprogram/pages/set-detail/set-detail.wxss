@@ -165,4 +165,32 @@
   font-size: 36rpx;
   margin: 40rpx 0;
   font-weight: bold;
+}
+
+/* 全屏图片显示容器 */
+.fullscreen-image-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.fullscreen-image-container.show {
+  opacity: 1;
+}
+
+.fullscreen-image {
+  width: 65%;
+  height: 65%;
+  object-fit: contain;
+  border-radius: 20rpx;
+  box-shadow: 0 0 30rpx rgba(0, 0, 0, 0.5);
 } 

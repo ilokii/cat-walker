@@ -19,7 +19,10 @@
                  src="{{item.displayRes}}" 
                  mode="aspectFit"
                  binderror="onImageError"
-                 data-card-id="{{item.card_id}}">
+                 bindtap="onCardTap"
+                 data-card-id="{{item.card_id}}"
+                 data-is-collected="{{item.isCollected}}"
+                 data-image-url="{{item.displayRes}}">
           </image>
           <view class="card-stars">
             <text class="star" wx:for="{{item.star}}" wx:key="*this">★</text>
@@ -29,4 +32,9 @@
       </view>
     </view>
   </scroll-view>
+
+  <!-- 大图显示容器 -->
+  <view class="fullscreen-image-container {{showFullImage ? 'show' : ''}}" bindtap="onFullImageTap" wx:if="{{showFullImage}}">
+    <image class="fullscreen-image" src="{{currentImageUrl}}" mode="aspectFit"></image>
+  </view>
 </view> 

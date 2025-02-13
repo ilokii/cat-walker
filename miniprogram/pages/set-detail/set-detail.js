@@ -19,7 +19,9 @@ Page({
       collected: 0,
       total: 0
     },
-    progressPercentage: 0
+    progressPercentage: 0,
+    showFullImage: false,
+    currentImageUrl: ''
   },
 
   async onLoad(options) {
@@ -167,5 +169,26 @@ Page({
 
   onClose() {
     wx.navigateBack();
+  },
+
+  // 处理卡片点击
+  onCardTap(e) {
+    const { isCollected, imageUrl } = e.currentTarget.dataset;
+    
+    // 只有已收集的卡片才显示大图
+    if (isCollected) {
+      this.setData({
+        showFullImage: true,
+        currentImageUrl: imageUrl
+      });
+    }
+  },
+
+  // 处理大图点击（关闭大图）
+  onFullImageTap() {
+    this.setData({
+      showFullImage: false,
+      currentImageUrl: ''
+    });
   }
 }); 
