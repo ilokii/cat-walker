@@ -244,7 +244,7 @@ Page({
   onTestOpenPack() {
     if (this.data.testPackId) {
       wx.navigateTo({
-        url: `/pages/pack-opening/pack-opening?packId=${this.data.testPackId}`
+        url: `/pages/pack-open/pack-open?id=${this.data.testPackId}`
       })
     }
   },
