@@ -102,6 +102,46 @@ const result = await db.collection('users').doc(userData._id).set({
 })
 ```
 
+### 3. 列表渲染性能优化
+**问题描述**：
+使用 `wx:for` 进行列表渲染时出现警告：
+```
+[WXML Runtime warning] Now you can provide attr `wx:key` for a `wx:for` to improve performance.
+```
+
+**原因分析**：
+1. 微信小程序中，`wx:for` 循环如果没有指定 `wx:key`，会影响性能
+2. 当列表数据发生变化时，如果没有 key，小程序需要重新渲染整个列表
+3. 有了唯一的 key，小程序可以精确找到需要更新的项，提高渲染效率
+
+**解决方案**：
+1. 为 `wx:for` 添加合适的 `wx:key`：
+```xml
+<!-- 使用数组索引作为 key -->
+<view wx:for="{{list}}" 
+      wx:for-index="index" 
+      wx:key="index">
+  {{item.name}}
+</view>
+
+<!-- 使用唯一标识作为 key -->
+<view wx:for="{{list}}" 
+      wx:key="id">
+  {{item.name}}
+</view>
+```
+
+2. 最佳实践：
+   - 优先使用数据项中的唯一字段（如 id）作为 key
+   - 如果数据项本身是唯一的字符串，可以使用 `*this`
+   - 在没有唯一值时，可以使用索引（index）作为 key
+   - 避免使用可能重复的值作为 key
+
+3. 性能影响：
+   - 添加 `wx:key` 可以提高列表的更新性能
+   - 特别是在列表数据频繁变化的场景下更为重要
+   - 有助于减少不必要的 DOM 操作
+
 ## 调试技巧
 
 ### 1. 关键节点日志
@@ -147,4 +187,65 @@ console.log('更新后的状态:', {
 3. 错误处理
    - 添加适当的错误提示
    - 在出错时保持数据一致性
-   - 提供用户友好的错误反馈 
+   - 提供用户友好的错误反馈
+
+## 微信小程序开发注意事项
+
+### 1. WXML 中的方法调用限制
+**问题描述**：
+在卡片转化阶段，WXML 中直接调用页面方法（如 `isDuplicateCard`）来判断卡片状态不生效。
+
+**原因分析**：
+1. 微信小程序的 WXML 中不支持在视图层直接调用页面方法
+2. 这与 Vue 等前端框架的模板语法有所不同，需要特别注意
+
+**解决方案**：
+1. 在数据层面提前处理好标记：
+```javascript
+// pack-manager.js
+result.cards.push({ 
+  ...card, 
+  isDup: !isNewCard,  // 在数据中直接标记是否重复
+  isNew: isNewCard    // 在数据中直接标记是否新卡
+})
+```
+
+2. 在 WXML 中直接使用数据属性而不是调用方法：
+```xml
+<!-- pack-open.wxml -->
+<!-- 错误写法 -->
+<block wx:if="{{stage === 'converting' && isDuplicateCard(cardIndex)}}">
+
+<!-- 正确写法 -->
+<block wx:if="{{stage === 'converting' && item.isDup}}">
+```
+
+3. 最佳实践：
+   - 在 JS 中提前处理好所有需要的标记和状态
+   - WXML 中只进行数据绑定和简单的条件判断
+   - 避免在 WXML 中进行复杂的逻辑运算或方法调用 
+
+### 2. 图片资源路径问题
+**问题描述**：
+加载本地图片资源时出现 500 错误：`Failed to load local image resource /images/albums/commons/star.png`
+
+**原因分析**：
+1. 小程序中的图片路径必须与实际的项目目录结构完全匹配
+2. 路径以 `/` 开头时，代表从项目根目录（miniprogram）开始
+3. 使用了不存在的目录路径会导致图片加载失败
+
+**解决方案**：
+1. 确保图片路径与项目结构匹配：
+```xml
+<!-- 错误路径 -->
+<image src="/images/albums/commons/star.png"></image>
+
+<!-- 正确路径 -->
+<image src="/images/star.png"></image>
+```
+
+2. 最佳实践：
+   - 在使用图片资源前，先确认项目的目录结构
+   - 使用相对路径时要注意组件所在的目录层级
+   - 建议使用绝对路径（以 `/` 开头）来避免路径计算错误
+   - 在开发工具中使用预览功能验证图片是否能正确加载 

@@ -11,13 +11,17 @@
   <!-- 开启状态和转化状态 -->
   <block wx:if="{{stage === 'opened' || stage === 'converting'}}">
     <view class="cards-grid">
-      <view class="card-item" wx:for="{{openResult.cards}}" wx:for-index="cardIndex" wx:for-item="item">
+      <view class="card-item" 
+            wx:for="{{openResult.cards}}" 
+            wx:for-index="cardIndex" 
+            wx:for-item="item"
+            wx:key="cardIndex">
         <!-- 使用单一条件判断 -->
         <view class="card-frame {{stage === 'converting'}}">
           <!-- 星星显示（仅在转化阶段且是重复卡时显示） -->
           <block wx:if="{{stage === 'converting' && item.isDup}}">
             <view class="star-reward">
-              <image class="star-icon" src="/images/albums/commons/star.png" mode="aspectFit"></image>
+              <image class="star-icon" src="/images/star.png" mode="aspectFit"></image>
               <text class="star-count">×{{item.star}}</text>
             </view>
           </block>
