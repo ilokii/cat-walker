@@ -5,7 +5,7 @@ Component({
   },
 
   data: {
-    userAvatar: null,
+    userAvatar: '',
     currentBadge: null,
     badgeIcon: '',
     showUserModal: false
@@ -18,57 +18,32 @@ Component({
   },
 
   methods: {
-    async updateUserInfo() {
-      console.log('开始更新用户信息...')
-      const localData = syncManager.getLocalData()
-      console.log('获取到本地数据:', {
-        currentBadge: localData.currentBadge,
-        badges: localData.badges
-      })
-      
-      // 获取用户头像
-      const userAvatar = localData.userAvatar
-
-      // 获取当前佩戴的勋章
-      const currentBadge = localData.currentBadge
-      let badgeIcon = '/images/nobadge.png'
-
-      if (currentBadge) {
-        try {
-          // 获取徽章配置
-          const badgeConfig = await syncManager.getBadgeConfig()
-          if (badgeConfig && badgeConfig.data) {
-            const badge = badgeConfig.data.find(b => b.id === currentBadge.id)
-            if (badge) {
-              const badgeLevelInfo = badge.levels.find(l => l.level === currentBadge.level)
-              if (badgeLevelInfo) {
-                badgeIcon = badgeLevelInfo.icon
-                console.log('获取到最新徽章图标:', badgeIcon)
-              }
-            }
-          }
-        } catch (error) {
-          console.error('获取徽章配置失败:', error)
-        }
+    updateUserInfo() {
+      const app = getApp()
+      if (!app.globalData.isInitialized) {
+        console.log('全局数据未初始化完成')
+        return
       }
 
-      console.log('准备更新界面显示:', {
-        userAvatar,
-        currentBadge,
-        badgeIcon
-      })
-
+      // 直接使用全局数据
       this.setData({
-        userAvatar,
-        currentBadge,
-        badgeIcon
+        userAvatar: app.globalData.userAvatar || '/images/default-avatar.png',
+        currentBadge: app.globalData.currentBadge || null,
+        badgeIcon: app.globalData.currentBadge?.icon || '/images/nobadge.png'
       })
-
-      console.log('用户信息更新完成')
     },
 
-    // 打开账户界面
-    onDetailTap() {
+    onTap() {
+      const app = getApp()
+      if (!app.globalData.isInitialized) {
+        wx.showToast({
+          title: '数据加载中...',
+          icon: 'loading',
+          duration: 2000
+        })
+        return
+      }
+      
       this.setData({
         showUserModal: true
       })

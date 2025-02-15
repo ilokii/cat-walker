@@ -42,6 +42,22 @@ Page({
       await syncManager.initialize()
       console.log('数据管理器初始化完成')
 
+      // 预加载用户信息
+      this.setData({ loadingText: '正在加载用户信息...' })
+      console.log('正在加载用户信息...')
+      const localData = syncManager.getLocalData()
+      if (localData) {
+        app.globalData.userInfo = {
+          avatar: localData.userAvatar,
+          currentBadge: localData.currentBadge,
+          badges: localData.badges || []
+        }
+        app.globalData.userAvatar = localData.userAvatar
+        app.globalData.currentBadge = localData.currentBadge
+        app.globalData.badges = localData.badges || []
+        console.log('用户信息加载完成:', app.globalData.userInfo)
+      }
+
       // 预加载卡包配置
       this.setData({ loadingText: '正在加载卡包配置...' })
       console.log('正在加载卡包配置...')

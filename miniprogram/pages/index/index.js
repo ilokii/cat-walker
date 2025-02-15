@@ -33,7 +33,7 @@ Page({
     // 添加后台切换标记
     hasBeenInBackground: false,
     envId: '',
-    testPackId: '1', // 默认卡包ID
+    testPackId: '',
     userInfo: null,
     hasUserInfo: false,
     canIUseGetUserProfile: false,
@@ -50,45 +50,16 @@ Page({
     this.setData({
       envId: getApp().globalData.envId
     })
-    this.initializeData()
+    this.refreshData()
   },
 
-  onShow() {
+  onShow: function() {
     console.log('首页 - 页面显示')
-    // 更新旅行数据
-    this.updateTravelData()
+    this.refreshData()
   },
 
   onHide() {
     this.setData({ hasBeenInBackground: true })
-  },
-
-  async initializeData() {
-    try {
-      await syncManager.initialize()
-      await this.initManagers()
-      await this.refreshData()
-    } catch (err) {
-      console.error('初始化数据失败：', err)
-      wx.showToast({
-        title: '数据加载失败',
-        icon: 'none'
-      })
-    }
-  },
-
-  async initManagers() {
-    try {
-      await packManager.init()
-      const packs = packManager.packsData || []
-      this.setData({ packs })
-    } catch (error) {
-      console.error('初始化管理器失败：', error)
-      wx.showToast({
-        title: '初始化失败',
-        icon: 'error'
-      })
-    }
   },
 
   async refreshData() {
@@ -224,8 +195,11 @@ Page({
   },
 
   onPlanNextTravel() {
+    this.setData({
+      showArrivalModal: false
+    })
     wx.navigateTo({
-      url: '/pages/travel-plan/travel-plan'
+      url: '/pages/city/city'
     })
   },
 
@@ -242,11 +216,17 @@ Page({
   },
 
   onTestOpenPack() {
-    if (this.data.testPackId) {
-      wx.navigateTo({
-        url: `/pages/pack-open/pack-open?id=${this.data.testPackId}`
+    if (!this.data.testPackId) {
+      wx.showToast({
+        title: '请输入ID',
+        icon: 'none'
       })
+      return
     }
+
+    wx.navigateTo({
+      url: `/pages/pack-open/pack-open?packId=${this.data.testPackId}`
+    })
   },
 
   async handlePackTap(e) {
