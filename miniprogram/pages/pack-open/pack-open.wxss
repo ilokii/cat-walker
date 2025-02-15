@@ -12,9 +12,60 @@
   font-size: 48rpx;
   font-weight: bold;
   color: #333;
-  margin: 80rpx 0 60rpx;
+  margin: 80rpx 0;
   text-align: center;
   flex-shrink: 0;
+}
+
+.pack-icon {
+  width: 400rpx;
+  height: 500rpx;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.unopened-section {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40rpx 0;
+}
+
+.pack-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.pack-bottom {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: auto;
+  padding-bottom: 100rpx;
+}
+
+.pack-desc {
+  font-size: 32rpx;
+  color: #666;
+  text-align: center;
+  margin: 0 60rpx 40rpx;
+  line-height: 1.6;
+  max-width: 600rpx;
+}
+
+.hint {
+  font-size: 36rpx;
+  color: #333;
+  text-align: center;
+  margin-top: 0;
+  opacity: 0.8;
 }
 
 .cards-section {
@@ -54,29 +105,6 @@
   margin: 0 40rpx 40rpx;
   line-height: 1.5;
   position: relative;
-}
-
-.hint {
-  font-size: 36rpx;
-  color: #333;
-  text-align: center;
-  margin-top: 0;
-  opacity: 0.8;
-}
-
-.pack-icon {
-  width: 400rpx;
-  height: 400rpx;
-  margin-bottom: 40rpx;
-}
-
-.pack-desc {
-  font-size: 32rpx;
-  color: #666;
-  text-align: center;
-  margin: 0 60rpx 40rpx;
-  line-height: 1.6;
-  max-width: 600rpx;
 }
 
 .card-item {

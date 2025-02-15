@@ -3,9 +3,15 @@
   
   <!-- 未开启状态 -->
   <block wx:if="{{stage === 'unopened'}}">
-    <image class="pack-icon" src="{{packInfo.res}}" mode="aspectFit"></image>
-    <view class="pack-desc">{{packInfo.desc}}</view>
-    <view class="hint">点击开启</view>
+    <view class="unopened-section">
+      <view class="pack-content">
+        <image class="pack-icon" src="{{packInfo.res}}" mode="aspectFit"></image>
+      </view>
+      <view class="pack-bottom">
+        <view class="pack-desc">{{packInfo.desc}}</view>
+        <view class="hint">点击开启</view>
+      </view>
+    </view>
   </block>
   
   <!-- 开启状态和转化状态 -->
