@@ -23,7 +23,6 @@
               wx:for-index="cardIndex" 
               wx:for-item="item"
               wx:key="cardIndex">
-          <!-- 使用单一条件判断 -->
           <view class="card-frame {{stage === 'converting'}}">
             <!-- 星星显示（仅在转化阶段且是重复卡时显示） -->
             <block wx:if="{{stage === 'converting' && item.isDup}}">
@@ -34,7 +33,6 @@
             </block>
             <!-- 卡片显示（在其他情况下显示） -->
             <block wx:else>
-              <image class="card-frame-image" src="/images/cardframe.png" mode="aspectFit"></image>
               <image class="card-image" src="{{item.res}}" mode="aspectFit"></image>
               <view class="card-stars">
                 <text class="star" wx:for="{{item.star}}" wx:for-item="starItem" wx:for-index="starIndex" wx:key="starIndex">★</text>
