@@ -82,66 +82,84 @@
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24rpx;
+  gap: 100rpx 30rpx;
   padding: 20rpx;
+  width: 100%;
+  max-width: 900rpx;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .card-item {
   position: relative;
   aspect-ratio: 3/4;
+  margin-bottom: 40rpx;
 }
 
 .card-frame {
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 16rpx;
-  overflow: hidden;
+  border-radius: 24rpx;
+  overflow: visible;
+}
+
+.card-frame-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
 }
 
 .card-image {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  z-index: 1;
 }
 
 .card-image.uncollected {
-  filter: brightness(0.8);
+  filter: brightness(0.5);
 }
 
 .card-name {
   position: absolute;
-  bottom: 40rpx;
+  bottom: -70rpx;
   left: 50%;
   transform: translateX(-50%);
-  color: #ffffff;
-  font-size: 32rpx;
+  color: #333;
+  font-size: 40rpx;
   text-align: center;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  width: 85%;
-  background: rgba(0, 0, 0, 0.6);
-  padding: 8rpx 16rpx;
-  border-radius: 8rpx;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  width: 160%;
+  padding: 8rpx 0;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .card-stars {
   position: absolute;
-  top: 20rpx;
+  top: -16rpx;
   left: 50%;
   transform: translateX(-50%);
   color: #ffd700;
-  font-size: 32rpx;
+  font-size: 48rpx;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  background: rgba(0, 0, 0, 0.6);
   padding: 4rpx 16rpx;
-  border-radius: 20rpx;
   display: flex;
-  gap: 4rpx;
+  gap: 0;
+  z-index: 3;
 }
 
 .star {
-  margin: 0 2rpx;
+  margin: 0 -1rpx;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
 }
 
 .debug-info {
