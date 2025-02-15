@@ -22,7 +22,7 @@
           <block wx:if="{{stage === 'converting' && item.isDup}}">
             <view class="star-reward">
               <image class="star-icon" src="/images/star.png" mode="aspectFit"></image>
-              <text class="star-count">×{{item.star}}</text>
+              <text class="star-count">+{{item.star}}</text>
             </view>
           </block>
           <!-- 卡片显示（在其他情况下显示） -->
@@ -32,15 +32,16 @@
               <text class="star" wx:for="{{item.star}}" wx:for-item="starItem" wx:for-index="starIndex" wx:key="starIndex">★</text>
             </view>
             <view class="card-name">{{item.name}}</view>
-            <image wx:if="{{item.isNew}}" 
-                    class="new-tag" 
-                    src="/images/albums/new.png" 
-                    mode="aspectFit">
-            </image>
           </block>
         </view>
+        <image wx:if="{{item.isNew && (stage === 'opened' || stage === 'converting')}}" 
+               class="new-tag" 
+               src="/images/albums/new.png" 
+               mode="aspectFit">
+        </image>
       </view>
     </view>
+    <view class="convert-desc" wx:if="{{stage === 'converting'}}">重复的卡牌将会转化为星星，以便兑换保底卡包</view>
     <view class="hint" wx:if="{{showHint}}">点击继续</view>
   </block>
 </view> 
