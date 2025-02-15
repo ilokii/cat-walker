@@ -24,7 +24,7 @@
   </view>
 
   <!-- 详情按钮 -->
-  <view class="detail-btn-container" bindtap="onDetailTap">
+  <view class="detail-btn-container" bindtap="onTap">
     <image class="detail-btn-icon"
            src="/images/detail.png"
            mode="aspectFit">
