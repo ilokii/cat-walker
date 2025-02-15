@@ -10,38 +10,43 @@
   
   <!-- 开启状态和转化状态 -->
   <block wx:if="{{stage === 'opened' || stage === 'converting'}}">
-    <view class="cards-grid">
-      <view class="card-item" 
-            wx:for="{{openResult.cards}}" 
-            wx:for-index="cardIndex" 
-            wx:for-item="item"
-            wx:key="cardIndex">
-        <!-- 使用单一条件判断 -->
-        <view class="card-frame {{stage === 'converting'}}">
-          <!-- 星星显示（仅在转化阶段且是重复卡时显示） -->
-          <block wx:if="{{stage === 'converting' && item.isDup}}">
-            <view class="star-reward">
-              <image class="star-icon" src="/images/star.png" mode="aspectFit"></image>
-              <text class="star-count">+{{item.star}}</text>
-            </view>
-          </block>
-          <!-- 卡片显示（在其他情况下显示） -->
-          <block wx:else>
-            <image class="card-image" src="{{item.res}}" mode="aspectFit"></image>
-            <view class="card-stars">
-              <text class="star" wx:for="{{item.star}}" wx:for-item="starItem" wx:for-index="starIndex" wx:key="starIndex">★</text>
-            </view>
-            <view class="card-name">{{item.name}}</view>
-          </block>
+    <view class="cards-section">
+      <view class="cards-grid">
+        <view class="card-item" 
+              wx:for="{{openResult.cards}}" 
+              wx:for-index="cardIndex" 
+              wx:for-item="item"
+              wx:key="cardIndex">
+          <!-- 使用单一条件判断 -->
+          <view class="card-frame {{stage === 'converting'}}">
+            <!-- 星星显示（仅在转化阶段且是重复卡时显示） -->
+            <block wx:if="{{stage === 'converting' && item.isDup}}">
+              <view class="star-reward">
+                <image class="star-icon" src="/images/star.png" mode="aspectFit"></image>
+                <text class="star-count">+{{item.star}}</text>
+              </view>
+            </block>
+            <!-- 卡片显示（在其他情况下显示） -->
+            <block wx:else>
+              <image class="card-frame-image" src="/images/cardframe.png" mode="aspectFit"></image>
+              <image class="card-image" src="{{item.res}}" mode="aspectFit"></image>
+              <view class="card-stars">
+                <text class="star" wx:for="{{item.star}}" wx:for-item="starItem" wx:for-index="starIndex" wx:key="starIndex">★</text>
+              </view>
+              <view class="card-name">{{item.name}}</view>
+            </block>
+          </view>
+          <image wx:if="{{item.isNew && (stage === 'opened' || stage === 'converting')}}" 
+                 class="new-tag" 
+                 src="/images/albums/new.png" 
+                 mode="aspectFit">
+          </image>
         </view>
-        <image wx:if="{{item.isNew && (stage === 'opened' || stage === 'converting')}}" 
-               class="new-tag" 
-               src="/images/albums/new.png" 
-               mode="aspectFit">
-        </image>
       </view>
     </view>
-    <view class="convert-desc" wx:if="{{stage === 'converting'}}">重复的卡牌将会转化为星星，以便兑换保底卡包</view>
-    <view class="hint" wx:if="{{showHint}}">点击继续</view>
+    <view class="bottom-section">
+      <view class="convert-desc" wx:if="{{stage === 'converting'}}">重复的卡牌将会转化为星星，以便兑换保底卡包</view>
+      <view class="hint" wx:if="{{showHint}}">点击继续</view>
+    </view>
   </block>
 </view> 
