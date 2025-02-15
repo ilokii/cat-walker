@@ -30,6 +30,9 @@ Page({
     showArrivalModal: false,
     animatingProgress: false,
     
+    // 用户数据
+    userAvatar: '',
+    
     // 添加后台切换标记
     hasBeenInBackground: false,
     envId: '',
@@ -51,11 +54,13 @@ Page({
       envId: getApp().globalData.envId
     })
     this.refreshData()
+    this.updateUserAvatar()
   },
 
   onShow: function() {
     console.log('首页 - 页面显示')
     this.refreshData()
+    this.updateUserAvatar()
   },
 
   onHide() {
@@ -339,6 +344,15 @@ Page({
       })
     } catch (error) {
       console.error('首页 - 更新旅行数据失败:', error)
+    }
+  },
+
+  updateUserAvatar() {
+    const app = getApp()
+    if (app.globalData.isInitialized) {
+      this.setData({
+        userAvatar: app.globalData.userAvatar
+      })
     }
   }
 }) 

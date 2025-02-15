@@ -38,6 +38,9 @@
     <!-- 进度条区域 -->
     <view class="progress-area">
       <view class="travel-progress-container">
+        <view class="avatar-container" style="left: {{progress}}%">
+          <image class="user-avatar" src="{{userAvatar}}" mode="aspectFill"></image>
+        </view>
         <text class="travel-progress-text">{{progress}}%</text>
         <view class="travel-progress-bar" style="width: {{progress}}%">
         </view>
