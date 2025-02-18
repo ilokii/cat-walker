@@ -59,8 +59,8 @@ Page({
 
   onShow: function() {
     console.log('首页 - 页面显示')
-    this.refreshData()
-    this.updateUserAvatar()
+    // 更新旅行数据
+    this.updateTravelData()
   },
 
   onHide() {
@@ -291,7 +291,12 @@ Page({
     try {
       // 从本地获取最新数据
       const localData = syncManager.getLocalData()
-      console.log('首页 - 获取本地数据:', localData)
+      console.log('首页 - 获取本地数据:', {
+        currentCity: localData.currentCity,
+        targetCity: localData.targetCity,
+        totalSteps: localData.totalSteps,
+        startSteps: localData.startSteps
+      })
 
       // 更新城市信息
       let currentCity = null
@@ -301,20 +306,30 @@ Page({
 
       if (localData.currentCity) {
         const cityData = citiesData[localData.currentCity]
-        currentCity = {
-          ...cityData,
-          name: localData.currentCity
+        if (!cityData) {
+          console.error('首页 - 当前城市数据不存在:', localData.currentCity)
+        } else {
+          currentCity = {
+            ...cityData,
+            name: localData.currentCity
+          }
+          currentProvince = provincesData[cityData.province]
+          console.log('首页 - 当前城市数据:', { currentCity, currentProvince })
         }
-        currentProvince = provincesData[cityData.province]
       }
 
       if (localData.targetCity) {
         const cityData = citiesData[localData.targetCity]
-        targetCity = {
-          ...cityData,
-          name: localData.targetCity
+        if (!cityData) {
+          console.error('首页 - 目标城市数据不存在:', localData.targetCity)
+        } else {
+          targetCity = {
+            ...cityData,
+            name: localData.targetCity
+          }
+          targetProvince = provincesData[cityData.province]
+          console.log('首页 - 目标城市数据:', { targetCity, targetProvince })
         }
-        targetProvince = provincesData[cityData.province]
       }
 
       this.setData({
@@ -326,20 +341,46 @@ Page({
 
       // 计算进度
       if (localData.currentCity && localData.targetCity) {
-        const totalSteps = citiesData[localData.currentCity].neighbors[localData.targetCity].steps
+        const cityNeighbors = citiesData[localData.currentCity]?.neighbors
+        if (!cityNeighbors) {
+          console.error('首页 - 当前城市邻居数据不存在')
+          return
+        }
+
+        const totalSteps = cityNeighbors[localData.targetCity]?.steps
+        if (!totalSteps) {
+          console.error('首页 - 目标城市步数数据不存在')
+          return
+        }
+
         const currentSteps = localData.totalSteps - localData.startSteps
         const progress = Math.min(100, (currentSteps / totalSteps) * 100)
 
-        this.setData({
-          progress: progress.toFixed(1),
-          progressSteps: currentSteps,
-          totalRequiredSteps: totalSteps
+        console.log('首页 - 进度计算数据:', {
+          totalSteps,
+          currentSteps,
+          progress
         })
+
+        // 确保进度是有效数字
+        if (!isNaN(progress)) {
+          this.setData({
+            progress: progress.toFixed(1),
+            progressSteps: currentSteps,
+            totalRequiredSteps: totalSteps
+          })
+        } else {
+          console.error('首页 - 进度计算结果无效:', {
+            totalSteps,
+            currentSteps,
+            progress
+          })
+        }
       }
 
       console.log('首页 - 旅行数据更新完成:', {
-        currentCity,
-        targetCity,
+        currentCity: this.data.currentCity?.name,
+        targetCity: this.data.targetCity?.name,
         progress: this.data.progress
       })
     } catch (error) {
