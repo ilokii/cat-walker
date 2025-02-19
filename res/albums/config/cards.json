@@ -64,20 +64,56 @@
             {
                 "card_id": "2025Q1_2_1",
                 "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/cards/2025Q1/set2/2025Q1_2_1.png",
-                "name": "雷霆法师",
-                "star": 2
+                "name": "泡泡浴",
+                "star": 1
             },
             {
                 "card_id": "2025Q1_2_2",
                 "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/cards/2025Q1/set2/2025Q1_2_2.png",
-                "name": "大地守护者",
-                "star": 3
+                "name": "吹风暖",
+                "star": 1
             },
             {
                 "card_id": "2025Q1_2_3",
                 "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/cards/2025Q1/set2/2025Q1_2_3.png",
-                "name": "光之圣女",
-                "star": 4
+                "name": "梳毛乐",
+                "star": 1
+            },
+            {
+                "card_id": "2025Q1_2_4",
+                "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/cards/2025Q1/set2/2025Q1_2_4.png",
+                "name": "剪指甲",
+                "star": 1
+            },
+            {
+                "card_id": "2025Q1_2_5",
+                "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/cards/2025Q1/set2/2025Q1_2_5.png",
+                "name": "蝴蝶结",
+                "star": 1
+            },
+            {
+                "card_id": "2025Q1_2_6",
+                "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/cards/2025Q1/set2/2025Q1_2_6.png",
+                "name": "小皇冠",
+                "star": 1
+            },
+            {
+                "card_id": "2025Q1_2_7",
+                "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/cards/2025Q1/set2/2025Q1_2_7.png",
+                "name": "马杀鸡",
+                "star": 1
+            },
+            {
+                "card_id": "2025Q1_2_8",
+                "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/cards/2025Q1/set2/2025Q1_2_8.png",
+                "name": "耳部清",
+                "star": 2
+            },
+            {
+                "card_id": "2025Q1_2_9",
+                "res": "cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/cards/2025Q1/set2/2025Q1_2_9.png",
+                "name": "写真拍",
+                "star": 2
             }
         ]
     },
@@ -105,7 +141,7 @@
         ]
     },
     {
-        "id": "2025Q2_3",
+        "id": "2025Q2_1",
         "cards": [
             {
                 "card_id": "2025Q2_3_1",
@@ -128,7 +164,7 @@
         ]
     },
     {
-        "id": "2025Q2_3",
+        "id": "2025Q2_2",
         "cards": [
             {
                 "card_id": "2025Q2_3_1",
