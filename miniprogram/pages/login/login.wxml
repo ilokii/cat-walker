@@ -1,4 +1,7 @@
 <view class="container">
-  <view class="title">猫咪漫游记</view>
-  <button class="login-btn" bindtap="onLogin">登录</button>
+  <image class="bg-image" src="/images/bg1.png" mode="aspectFill"></image>
+  <view class="content">
+    <image class="logo" src="/images/logo.png" mode="widthFix"></image>
+    <button class="login-btn" bindtap="onLogin">登录</button>
+  </view>
 </view> 

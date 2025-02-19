@@ -1,9 +1,33 @@
 .container {
   min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background-color: #ffffff;
   padding: 30rpx;
   padding-top: 180rpx;
   box-sizing: border-box;
-  background-color: #f8f9fa;
+}
+
+.bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  opacity: 0.2;
+  object-fit: cover;
+}
+
+/* 确保所有内容在背景之上 */
+.custom-nav,
+.travel-section,
+.arrival-modal,
+user-entry,
+daily-tasks,
+achievement-upgrade {
+  position: relative;
+  z-index: 2;
 }
 
 /* 自定义导航栏样式 */

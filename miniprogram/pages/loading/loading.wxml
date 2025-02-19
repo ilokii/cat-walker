@@ -1,3 +1,6 @@
 <view class="loading-container">
-  <text class="loading-text">{{loadingText}}</text>
+  <image class="bg-image" src="/images/bg1.png" mode="aspectFill"></image>
+  <view class="content">
+    <text class="loading-text">{{loadingText}}</text>
+  </view>
 </view> 
