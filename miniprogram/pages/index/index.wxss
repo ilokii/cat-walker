@@ -309,43 +309,4 @@
 .album-icon {
   width: 60rpx;
   height: 60rpx;
-}
-
-/* 测试组件样式 */
-.test-panel {
-  display: flex;
-  align-items: center;
-  gap: 10rpx;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 10rpx;
-  border-radius: 16rpx;
-  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
-}
-
-.test-input {
-  width: 80rpx;
-  height: 60rpx;
-  background: #fff;
-  border: 2rpx solid #ddd;
-  border-radius: 8rpx;
-  padding: 0 10rpx;
-  font-size: 28rpx;
-}
-
-.test-button {
-  height: 60rpx;
-  line-height: 60rpx;
-  font-size: 28rpx;
-  padding: 0 20rpx;
-  background: #4CAF50;
-  color: #fff;
-  border-radius: 8rpx;
-  min-width: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.test-button:active {
-  opacity: 0.8;
 } 

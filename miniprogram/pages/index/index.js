@@ -34,25 +34,10 @@ Page({
     userAvatar: '',
     
     // 添加后台切换标记
-    hasBeenInBackground: false,
-    envId: '',
-    testPackId: '',
-    userInfo: null,
-    hasUserInfo: false,
-    canIUseGetUserProfile: false,
-    packs: []
+    hasBeenInBackground: false
   },
 
   onLoad: function() {
-    if (wx.getUserProfile) {
-      this.setData({
-        canIUseGetUserProfile: true
-      })
-    }
-
-    this.setData({
-      envId: getApp().globalData.envId
-    })
     this.refreshData()
     this.updateUserAvatar()
   },
@@ -214,75 +199,13 @@ Page({
     })
   },
 
-  onTestPackIdInput(e) {
-    this.setData({
-      testPackId: e.detail.value
-    })
-  },
-
-  onTestOpenPack() {
-    if (!this.data.testPackId) {
-      wx.showToast({
-        title: '请输入ID',
-        icon: 'none'
+  updateUserAvatar() {
+    const app = getApp()
+    if (app.globalData.isInitialized) {
+      this.setData({
+        userAvatar: app.globalData.userAvatar
       })
-      return
     }
-
-    wx.navigateTo({
-      url: `/pages/pack-open/pack-open?packId=${this.data.testPackId}`
-    })
-  },
-
-  async handlePackTap(e) {
-    console.log('当前输入ID:', e.currentTarget.dataset.id)
-    console.log('packManager状态:', packManager.packsData)
-
-    const packId = parseInt(e.currentTarget.dataset.id)
-    if (!packId) {
-      console.error('无效的卡包ID')
-      return
-    }
-
-    if (!packManager.packsData) {
-      console.log('packManager未初始化，尝试重新初始化')
-      await packManager.init()
-      
-      if (!packManager.packsData) {
-        console.error('packManager初始化失败')
-        wx.showToast({
-          title: '系统错误',
-          icon: 'error'
-        })
-        return
-      }
-    }
-
-    console.log('准备跳转到卡包页面')
-    wx.navigateTo({
-      url: `/pages/pack-open/pack-open?id=${packId}`,
-      success: () => console.log('跳转成功'),
-      fail: error => console.error('跳转失败：', error)
-    })
-  },
-
-  getUserProfile(e) {
-    wx.getUserProfile({
-      desc: '用于完善会员资料',
-      success: (res) => {
-        this.setData({
-          userInfo: res.userInfo,
-          hasUserInfo: true
-        })
-      }
-    })
-  },
-
-  getUserInfo(e) {
-    this.setData({
-      userInfo: e.detail.userInfo,
-      hasUserInfo: true
-    })
   },
 
   // 更新旅行数据
@@ -385,15 +308,6 @@ Page({
       })
     } catch (error) {
       console.error('首页 - 更新旅行数据失败:', error)
-    }
-  },
-
-  updateUserAvatar() {
-    const app = getApp()
-    if (app.globalData.isInitialized) {
-      this.setData({
-        userAvatar: app.globalData.userAvatar
-      })
     }
   }
 }) 

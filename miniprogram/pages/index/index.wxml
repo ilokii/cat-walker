@@ -62,12 +62,11 @@
     </view>
   </view>
 
-  <!-- 底部功能区 -->
-  <view class="bottom-panel">
-    <!-- 测试组件 -->
-    <view class="test-panel">
-      <input class="test-input" type="number" value="{{testPackId}}" bindinput="onTestPackIdInput" placeholder="ID"/>
-      <view class="test-button" bindtap="onTestOpenPack">开包</view>
-    </view>
-  </view>
+  <!-- 勋章升级提示 -->
+  <achievement-upgrade
+    wx:if="{{showAchievementUpgrade}}"
+    achievement="{{currentUpgradeAchievement}}"
+    isMaxLevel="{{currentUpgradeAchievement.isMaxLevel}}"
+    bind:confirm="onAchievementUpgradeConfirm"
+  />
 </view> 
