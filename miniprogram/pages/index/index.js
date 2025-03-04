@@ -44,8 +44,13 @@ Page({
 
   onShow: function() {
     console.log('首页 - 页面显示')
+    // 如果之前进入过后台，则触发刷新
+    if (this.data.hasBeenInBackground) {
+      this.onRefresh()
+      this.setData({ hasBeenInBackground: false })
+    }
     // 更新旅行数据
-    this.updateTravelData()
+    this.refreshData()
   },
 
   onHide() {
@@ -106,6 +111,15 @@ Page({
             const startDay = Math.floor(startDate.getTime() / (24 * 60 * 60 * 1000))
             const currentDay = Math.floor(currentDate.getTime() / (24 * 60 * 60 * 1000))
             travelDays = currentDay - startDay
+
+            // 更新已访问城市和当前城市
+            if (targetCity.name) {
+              await syncManager.addVisitedCity(targetCity.name)
+              await syncManager.updateCurrentCity(targetCity.name)
+              // 更新当前城市显示
+              currentCity = targetCity
+              currentProvince = targetProvince
+            }
           }
         }
       }
@@ -118,9 +132,13 @@ Page({
         progress: progress || 0,
         progressSteps: progressSteps || 0,
         totalRequiredSteps: totalRequiredSteps || 0,
-        showArrivalModal: isArrived,
         travelDays: travelDays || 0
       })
+
+      // 如果已到达目标城市，显示到达弹窗
+      if (isArrived) {
+        this.setData({ showArrivalModal: true })
+      }
     } catch (error) {
       console.error('刷新数据失败：', error)
       wx.showToast({
