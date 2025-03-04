@@ -32,7 +32,7 @@ Component({
     attached() {
       // 初始化功能开关状态
       this.setData({
-        showBadgeSection: functionManager.isEnabled('accountBadges')
+        showBadgeSection: functionManager.isEnabled('userBadge')
       })
       this.updateUserInfo()
     }

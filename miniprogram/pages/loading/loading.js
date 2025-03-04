@@ -2,6 +2,7 @@ const syncManager = require('../../utils/sync-manager')
 const albumManager = require('../../utils/album-manager')
 const dailyTaskManager = require('../../utils/daily-task-manager')
 const packManager = require('../../utils/pack-manager')
+const functionManager = require('../../utils/managers/function-manager')
 
 Page({
   data: {
@@ -55,49 +56,58 @@ Page({
         console.log('用户信息加载完成:', app.globalData.userInfo)
       }
 
-      // 预加载卡包配置
-      console.log('正在加载卡包配置...')
-      try {
-        const result = await wx.cloud.downloadFile({
-          fileID: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/config/pack.json'
-        })
-        console.log('卡包配置下载成功')
+      // 根据开关状态决定是否加载卡牌相关数据
+      if (functionManager.isEnabled('albumEntry')) {
+        // 预加载卡包配置
+        console.log('正在加载卡包配置...')
+        try {
+          const result = await wx.cloud.downloadFile({
+            fileID: 'cloud://cat-walker-1gnvj0y102f12cab.6361-cat-walker-1gnvj0y102f12cab-1334179374/albums/config/pack.json'
+          })
+          console.log('卡包配置下载成功')
 
-        const fs = wx.getFileSystemManager()
-        const content = fs.readFileSync(result.tempFilePath, 'utf8')
-        const config = JSON.parse(content)
-        console.log('卡包配置解析成功:', config)
+          const fs = wx.getFileSystemManager()
+          const content = fs.readFileSync(result.tempFilePath, 'utf8')
+          const config = JSON.parse(content)
+          console.log('卡包配置解析成功:', config)
 
-        app.globalData.packsConfig = config
-        app.globalData.isPacksConfigLoaded = true
-        console.log('卡包配置加载完成')
+          app.globalData.packsConfig = config
+          app.globalData.isPacksConfigLoaded = true
+          console.log('卡包配置加载完成')
 
-        // 初始化卡包管理器
-        packManager.packsData = config
-        console.log('卡包管理器初始化完成')
-      } catch (error) {
-        console.error('加载卡包配置失败：', error)
-      }
+          // 初始化卡包管理器
+          packManager.packsData = config
+          console.log('卡包管理器初始化完成')
 
-      // 初始化徽章系统
-      console.log('正在初始化徽章系统...')
-      const badgeConfig = await syncManager.getBadgeConfig()
-      if (badgeConfig) {
-        console.log('徽章配置加载成功:', badgeConfig)
-        await syncManager.initBadges()
-        console.log('徽章系统初始化完成')
+          // 预加载卡牌配置数据
+          console.log('正在初始化卡册管理器...')
+          const initResult = await albumManager.init()
+          console.log('卡册管理器初始化结果:', initResult)
+
+          // 检查赛季是否结束
+          console.log('检查赛季状态...')
+          await albumManager.checkSeasonEnd()
+        } catch (error) {
+          console.error('加载卡牌相关数据失败：', error)
+        }
       } else {
-        console.warn('徽章配置加载失败')
+        console.log('卡牌功能已禁用，跳过相关数据加载')
       }
 
-      // 预加载卡牌配置数据
-      console.log('正在初始化卡册管理器...')
-      const initResult = await albumManager.init()
-      console.log('卡册管理器初始化结果:', initResult)
-
-      // 检查赛季是否结束
-      console.log('检查赛季状态...')
-      await albumManager.checkSeasonEnd()
+      // 根据开关状态决定是否加载徽章系统
+      if (functionManager.isEnabled('userBadge')) {
+        console.log('正在初始化徽章系统...')
+        const badgeConfig = await syncManager.getBadgeConfig()
+        if (badgeConfig) {
+          console.log('徽章配置加载成功:', badgeConfig)
+          await syncManager.initBadges()
+          console.log('徽章系统初始化完成')
+        } else {
+          console.warn('徽章配置加载失败')
+        }
+      } else {
+        console.log('徽章功能已禁用，跳过相关数据加载')
+      }
 
       // 标记初始化完成
       app.globalData.isInitialized = true
@@ -125,10 +135,14 @@ Page({
       await syncManager.handleWeRunData()
       console.log('微信运动数据处理完成')
 
-      // 初始化每日任务
-      console.log('正在初始化每日任务...')
-      await dailyTaskManager.initialize()
-      console.log('每日任务初始化完成')
+      // 根据开关状态决定是否初始化每日任务
+      if (functionManager.isEnabled('dailyTasks')) {
+        console.log('正在初始化每日任务...')
+        await dailyTaskManager.initialize()
+        console.log('每日任务初始化完成')
+      } else {
+        console.log('每日任务功能已禁用，跳过相关数据加载')
+      }
 
       // 更新最后刷新时间
       syncManager.updateLastRefreshTime()

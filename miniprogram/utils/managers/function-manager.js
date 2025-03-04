@@ -8,12 +8,9 @@ const DEFAULT_CONFIG = {
   // 首页功能
   dailyTasks: false,      // 每日任务模块
   
-  // 用户入口功能
-  userBadge: false,       // 用户头像旁的勋章显示
-  albumEntry: false,      // 卡牌入口按钮
-  
-  // 用户账户界面功能
-  accountBadges: false    // 账户界面的勋章部分
+  // 用户功能
+  userBadge: false,       // 控制所有徽章相关的显示（用户头像旁徽章、账户界面徽章等）
+  albumEntry: false       // 控制卡牌功能（入口显示、数据加载等）
 }
 
 // 当前功能开关状态
