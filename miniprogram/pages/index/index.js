@@ -4,7 +4,7 @@ const { provincesData } = require('../../data/provinces')
 const { citiesData } = require('../../data/cities')
 const packManager = require('../../utils/pack-manager')
 const albumManager = require('../../utils/album-manager')
-const functionManager = require('../../utils/managers/function-manager')
+const functionManager = require('../../utils/function-manager')
 
 const PROGRESS_ANIMATION_DURATION = 1000 // 进度条动画持续时间（毫秒）
 const ARRIVAL_MODAL_DELAY = 500 // 到达弹窗延迟时间（毫秒）
@@ -42,7 +42,8 @@ Page({
   },
 
   onLoad: function() {
-    // 初始化功能开关
+    // 初始化功能管理器
+    functionManager.init()
     this.setData({
       showDailyTasks: functionManager.isEnabled('dailyTasks')
     })

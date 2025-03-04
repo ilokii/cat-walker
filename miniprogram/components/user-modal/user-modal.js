@@ -1,6 +1,6 @@
 const syncManager = require('../../utils/sync-manager')
 const { citiesData } = require('../../data/cities')
-const functionManager = require('../../utils/managers/function-manager')
+const functionManager = require('../../utils/function-manager')
 
 Component({
   properties: {

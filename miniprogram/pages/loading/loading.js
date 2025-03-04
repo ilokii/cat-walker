@@ -2,7 +2,7 @@ const syncManager = require('../../utils/sync-manager')
 const albumManager = require('../../utils/album-manager')
 const dailyTaskManager = require('../../utils/daily-task-manager')
 const packManager = require('../../utils/pack-manager')
-const functionManager = require('../../utils/managers/function-manager')
+const functionManager = require('../../utils/function-manager')
 
 Page({
   data: {

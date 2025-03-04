@@ -1,6 +1,6 @@
 const syncManager = require('./utils/sync-manager')
 const albumManager = require('./utils/album-manager')
-const functionManager = require('./utils/managers/function-manager')
+const functionManager = require('./utils/function-manager')
 
 App({
   globalData: {
