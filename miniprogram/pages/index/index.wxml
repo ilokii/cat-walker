@@ -1,72 +1,75 @@
-<view class="container">
-  <!-- 自定义导航栏 -->
-  <view class="custom-nav">
-    <view class="nav-title">猫咪漫游记</view>
-  </view>
-
-  <!-- 用户入口 -->
-  <user-entry></user-entry>
-
-  <!-- 当前旅行区域 -->
-  <view class="travel-section">
-    <view class="section-title">当前旅行</view>
-    <!-- 城市信息区域 -->
-    <view class="cities-info">
-      <!-- 当前城市 -->
-      <view class="city-item">
-        <text class="city-label">当前城市</text>
-        <block wx:if="{{currentCity}}">
-          <view class="city-text">
-            <text class="city-name">{{currentCity.name}}</text>
-            <text class="province-name">{{currentProvince.name}}</text>
-          </view>
-        </block>
-        <text wx:else class="no-city">未选择</text>
-      </view>
-      <!-- 目标城市 -->
-      <view class="city-item">
-        <text class="city-label">目标城市</text>
-        <block wx:if="{{targetCity}}">
-          <view class="city-text">
-            <text class="city-name">{{targetCity.name}}</text>
-            <text class="province-name">{{targetProvince.name}}</text>
-          </view>
-        </block>
-        <text wx:else class="no-city">未选择</text>
-      </view>
+<view class="page-container">
+  <image class="bg-image" src="/images/bg1.png" mode="aspectFill"></image>
+  <view class="container">
+    <!-- 自定义导航栏 -->
+    <view class="custom-nav">
+      <view class="nav-title">猫咪漫游记</view>
     </view>
-    <!-- 进度条区域 -->
-    <view class="progress-area">
-      <view class="travel-progress-container">
-        <view class="avatar-container" style="left: {{progress}}%">
-          <image class="user-avatar" src="{{userAvatar}}" mode="aspectFill"></image>
+
+    <!-- 用户入口 -->
+    <user-entry></user-entry>
+
+    <!-- 当前旅行区域 -->
+    <view class="travel-section">
+      <view class="section-title">当前旅行</view>
+      <!-- 城市信息区域 -->
+      <view class="cities-info">
+        <!-- 当前城市 -->
+        <view class="city-item">
+          <text class="city-label">当前城市</text>
+          <block wx:if="{{currentCity}}">
+            <view class="city-text">
+              <text class="city-name">{{currentCity.name}}</text>
+              <text class="province-name">{{currentProvince.name}}</text>
+            </view>
+          </block>
+          <text wx:else class="no-city">未选择</text>
         </view>
-        <text class="travel-progress-text">{{progress}}%</text>
-        <view class="travel-progress-bar" style="width: {{progress}}%">
+        <!-- 目标城市 -->
+        <view class="city-item">
+          <text class="city-label">目标城市</text>
+          <block wx:if="{{targetCity}}">
+            <view class="city-text">
+              <text class="city-name">{{targetCity.name}}</text>
+              <text class="province-name">{{targetProvince.name}}</text>
+            </view>
+          </block>
+          <text wx:else class="no-city">未选择</text>
         </view>
       </view>
-      <text class="progress-steps">{{progressSteps}}/{{totalRequiredSteps}}</text>
+      <!-- 进度条区域 -->
+      <view class="progress-area">
+        <view class="travel-progress-container">
+          <view class="avatar-container" style="left: {{progress}}%">
+            <image class="user-avatar" src="{{userAvatar}}" mode="aspectFill"></image>
+          </view>
+          <text class="travel-progress-text">{{progress}}%</text>
+          <view class="travel-progress-bar" style="width: {{progress}}%">
+          </view>
+        </view>
+        <text class="progress-steps">{{progressSteps}}/{{totalRequiredSteps}}</text>
+      </view>
     </view>
-  </view>
 
-  <!-- 每日任务区域 -->
-  <daily-tasks wx:if="{{showDailyTasks}}"></daily-tasks>
+    <!-- 每日任务区域 -->
+    <daily-tasks wx:if="{{showDailyTasks}}"></daily-tasks>
 
-  <!-- 到达提示弹窗 -->
-  <view class="arrival-modal" wx:if="{{showArrivalModal}}">
-    <view class="modal-content">
-      <text class="modal-title">恭喜！</text>
-      <text class="modal-text">小猫历时{{travelDays}}天成功抵达{{targetCity.name}}！</text>
-      <text class="modal-subtext">小猫正在期待下一场旅行</text>
-      <button class="modal-button" bindtap="onPlanNextTravel">旅行计划</button>
+    <!-- 到达提示弹窗 -->
+    <view class="arrival-modal" wx:if="{{showArrivalModal}}">
+      <view class="modal-content">
+        <text class="modal-title">恭喜！</text>
+        <text class="modal-text">小猫历时{{travelDays}}天成功抵达{{targetCity.name}}！</text>
+        <text class="modal-subtext">小猫正在期待下一场旅行</text>
+        <button class="modal-button" bindtap="onPlanNextTravel">旅行计划</button>
+      </view>
     </view>
-  </view>
 
-  <!-- 勋章升级提示 -->
-  <achievement-upgrade
-    wx:if="{{showAchievementUpgrade}}"
-    achievement="{{currentUpgradeAchievement}}"
-    isMaxLevel="{{currentUpgradeAchievement.isMaxLevel}}"
-    bind:confirm="onAchievementUpgradeConfirm"
-  />
+    <!-- 勋章升级提示 -->
+    <achievement-upgrade
+      wx:if="{{showAchievementUpgrade}}"
+      achievement="{{currentUpgradeAchievement}}"
+      isMaxLevel="{{currentUpgradeAchievement.isMaxLevel}}"
+      bind:confirm="onAchievementUpgradeConfirm"
+    />
+  </view>
 </view> 
