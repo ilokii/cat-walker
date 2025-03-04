@@ -1,5 +1,6 @@
 const syncManager = require('./utils/sync-manager')
 const albumManager = require('./utils/album-manager')
+const functionManager = require('./utils/managers/function-manager')
 
 App({
   globalData: {
@@ -7,10 +8,15 @@ App({
     envId: 'cat-walker-1gnvj0y102f12cab', // 云环境ID
     isInitialized: false,
     packsConfig: null,  // 存储卡包配置
-    isPacksConfigLoaded: false  // 标记卡包配置加载状态
+    isPacksConfigLoaded: false,  // 标记卡包配置加载状态
+    userAvatar: null,
+    currentBadge: null
   },
 
-  onLaunch: function() {
+  onLaunch: async function() {
+    // 初始化功能管理器
+    functionManager.init()
+    
     // 初始化云开发环境
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
@@ -20,6 +26,12 @@ App({
       env: 'cat-walker-1gnvj0y102f12cab',
       traceUser: true
     })
+
+    try {
+      // ... 其他初始化代码 ...
+    } catch (error) {
+      console.error('应用初始化失败:', error)
+    }
   },
 
   // 检查用户是否授权微信运动

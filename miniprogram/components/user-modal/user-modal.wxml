@@ -16,7 +16,8 @@
         </image>
         <image class="user-badge" 
                src="{{currentBadge.icon || '/images/nobadge.png'}}" 
-               mode="aspectFit">
+               mode="aspectFit"
+               wx:if="{{showBadgeSection}}">
         </image>
       </view>
 
@@ -48,7 +49,7 @@
     </view>
 
     <!-- 徽章选择区域 -->
-    <view class="badges-section">
+    <view class="badges-section" wx:if="{{showBadgeSection}}">
       <text class="section-title">我的徽章</text>
       <scroll-view class="badges-list" scroll-y wx:if="{{badges.length > 0}}">
         <view class="badges-grid">

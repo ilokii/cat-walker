@@ -5,7 +5,7 @@ const packManager = require('../../utils/pack-manager')
 
 Page({
   data: {
-    loadingText: '正在加载数据...'
+    loadingText: '数据加载中...'
   },
 
   // 请求微信运动授权
@@ -28,7 +28,6 @@ Page({
       console.log('开始加载流程')
 
       // 获取用户openid
-      this.setData({ loadingText: '正在获取用户信息...' })
       console.log('正在获取用户openid...')
       const { result } = await wx.cloud.callFunction({
         name: 'login'
@@ -37,13 +36,11 @@ Page({
       console.log('获取openid成功:', result.openid)
 
       // 初始化数据管理器
-      this.setData({ loadingText: '正在同步用户数据...' })
       console.log('正在初始化数据管理器...')
       await syncManager.initialize()
       console.log('数据管理器初始化完成')
 
       // 预加载用户信息
-      this.setData({ loadingText: '正在加载用户信息...' })
       console.log('正在加载用户信息...')
       const localData = syncManager.getLocalData()
       if (localData) {
@@ -59,7 +56,6 @@ Page({
       }
 
       // 预加载卡包配置
-      this.setData({ loadingText: '正在加载卡包配置...' })
       console.log('正在加载卡包配置...')
       try {
         const result = await wx.cloud.downloadFile({
@@ -84,7 +80,6 @@ Page({
       }
 
       // 初始化徽章系统
-      this.setData({ loadingText: '正在加载徽章数据...' })
       console.log('正在初始化徽章系统...')
       const badgeConfig = await syncManager.getBadgeConfig()
       if (badgeConfig) {
@@ -96,7 +91,6 @@ Page({
       }
 
       // 预加载卡牌配置数据
-      this.setData({ loadingText: '正在加载卡册数据...' })
       console.log('正在初始化卡册管理器...')
       const initResult = await albumManager.init()
       console.log('卡册管理器初始化结果:', initResult)
@@ -127,13 +121,11 @@ Page({
       }
 
       // 获取并处理微信运动数据
-      this.setData({ loadingText: '正在同步运动数据...' })
       console.log('正在处理微信运动数据...')
       await syncManager.handleWeRunData()
       console.log('微信运动数据处理完成')
 
       // 初始化每日任务
-      this.setData({ loadingText: '正在初始化每日任务...' })
       console.log('正在初始化每日任务...')
       await dailyTaskManager.initialize()
       console.log('每日任务初始化完成')

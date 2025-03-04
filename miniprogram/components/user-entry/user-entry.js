@@ -1,4 +1,5 @@
 const syncManager = require('../../utils/sync-manager')
+const functionManager = require('../../utils/managers/function-manager')
 
 Component({
   properties: {
@@ -8,11 +9,18 @@ Component({
     userAvatar: '',
     currentBadge: null,
     badgeIcon: '',
-    showUserModal: false
+    showUserModal: false,
+    showBadge: false,  // 控制勋章显示
+    showAlbumEntry: false  // 控制卡牌入口显示
   },
 
   lifetimes: {
     attached() {
+      // 初始化功能开关状态
+      this.setData({
+        showBadge: functionManager.isEnabled('userBadge'),
+        showAlbumEntry: functionManager.isEnabled('albumEntry')
+      })
       this.updateUserInfo()
     }
   },

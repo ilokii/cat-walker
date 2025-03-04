@@ -1,5 +1,6 @@
 const syncManager = require('../../utils/sync-manager')
 const { citiesData } = require('../../data/cities')
+const functionManager = require('../../utils/managers/function-manager')
 
 Component({
   properties: {
@@ -23,11 +24,16 @@ Component({
     selectedBadgeId: null,
     currentBadge: {
       icon: ''
-    }
+    },
+    showBadgeSection: false  // 控制勋章部分显示
   },
 
   lifetimes: {
     attached() {
+      // 初始化功能开关状态
+      this.setData({
+        showBadgeSection: functionManager.isEnabled('accountBadges')
+      })
       this.updateUserInfo()
     }
   },

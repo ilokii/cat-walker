@@ -50,7 +50,7 @@
   </view>
 
   <!-- 每日任务区域 -->
-  <daily-tasks></daily-tasks>
+  <daily-tasks wx:if="{{showDailyTasks}}"></daily-tasks>
 
   <!-- 到达提示弹窗 -->
   <view class="arrival-modal" wx:if="{{showArrivalModal}}">

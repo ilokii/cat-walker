@@ -9,13 +9,16 @@
       <!-- 用户徽章 -->
       <image class="user-badge" 
              src="{{badgeIcon}}" 
-             mode="aspectFit">
+             mode="aspectFit"
+             wx:if="{{showBadge}}">
       </image>
     </view>
   </view>
 
   <!-- 卡牌按钮 -->
-  <view class="album-btn-container" bindtap="onAlbumTap">
+  <view class="album-btn-container" 
+        bindtap="onAlbumTap"
+        wx:if="{{showAlbumEntry}}">
     <image class="album-btn-icon"
            src="/images/album.png"
            mode="aspectFit">
