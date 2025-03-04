@@ -38,7 +38,10 @@ Page({
     hasBeenInBackground: false,
     
     // 功能开关
-    showDailyTasks: false
+    showDailyTasks: false,
+
+    // 帮助界面显示状态
+    showHelp: false
   },
 
   onLoad: function() {
@@ -336,5 +339,19 @@ Page({
     } catch (error) {
       console.error('首页 - 更新旅行数据失败:', error)
     }
+  },
+
+  // 显示帮助界面
+  showHelp() {
+    this.setData({
+      showHelp: true
+    })
+  },
+
+  // 隐藏帮助界面
+  hideHelp() {
+    this.setData({
+      showHelp: false
+    })
   }
 }) 

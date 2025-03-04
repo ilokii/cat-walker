@@ -11,7 +11,11 @@
 
     <!-- 当前旅行区域 -->
     <view class="travel-section">
-      <view class="section-title">当前旅行</view>
+      <view class="section-title">
+        当前旅行
+        <!-- 帮助按钮 -->
+        <view class="help-button" bindtap="showHelp">i</view>
+      </view>
       <!-- 城市信息区域 -->
       <view class="cities-info">
         <!-- 当前城市 -->
@@ -71,5 +75,29 @@
       isMaxLevel="{{currentUpgradeAchievement.isMaxLevel}}"
       bind:confirm="onAchievementUpgradeConfirm"
     />
+
+    <!-- 帮助说明弹窗 -->
+    <view class="help-modal {{showHelp ? 'show' : ''}}" bindtap="hideHelp">
+      <view class="help-content">
+        <text class="help-title">帮助</text>
+        <view class="help-items">
+          <view class="help-item item1">
+            <image src="/images/help1.png" mode="aspectFit"></image>
+            <text>你每走一步</text>
+          </view>
+          <view class="help-item item2">
+            <image src="/images/help2.png" mode="aspectFit"></image>
+            <text>你的猫猫也会走一步</text>
+          </view>
+          <view class="help-item item3">
+            <image src="/images/help3.png" mode="aspectFit"></image>
+            <text>和你的猫猫一起旅行吧~</text>
+          </view>
+          <image class="help-arrow top-right" src="/images/arrow_green.png" mode="aspectFit"></image>
+          <image class="help-arrow bottom-right" src="/images/arrow_green.png" mode="aspectFit"></image>
+        </view>
+        <text class="help-close-text">点击关闭</text>
+      </view>
+    </view>
   </view>
 </view> 
