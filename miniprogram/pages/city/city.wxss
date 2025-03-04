@@ -153,6 +153,14 @@
   display: block;
 }
 
+.desc {
+  font-size: 20rpx;
+  color:rgba(0, 0, 0, 0.43);
+  display: block;
+  font-weight: 500;
+  margin-bottom: 8rpx;
+}
+
 .target-city .city-icon {
   width: 60rpx;
   height: 60rpx;

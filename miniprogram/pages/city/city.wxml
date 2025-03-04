@@ -1,7 +1,7 @@
 <view class="container">
   <!-- 当前城市 -->
   <view class="section">
-    <view class="section-title">当前城市</view>
+    <view class="section-title">出发地</view>
     <view class="current-city {{!syncManager.getLocalData().isInitStepInfo ? 'clickable' : ''}}" 
           bindtap="{{syncManager.getLocalData().isInitStepInfo ? '' : 'showCitySelector'}}">
       <block wx:if="{{currentCity}}">
@@ -11,14 +11,15 @@
         </view>
       </block>
       <block wx:else>
-        <text class="placeholder">请确认您将从哪出发？</text>
+        <text class="placeholder">猫猫从哪出发呢？</text>
       </block>
     </view>
   </view>
 
   <!-- 目标城市列表 -->
   <view class="section" wx:if="{{currentCity}}">
-    <view class="section-title">目标城市</view>
+    <view class="section-title">目的地</view>
+    <view class="desc">目的地是出发地的相邻城市</view>
     <view class="target-cities">
       <view class="target-city {{item.visited ? 'visited' : ''}}"
             wx:for="{{targetCities}}"

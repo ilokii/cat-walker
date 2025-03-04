@@ -52,6 +52,17 @@ Page({
     })
     this.refreshData()
     this.updateUserAvatar()
+
+    // 检查是否是首次进入
+    const hasShownHelp = wx.getStorageSync('hasShownHelp')
+    if (!hasShownHelp) {
+      // 首次进入，显示帮助界面
+      this.setData({
+        showHelp: true
+      })
+      // 记录已显示过帮助
+      wx.setStorageSync('hasShownHelp', true)
+    }
   },
 
   onShow: function() {
