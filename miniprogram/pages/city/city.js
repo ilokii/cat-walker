@@ -29,11 +29,11 @@ Page({
           },
           targetCities: this.getTargetCities(userData.currentCity, userData.visitedCities || [])
         })
-      }
-
-      // 只有在没有当前城市时才尝试获取地理位置
-      if (!userData.currentCity) {
-        this.checkAndGetLocation()
+      } else {
+        // 如果没有当前城市，直接显示城市选择器
+        this.setData({
+          selectorVisible: true
+        })
       }
     }).catch(err => {
       console.error('初始化数据管理器失败:', err)
@@ -67,7 +67,10 @@ Page({
     console.log('显示城市选择器, isInitStepInfo:', userData.isInitStepInfo)
     
     if (userData.isInitStepInfo) {
-      console.log('步数已初始化，不允许选择城市')
+      wx.showToast({
+        title: '已完成初始化，无法更改城市',
+        icon: 'none'
+      })
       return
     }
     

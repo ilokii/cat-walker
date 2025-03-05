@@ -74,7 +74,7 @@ Component({
       // 计算加入天数
       const startDate = new Date(localData.registerDate)
       const now = new Date()
-      const joinDays = Math.ceil((now - startDate) / (1000 * 60 * 60 * 24)) + 1
+      const joinDays = Math.ceil((now - startDate) / (1000 * 60 * 60 * 24))
 
       // 计算步数和公里数
       const totalSteps = localData.totalSteps
