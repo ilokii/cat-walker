@@ -1,0 +1,11 @@
+<view class="guide-container">
+  <!-- 预留内容区域 -->
+  <view class="content-area">
+    <!-- 这里后续会添加引导页具体内容 -->
+  </view>
+
+  <!-- 底部按钮区域 -->
+  <view class="button-area">
+    <button class="start-button" bind:tap="handleStartExperience">立即体验</button>
+  </view>
+</view> 
