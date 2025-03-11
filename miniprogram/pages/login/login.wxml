@@ -2,6 +2,9 @@
   <image class="bg-image" src="/images/bg1.png" mode="aspectFill"></image>
   <view class="content">
     <image class="logo" src="/images/logo.png" mode="widthFix"></image>
-    <button class="login-btn" bindtap="onLogin">登录</button>
+    <button class="login-btn" bindtap="onLogin">
+      <image class="wechat-icon" src="/images/wechat.png" mode="aspectFit"></image>
+      <text>微信登录</text>
+    </button>
   </view>
 </view> 

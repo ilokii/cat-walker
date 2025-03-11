@@ -5,10 +5,33 @@ Page({
     isLoading: false
   },
 
+  onLoad() {
+    // 初始化云环境
+    const app = getApp()
+    if (!wx.cloud) {
+      wx.showToast({
+        title: '请使用最新版本微信',
+        icon: 'none'
+      })
+      return
+    }
+    
+    // 确保云环境已初始化
+    if (!wx.cloud.Cloud.prototype.isInit) {
+      wx.cloud.init({
+        env: app.globalData.envId,
+        traceUser: true
+      })
+    }
+  },
+
   onLogin() {
+    if (this.data.isLoading) return
+    this.setData({ isLoading: true })
+    
     // 显示登录提示
     wx.showLoading({
-      title: '登录中......',
+      title: '登录中',
       mask: true
     })
 
@@ -21,7 +44,12 @@ Page({
         throw new Error('登录失败')
       }
 
-      getApp().globalData.openid = result.openid
+      const app = getApp()
+      app.globalData.openid = result.openid
+      
+      // 存储登录状态
+      wx.setStorageSync('openid', result.openid)
+      
       // 初始化数据管理器
       return syncManager.initialize()
     })
@@ -30,6 +58,7 @@ Page({
       
       // 隐藏登录提示
       wx.hideLoading()
+      this.setData({ isLoading: false })
       
       // 根据用户数据状态决定跳转目标
       if (!userData.userAvatar) {
@@ -52,9 +81,19 @@ Page({
     .catch(error => {
       console.error('登录失败:', error)
       wx.hideLoading()
-      wx.showToast({
-        title: '登录失败，请重试',
-        icon: 'none'
+      this.setData({ isLoading: false })
+      
+      wx.showModal({
+        title: '登录失败',
+        content: '登录过程中遇到问题，是否重试？',
+        confirmText: '重试',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            // 用户点击重试
+            this.onLogin()
+          }
+        }
       })
     })
   },
@@ -77,12 +116,13 @@ Page({
             url: '/pages/werun-auth/werun-auth'
           })
         }
-      } else {
+      } else if (userData && userData.userAvatar) {
         // 跳转到城市选择页面
         wx.redirectTo({
           url: '/pages/city/city'
         })
       }
+      // 如果没有用户头像，保持在登录页面
     } catch (err) {
       console.error('检查用户数据失败：', err)
       wx.showToast({

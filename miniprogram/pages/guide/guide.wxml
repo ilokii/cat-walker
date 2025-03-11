@@ -1,11 +1,19 @@
-<view class="guide-container">
-  <!-- 预留内容区域 -->
-  <view class="content-area">
-    <!-- 这里后续会添加引导页具体内容 -->
-  </view>
+<view class="guide-container {{guides[currentStep].isBlackScreen ? 'black-screen' : ''}}">
+  <block wx:if="{{showContent}}">
+    <view class="content-area" style="opacity: {{opacity}}" bind:tap="handleTap">
+      <block wx:if="{{!guides[currentStep].isBlackScreen}}">
+        <image 
+          wx:if="{{guides[currentStep].image}}"
+          class="guide-image" 
+          src="/images/{{guides[currentStep].image}}.png"
+          mode="aspectFit"
+        />
+      </block>
+      <view class="guide-text">{{guides[currentStep].text}}</view>
+    </view>
 
-  <!-- 底部按钮区域 -->
-  <view class="button-area">
-    <button class="start-button" bind:tap="handleStartExperience">立即体验</button>
-  </view>
+    <view class="button-area" wx:if="{{guides[currentStep].isLastStep}}">
+      <button class="start-button" bind:tap="handleStartExperience">让我们开始吧</button>
+    </view>
+  </block>
 </view> 
