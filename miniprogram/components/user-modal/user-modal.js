@@ -261,6 +261,84 @@ Component({
       }
       
       this.triggerEvent('close', { needRefresh: false })
+    },
+
+    // 处理退出登录
+    async handleLogout() {
+      // 显示确认弹窗
+      wx.showModal({
+        title: '退出登录',
+        content: '确定要退出登录吗？',
+        confirmColor: '#ff4d4f',
+        success: async (res) => {
+          if (res.confirm) {
+            // 显示加载中
+            wx.showLoading({
+              title: '正在退出...',
+              mask: true
+            })
+
+            try {
+              // 清除本地存储
+              wx.removeStorageSync('openid')
+              
+              // 重置 app.globalData
+              const app = getApp()
+              app.globalData.openid = null
+              app.globalData.userInfo = null
+              
+              // 重置 syncManager 数据
+              syncManager.localData = {
+                userAvatar: null,
+                currentCity: null,
+                targetCity: null,
+                startSteps: 0,
+                visitedCities: [],
+                totalSteps: 0,
+                totalStepsTemp: 0,
+                isInitStepInfo: false,
+                lastUpdateStepInfo: {
+                  date: new Date(1900, 0, 1, 0, 0, 0),
+                  steps: 0
+                },
+                startDate: new Date(1900, 0, 1, 0, 0, 0),
+                lastRefreshTime: 0,
+                registerDate: null,
+                albumData: {
+                  currentSeasonId: '',
+                  collectedCards: [],
+                  completedSets: [],
+                  collectionLevel: 1,
+                  stars: 0
+                },
+                dailyTaskData: {
+                  lastCompletedDate: null,
+                  completedTasks: []
+                },
+                badges: null,
+                currentBadge: null
+              }
+              syncManager.isInitialized = false
+              
+              // 关闭用户模态框
+              this.triggerEvent('close', { needRefresh: false })
+              
+              // 跳转到登录页
+              wx.reLaunch({
+                url: '/pages/login/login'
+              })
+            } catch (error) {
+              console.error('退出登录失败：', error)
+              wx.showToast({
+                title: '退出失败，请重试',
+                icon: 'error'
+              })
+            } finally {
+              wx.hideLoading()
+            }
+          }
+        }
+      })
     }
   }
 }) 

@@ -70,5 +70,10 @@
         <button class="get-badges-btn" bindtap="onGetBadges">前往获取</button>
       </view>
     </view>
+
+    <!-- 退出登录区域 -->
+    <view class="logout-section">
+      <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+    </view>
   </view>
 </view> 
