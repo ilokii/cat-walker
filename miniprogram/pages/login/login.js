@@ -25,21 +25,61 @@ Page({
     }
   },
 
-  onLogin() {
+  // 打开隐私政策
+  openPrivacyContract() {
+    if (typeof wx.openPrivacyContract === 'function') {
+      wx.openPrivacyContract({
+        fail: (err) => {
+          console.error('打开隐私协议失败:', err)
+          wx.showToast({
+            title: '打开隐私协议失败',
+            icon: 'none'
+          })
+        }
+      })
+    } else {
+      wx.showToast({
+        title: '请升级微信版本',
+        icon: 'none'
+      })
+    }
+  },
+
+  async onLogin() {
     if (this.data.isLoading) return
     this.setData({ isLoading: true })
     
-    // 显示登录提示
-    wx.showLoading({
-      title: '登录中',
-      mask: true
-    })
+    try {
+      // 请求隐私授权
+      if (typeof wx.requirePrivacyAuthorize === 'function') {
+        await new Promise((resolve, reject) => {
+          wx.requirePrivacyAuthorize({
+            success: resolve,
+            fail: (err) => {
+              // 如果是用户拒绝隐私授权
+              if (err.errMsg.includes('privacy permission is not authorized')) {
+                wx.showToast({
+                  title: '请先同意隐私政策',
+                  icon: 'none'
+                })
+              }
+              reject(err)
+            }
+          })
+        })
+      }
 
-    // 获取用户openid
-    wx.cloud.callFunction({
-      name: 'login'
-    })
-    .then(({ result }) => {
+      // 显示登录提示
+      wx.showLoading({
+        title: '登录中',
+        mask: true
+      })
+
+      // 获取用户openid
+      const { result } = await wx.cloud.callFunction({
+        name: 'login'
+      })
+
       if (!result || !result.openid) {
         throw new Error('登录失败')
       }
@@ -51,9 +91,8 @@ Page({
       wx.setStorageSync('openid', result.openid)
       
       // 初始化数据管理器
-      return syncManager.initialize()
-    })
-    .then(() => {
+      await syncManager.initialize()
+      
       const userData = syncManager.getLocalData()
       
       // 隐藏登录提示
@@ -77,11 +116,15 @@ Page({
           url: '/pages/loading/loading'
         })
       }
-    })
-    .catch(error => {
+    } catch (error) {
       console.error('登录失败:', error)
       wx.hideLoading()
       this.setData({ isLoading: false })
+      
+      // 如果是隐私授权失败，不显示重试弹窗
+      if (error.errMsg && error.errMsg.includes('privacy permission is not authorized')) {
+        return
+      }
       
       wx.showModal({
         title: '登录失败',
@@ -95,7 +138,7 @@ Page({
           }
         }
       })
-    })
+    }
   },
 
   // 检查用户数据

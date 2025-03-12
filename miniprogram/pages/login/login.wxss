@@ -48,6 +48,7 @@
   box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   padding: 0 30rpx;
+  margin-bottom: -400rpx;
 }
 
 .login-btn:active {
@@ -63,4 +64,11 @@
 
 .login-btn text {
   line-height: 48rpx;
+}
+
+.privacy-link {
+  margin-top: 40rpx;
+  font-size: 28rpx;
+  color: #576b95;
+  text-decoration: underline;
 } 
