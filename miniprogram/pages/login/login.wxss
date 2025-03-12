@@ -35,6 +35,44 @@
   margin-bottom: 20rpx;
 }
 
+.intro-box {
+  width: 80%;
+  max-width: 600rpx;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 40rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.intro-title {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+  text-align: center;
+}
+
+.intro-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.intro-item {
+  font-size: 28rpx;
+  color: #666;
+  padding-left: 20rpx;
+  position: relative;
+}
+
+.intro-item::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #07c160;
+}
+
 .login-btn {
   width: 400rpx;
   height: 100rpx;
@@ -48,7 +86,6 @@
   box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   padding: 0 30rpx;
-  margin-bottom: -400rpx;
 }
 
 .login-btn:active {

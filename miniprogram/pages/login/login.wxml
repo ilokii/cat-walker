@@ -2,12 +2,20 @@
   <image class="bg-image" src="/images/bg1.png" mode="aspectFill"></image>
   <view class="content">
     <image class="logo" src="/images/logo.png" mode="widthFix"></image>
+    <view class="intro-box">
+      <view class="intro-title">登录后您可以</view>
+      <view class="intro-content">
+        <view class="intro-item">领养一只猫咪</view>
+        <view class="intro-item">和猫咪一起旅行</view>
+        <view class="intro-item">您每走一步，猫咪也会走一步</view>
+      </view>
+    </view>
     <button class="login-btn" bindtap="onLogin">
       <image class="wechat-icon" src="/images/wechat.png" mode="aspectFit"></image>
       <text>微信登录</text>
     </button>
     <view class="privacy-link" bindtap="openPrivacyContract">
-      <text>登录便代表您已同意《隐私政策》</text>
+      <text>点击查看《隐私政策》</text>
     </view>
   </view>
 </view> 
