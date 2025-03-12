@@ -5,6 +5,7 @@ Page({
     currentStep: 0,
     opacity: 1,
     showContent: false,
+    isAnimating: false,
     guides: [
       {
         image: 'guide_1',
@@ -104,10 +105,14 @@ Page({
 
   // 处理点击事件
   handleTap() {
-    if (this.data.currentStep >= this.data.guides.length - 1) return
+    // 如果正在动画中或已经是最后一步，则不处理点击
+    if (this.data.isAnimating || this.data.currentStep >= this.data.guides.length - 1) return
     
-    // 开始淡出动画
-    this.setData({ opacity: 0 })
+    // 设置动画状态为true
+    this.setData({ 
+      isAnimating: true,
+      opacity: 0 
+    })
     
     setTimeout(() => {
       // 切换到下一步
@@ -115,6 +120,11 @@ Page({
         currentStep: this.data.currentStep + 1,
         opacity: 1
       })
+      
+      // 动画结束后，延迟重置动画状态
+      setTimeout(() => {
+        this.setData({ isAnimating: false })
+      }, 500)
     }, 500)
   },
 
