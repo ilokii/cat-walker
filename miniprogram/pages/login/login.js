@@ -2,7 +2,8 @@ const syncManager = require('../../utils/sync-manager')
 
 Page({
   data: {
-    isLoading: false
+    isLoading: false,
+    isPrivacyChecked: false
   },
 
   onLoad() {
@@ -25,6 +26,13 @@ Page({
     }
   },
 
+  // 处理隐私政策勾选状态变化
+  onPrivacyChange(e) {
+    this.setData({
+      isPrivacyChecked: e.detail.value.length > 0
+    })
+  },
+
   // 打开隐私政策
   openPrivacyContract() {
     if (typeof wx.openPrivacyContract === 'function') {
@@ -45,11 +53,40 @@ Page({
     }
   },
 
+  // 显示隐私政策确认弹窗
+  showPrivacyConfirm() {
+    return new Promise((resolve, reject) => {
+      wx.showModal({
+        title: '温馨提示',
+        content: '已阅读并同意《隐私政策》',
+        confirmText: '同意',
+        cancelText: '不同意',
+        success: (res) => {
+          if (res.confirm) {
+            this.setData({ isPrivacyChecked: true })
+            resolve()
+          } else {
+            reject(new Error('用户不同意隐私政策'))
+          }
+        },
+        fail: () => {
+          reject(new Error('弹窗显示失败'))
+        }
+      })
+    })
+  },
+
   async onLogin() {
     if (this.data.isLoading) return
-    this.setData({ isLoading: true })
     
     try {
+      // 如果未勾选隐私政策，显示确认弹窗
+      if (!this.data.isPrivacyChecked) {
+        await this.showPrivacyConfirm()
+      }
+
+      this.setData({ isLoading: true })
+      
       // 请求隐私授权
       if (typeof wx.requirePrivacyAuthorize === 'function') {
         await new Promise((resolve, reject) => {
@@ -123,6 +160,11 @@ Page({
       
       // 如果是隐私授权失败，不显示重试弹窗
       if (error.errMsg && error.errMsg.includes('privacy permission is not authorized')) {
+        return
+      }
+      
+      // 如果是用户不同意隐私政策，不显示重试弹窗
+      if (error.message === '用户不同意隐私政策') {
         return
       }
       
