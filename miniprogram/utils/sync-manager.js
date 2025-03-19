@@ -56,12 +56,249 @@ class SyncManager {
     }
     this.isInitialized = false
     this.REFRESH_COOLDOWN = 10 * 60 * 1000
+    this.isLoggedIn = false // 添加登录状态标记
   }
 
   // 初始化数据库连接
   initDatabase() {
     if (!this.db) {
+      // 确保云环境已初始化
+      const app = getApp()
+      if (!wx.cloud) {
+        console.error('请使用最新版本微信')
+        return false
+      }
+      
+      if (!wx.cloud.Cloud.prototype.isInit) {
+        wx.cloud.init({
+          env: app.globalData.envId,
+          traceUser: true
+        })
+      }
+      
       this.db = wx.cloud.database()
+      return true
+    }
+    return true
+  }
+
+  // 检查是否已登录
+  checkIsLoggedIn() {
+    const app = getApp()
+    return app && app.globalData && app.globalData.openid && app.globalData.isLoggedIn
+  }
+
+  // 从本地存储加载数据
+  loadFromStorage() {
+    try {
+      const storedData = wx.getStorageSync('localUserData')
+      if (storedData) {
+        this.localData = JSON.parse(storedData)
+      }
+    } catch (err) {
+      console.error('从本地存储加载数据失败：', err)
+    }
+  }
+
+  // 保存数据到本地存储
+  saveToStorage() {
+    try {
+      wx.setStorageSync('localUserData', JSON.stringify(this.localData))
+    } catch (err) {
+      console.error('保存数据到本地存储失败：', err)
+    }
+  }
+
+  // 初始化数据管理器
+  async initialize() {
+    if (this.isInitialized) return
+    
+    try {
+      // 首先从本地存储加载数据
+      this.loadFromStorage()
+
+      // 检查登录状态
+      const app = getApp()
+      // 确保 globalData 已初始化
+      if (!app.globalData) {
+        console.error('初始化数据管理器 - globalData 未初始化')
+        return
+      }
+      
+      // 等待一下确保 globalData.isLoggedIn 已设置
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
+      this.isLoggedIn = app.globalData.isLoggedIn
+      console.log('初始化数据管理器 - 登录状态:', {
+        isLoggedIn: this.isLoggedIn,
+        globalData: app.globalData
+      })
+      
+      if (this.isLoggedIn) {
+        // 初始化数据库连接
+        if (!this.initDatabase()) {
+          console.error('初始化数据管理器 - 数据库初始化失败')
+          return
+        }
+
+        // 获取用户数据
+        const result = await this.db.collection('users').where({
+          _openid: app.globalData.openid
+        }).get()
+
+        if (result.data.length > 0) {
+          // 如果找到多条记录，删除多余的记录
+          if (result.data.length > 1) {
+            console.warn('发现多条用户记录，正在清理...')
+            const keepId = result.data[0]._id
+            for (let i = 1; i < result.data.length; i++) {
+              await this.db.collection('users').doc(result.data[i]._id).remove()
+            }
+          }
+
+          const userData = result.data[0]
+          const cloudData = this.convertToLocalDataFormat(userData)
+          
+          // 比较本地和云端数据的 startSteps
+          if (cloudData.startSteps > this.localData.startSteps) {
+            this.localData = cloudData
+          }
+          
+          // 同步到云端
+          await this.syncToCloud()
+        } else {
+          // 如果没有找到用户数据，但有本地数据，创建新用户
+          if (this.localData.userAvatar) {
+            await this.createNewUser()
+          }
+        }
+      } else {
+        // 未登录用户只使用本地数据，不进行云端操作
+        console.log('初始化数据管理器 - 用户未登录，仅使用本地数据')
+        // 确保本地数据已保存
+        this.saveToStorage()
+      }
+
+      this.isInitialized = true
+    } catch (err) {
+      console.error('初始化数据管理器失败：', err)
+      throw err
+    }
+  }
+
+  // 转换云端数据为本地数据格式
+  convertToLocalDataFormat(userData) {
+    return {
+      userAvatar: userData.userAvatar || null,
+      currentCity: userData.currentCity || null,
+      targetCity: userData.targetCity || null,
+      startSteps: userData.startSteps || 0,
+      visitedCities: userData.visitedCities || [],
+      totalSteps: userData.totalSteps || 0,
+      totalStepsTemp: userData.totalSteps || 0,
+      isInitStepInfo: userData.isInitStepInfo || false,
+      lastUpdateStepInfo: {
+        date: userData.lastUpdateStepInfo?.date || new Date(1900, 0, 1, 0, 0, 0),
+        steps: userData.lastUpdateStepInfo?.steps || 0
+      },
+      startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0),
+      lastRefreshTime: 0,
+      registerDate: userData.registerDate || null,
+      albumData: {
+        currentSeasonId: userData.albumData?.currentSeasonId || '',
+        collectedCards: userData.albumData?.collectedCards || [],
+        completedSets: userData.albumData?.completedSets || [],
+        collectionLevel: userData.albumData?.collectionLevel || 1,
+        stars: userData.albumData?.stars || 0
+      },
+      dailyTaskData: {
+        lastCompletedDate: userData.dailyTaskData?.lastCompletedDate || null,
+        completedTasks: userData.dailyTaskData?.completedTasks || []
+      },
+      badges: userData.badges || [],
+      currentBadge: userData.currentBadge || null
+    }
+  }
+
+  // 创建新用户数据
+  async createNewUser() {
+    // 双重检查登录状态
+    if (!this.isLoggedIn || !getApp().globalData.isLoggedIn) {
+      console.log('创建新用户 - 用户未登录，跳过云端创建')
+      return false
+    }
+
+    try {
+      // 确保数据库已初始化
+      if (!this.initDatabase()) {
+        console.error('创建新用户 - 数据库初始化失败')
+        return false
+      }
+
+      // 创建新用户数据
+      const result = await this.db.collection('users').add({
+        data: this.convertToCloudDataFormat()
+      })
+
+      console.log('创建新用户成功：', result)
+      return true
+    } catch (err) {
+      console.error('创建新用户失败：', err)
+      return false
+    }
+  }
+
+  // 同步数据到云端
+  async syncToCloud() {
+    try {
+      // 双重检查登录状态
+      if (!this.isLoggedIn || !getApp().globalData.isLoggedIn) {
+        console.log('同步到云端 - 用户未登录，跳过同步')
+        return false
+      }
+
+      // 确保数据库已初始化
+      if (!this.initDatabase()) {
+        console.error('同步到云端 - 数据库初始化失败')
+        return false
+      }
+
+      // 获取当前用户数据
+      const result = await this.db.collection('users').where({
+        _openid: getApp().globalData.openid
+      }).get()
+
+      if (result.data.length > 0) {
+        // 更新现有用户数据
+        await this.db.collection('users').doc(result.data[0]._id).update({
+          data: this.convertToCloudDataFormat()
+        })
+      } else {
+        // 创建新用户数据
+        await this.createNewUser()
+      }
+
+      return true
+    } catch (err) {
+      console.error('同步到云端失败：', err)
+      return false
+    }
+  }
+
+  // 更新本地数据
+  async updateLocalData(updates) {
+    // 先更新本地数据
+    Object.assign(this.localData, updates)
+    this.saveToStorage()
+
+    // 如果已登录，尝试同步到云端
+    if (this.isLoggedIn) {
+      // 确保数据库已初始化
+      if (!this.initDatabase()) {
+        console.error('数据库初始化失败')
+        return
+      }
+      await this.syncToCloud()
     }
   }
 
@@ -82,118 +319,6 @@ class SyncManager {
     const elapsed = now - this.localData.lastRefreshTime
     const remaining = Math.max(0, this.REFRESH_COOLDOWN - elapsed)
     return Math.ceil(remaining / 1000)
-  }
-
-  // 初始化数据管理器
-  async initialize() {
-    if (this.isInitialized) return
-    
-    try {
-      // 初始化数据库连接
-      this.initDatabase()
-
-      // 获取用户数据，如果有多条记录，只使用第一条
-      const result = await this.db.collection('users').where({
-        _openid: getApp().globalData.openid
-      }).get()
-
-      if (result.data.length > 0) {
-        // 如果找到多条记录，删除多余的记录
-        if (result.data.length > 1) {
-          console.warn('发现多条用户记录，正在清理...')
-          const keepId = result.data[0]._id
-          for (let i = 1; i < result.data.length; i++) {
-            await this.db.collection('users').doc(result.data[i]._id).remove()
-          }
-        }
-
-        // 使用第一条记录的数据
-        const userData = result.data[0]
-        this.localData = {
-          userAvatar: userData.userAvatar || null,
-          currentCity: userData.currentCity || null,
-          targetCity: userData.targetCity || null,
-          startSteps: userData.startSteps || 0,
-          visitedCities: userData.visitedCities || [],
-          totalSteps: userData.totalSteps || 0,
-          totalStepsTemp: userData.totalSteps || 0,
-          isInitStepInfo: userData.isInitStepInfo || false,
-          lastUpdateStepInfo: {
-            date: userData.lastUpdateStepInfo?.date || new Date(1900, 0, 1, 0, 0, 0),
-            steps: userData.lastUpdateStepInfo?.steps || 0
-          },
-          startDate: userData.startDate || new Date(1900, 0, 1, 0, 0, 0),
-          lastRefreshTime: 0,
-          registerDate: userData.registerDate || null,
-          albumData: {
-            currentSeasonId: userData.albumData?.currentSeasonId || '',
-            collectedCards: userData.albumData?.collectedCards || [],
-            completedSets: userData.albumData?.completedSets || [],
-            collectionLevel: userData.albumData?.collectionLevel || 1,
-            stars: userData.albumData?.stars || 0
-          },
-          dailyTaskData: {
-            lastCompletedDate: userData.dailyTaskData?.lastCompletedDate || null,
-            completedTasks: userData.dailyTaskData?.completedTasks || []
-          },
-          badges: userData.badges || [], // 同步徽章数据
-          currentBadge: userData.currentBadge || null // 同步当前佩戴的勋章
-        }
-      } else {
-        // 如果没有找到用户数据，创建新用户
-        await this.createNewUser()
-      }
-      this.isInitialized = true
-    } catch (err) {
-      console.error('初始化数据管理器失败：', err)
-      throw err
-    }
-  }
-
-  // 创建新用户数据
-  async createNewUser() {
-    try {
-      const collection = this.db.collection('users')
-      const serverDate = this.db.serverDate()
-      const data = {
-        userAvatar: null,
-        currentCity: null,
-        targetCity: null,
-        startSteps: 0,
-        visitedCities: [],
-        totalSteps: 0,
-        isInitStepInfo: false,
-        lastUpdateStepInfo: {
-          date: new Date(1900, 0, 1, 0, 0, 0),
-          steps: 0
-        },
-        startDate: new Date(1900, 0, 1, 0, 0, 0),
-        lastRefreshTime: 0,
-        registerDate: serverDate, // 添加注册日期
-        albumData: {
-          currentSeasonId: '',
-          collectedCards: [],
-          completedSets: [],
-          collectionLevel: 1,
-          stars: 0
-        },
-        dailyTaskData: {
-          lastCompletedDate: null,
-          completedTasks: []
-        },
-        badges: [], // 初始化空的徽章列表
-        currentBadge: null, // 初始化当前佩戴的勋章
-        createTime: serverDate,
-        updateTime: serverDate
-      }
-      
-      await collection.add({ data })
-      Object.assign(this.localData, data)
-      return true
-    } catch (error) {
-      console.error('创建用户失败：', error)
-      throw error
-    }
   }
 
   // 获取本地数据
@@ -255,32 +380,60 @@ class SyncManager {
   // 获取用户数据
   async getUserData() {
     try {
+      // 如果未登录，直接返回本地数据
+      if (!this.isLoggedIn) {
+        console.log('获取用户数据 - 用户未登录，返回本地数据')
+        return this.localData
+      }
+
+      // 确保数据库已初始化
+      if (!this.initDatabase()) {
+        console.error('获取用户数据 - 数据库初始化失败')
+        return this.localData
+      }
+
       const result = await this.db.collection('users').where({
         _openid: getApp().globalData.openid
       }).get()
 
       if (result.data.length > 0) {
+        console.log('获取用户数据 - 成功')
         return result.data[0]
       }
-      return null
+      console.log('获取用户数据 - 未找到用户数据，返回本地数据')
+      return this.localData
     } catch (err) {
       console.error('获取用户数据失败：', err)
-      throw err
+      return this.localData
     }
   }
 
   // 更新当前城市
   async updateCurrentCity(cityName) {
     try {
-      await this.db.collection('users').where({
-        _openid: getApp().globalData.openid
-      }).update({
-        data: {
-          currentCity: cityName,
-          updateTime: this.db.serverDate()
-        }
-      })
+      // 更新本地数据
       this.localData.currentCity = cityName
+      this.saveToStorage()
+
+      // 如果已登录，则同步到云端
+      if (this.isLoggedIn) {
+        // 确保数据库已初始化
+        if (!this.initDatabase()) {
+          console.error('更新当前城市 - 数据库初始化失败')
+          return false
+        }
+
+        await this.db.collection('users').where({
+          _openid: getApp().globalData.openid
+        }).update({
+          data: {
+            currentCity: cityName,
+            updateTime: this.db.serverDate()
+          }
+        })
+      }
+
+      return true
     } catch (err) {
       console.error('更新当前城市失败：', err)
       throw err
@@ -290,20 +443,34 @@ class SyncManager {
   // 更新目标城市
   async updateTargetCity(cityName, startSteps, startDate) {
     try {
-      const serverDate = this.db.serverDate()
-      await this.db.collection('users').where({
-        _openid: getApp().globalData.openid
-      }).update({
-        data: {
-          targetCity: cityName,
-          startSteps,
-          startDate: startDate || serverDate,
-          updateTime: this.db.serverDate()
-        }
-      })
+      // 先更新本地数据
       this.localData.targetCity = cityName
       this.localData.startSteps = startSteps
-      this.localData.startDate = startDate ? new Date(startDate) : new Date(serverDate)
+      this.localData.startDate = startDate ? new Date(startDate) : new Date()
+      this.saveToStorage()
+
+      // 如果已登录，则同步到云端
+      if (this.isLoggedIn) {
+        // 确保数据库已初始化
+        if (!this.initDatabase()) {
+          console.error('更新目标城市 - 数据库初始化失败')
+          return false
+        }
+
+        const serverDate = this.db.serverDate()
+        await this.db.collection('users').where({
+          _openid: getApp().globalData.openid
+        }).update({
+          data: {
+            targetCity: cityName,
+            startSteps,
+            startDate: startDate || serverDate,
+            updateTime: serverDate
+          }
+        })
+      }
+
+      return true
     } catch (err) {
       console.error('更新目标城市失败：', err)
       throw err
@@ -313,17 +480,35 @@ class SyncManager {
   // 添加已访问城市
   async addVisitedCity(cityName) {
     try {
-      await this.db.collection('users').where({
-        _openid: getApp().globalData.openid
-      }).update({
-        data: {
-          visitedCities: this.db.command.addToSet(cityName),
-          updateTime: this.db.serverDate()
-        }
-      })
+      // 先更新本地数据
+      if (!this.localData.visitedCities) {
+        this.localData.visitedCities = []
+      }
+      
       if (!this.localData.visitedCities.includes(cityName)) {
         this.localData.visitedCities.push(cityName)
+        this.saveToStorage()
       }
+
+      // 如果已登录，则同步到云端
+      if (this.isLoggedIn) {
+        // 确保数据库已初始化
+        if (!this.initDatabase()) {
+          console.error('添加已访问城市 - 数据库初始化失败')
+          return false
+        }
+
+        await this.db.collection('users').where({
+          _openid: getApp().globalData.openid
+        }).update({
+          data: {
+            visitedCities: this.db.command.addToSet(cityName),
+            updateTime: this.db.serverDate()
+          }
+        })
+      }
+
+      return true
     } catch (err) {
       console.error('添加已访问城市失败：', err)
       throw err
@@ -434,63 +619,21 @@ class SyncManager {
   async handleWeRunData() {
     try {
       // 获取微信运动数据
-      const weRunData = await this.getWeRunData()
-      if (!weRunData) {
-        console.error('未获取到微信运动数据')
-        return false
+      const weRunData = await wx.getWeRunData()
+      console.log('获取微信运动数据成功:', weRunData)
+
+      // 更新本地数据
+      this.localData.lastWeRunData = weRunData
+      this.localData.lastWeRunTime = new Date().getTime()
+
+      // 如果已登录，同步到云端
+      if (this.isLoggedIn) {
+        await this.syncToCloud()
       }
 
-      const serverDate = this.db.serverDate()
-
-      if (!this.localData.isInitStepInfo) {
-        console.log('首次初始化步数信息')
-        // 首次初始化
-        const todaySteps = this.getTodaySteps(weRunData)
-        console.log('今日步数：', todaySteps)
-        await this.updateLastStepInfo(serverDate, todaySteps)
-        await this.updateStepInfoInitStatus(true)
-      } else {
-        // 计算需要增加的步数
-        let additionalSteps = 0
-        const lastUpdateDate = new Date(this.localData.lastUpdateStepInfo.date)
-        lastUpdateDate.setHours(0, 0, 0, 0)
-
-        weRunData.forEach(item => {
-          const itemDate = new Date(item.timestamp * 1000)
-          itemDate.setHours(0, 0, 0, 0)
-
-          if (itemDate < lastUpdateDate) return
-
-          if (itemDate.getTime() === lastUpdateDate.getTime()) {
-            const diff = Math.max(0, item.step - this.localData.lastUpdateStepInfo.steps)
-            additionalSteps += diff
-          } else if (itemDate > lastUpdateDate) {
-            additionalSteps += item.step
-          }
-        })
-
-        if (additionalSteps > 0) {
-          console.log('新增步数：', additionalSteps)
-          // 计算可增加步数的上限
-          const currentSteps = this.localData.totalSteps - this.localData.startSteps
-          const targetDistance = this.getTargetDistance()
-          const maxAdditionalSteps = Math.max(0, targetDistance - currentSteps)
-
-          // 更新总步数
-          const stepsToAdd = Math.min(additionalSteps, maxAdditionalSteps)
-          if (stepsToAdd > 0) {
-            await this.updateTotalSteps(this.localData.totalSteps + stepsToAdd)
-          }
-
-          // 更新最后步数信息
-          const todaySteps = this.getTodaySteps(weRunData)
-          await this.updateLastStepInfo(serverDate, todaySteps)
-        }
-      }
-
-      return true
+      return weRunData
     } catch (err) {
-      console.error('处理微信运动数据失败：', err)
+      console.error('获取微信运动数据失败：', err)
       throw err
     }
   }
@@ -557,19 +700,29 @@ class SyncManager {
       // 更新本地数据
       this.localData.userAvatar = userAvatar
       
-      // 更新云端数据
-      const openid = getApp().globalData.openid
-      const collection = this.db.collection('users')
-      
-      await collection.where({
-        _openid: openid
-      }).update({
-        data: {
-          userAvatar,
-          updateTime: this.db.serverDate()
+      // 如果已登录，则同步到云端
+      if (this.isLoggedIn) {
+        // 确保数据库已初始化
+        if (!this.initDatabase()) {
+          console.error('数据库初始化失败')
+          return false
         }
-      })
+
+        const openid = getApp().globalData.openid
+        const collection = this.db.collection('users')
+        
+        await collection.where({
+          _openid: openid
+        }).update({
+          data: {
+            userAvatar,
+            updateTime: this.db.serverDate()
+          }
+        })
+      }
       
+      // 无论是否登录，都保存到本地存储
+      this.saveToStorage()
       return true
     } catch (error) {
       console.error('更新用户信息失败：', error)
@@ -810,23 +963,6 @@ class SyncManager {
     }
   }
 
-  // 同步数据到云端
-  async syncToCloud() {
-    try {
-      const { result } = await wx.cloud.callFunction({
-        name: 'syncUserData',
-        data: {
-          localData: this.localData
-        }
-      })
-      console.log('同步到云端成功：', result)
-      return result
-    } catch (error) {
-      console.error('同步到云端失败：', error)
-      throw error
-    }
-  }
-
   // 添加星星
   async addStars(count) {
     try {
@@ -966,6 +1102,21 @@ class SyncManager {
   // 获取当前佩戴的勋章
   getCurrentBadge() {
     return this.localData.currentBadge
+  }
+
+  // 处理登录成功
+  async handleLogin(openid) {
+    this.isLoggedIn = true
+    getApp().globalData.isLoggedIn = true
+    await this.initialize() // 重新初始化以同步云端数据
+  }
+
+  // 处理登出
+  async handleLogout() {
+    this.isLoggedIn = false
+    getApp().globalData.isLoggedIn = false
+    // 保持本地数据不变，只更新登录状态
+    this.saveToStorage()
   }
 }
 

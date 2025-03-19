@@ -23,23 +23,163 @@ Page({
     }
   },
 
+  // 刷新数据
+  async refreshData() {
+    console.log('开始刷新数据')
+    try {
+      // 重新初始化数据管理器
+      await syncManager.initialize()
+      
+      // 更新全局数据
+      const app = getApp()
+      const localData = syncManager.getLocalData()
+      if (localData) {
+        app.globalData.userInfo = {
+          avatar: localData.userAvatar,
+          currentBadge: localData.currentBadge,
+          badges: localData.badges || []
+        }
+        app.globalData.userAvatar = localData.userAvatar
+        app.globalData.currentBadge = localData.currentBadge
+        app.globalData.badges = localData.badges || []
+      }
+
+      // 如果卡牌功能开启，重新加载卡牌数据
+      if (functionManager.isEnabled('albumEntry')) {
+        await albumManager.init()
+        await albumManager.checkSeasonEnd()
+      }
+
+      // 如果徽章功能开启，重新加载徽章数据
+      if (functionManager.isEnabled('userBadge')) {
+        await syncManager.initBadges()
+      }
+
+      // 如果每日任务功能开启，重新初始化任务
+      if (functionManager.isEnabled('dailyTasks')) {
+        await dailyTaskManager.initialize()
+      }
+
+      // 获取并处理微信运动数据
+      await syncManager.handleWeRunData()
+
+      // 更新最后刷新时间
+      syncManager.updateLastRefreshTime()
+
+      console.log('数据刷新完成')
+    } catch (error) {
+      console.error('数据刷新失败：', error)
+      wx.showToast({
+        title: '数据刷新失败',
+        icon: 'none'
+      })
+    }
+  },
+
+  // 初始化数据管理器
+  async initSyncManager() {
+    try {
+      console.log('开始初始化数据管理器...')
+      
+      // 获取用户 openid
+      console.log('正在获取用户openid...')
+      const { result } = await wx.cloud.callFunction({
+        name: 'getOpenId'
+      })
+      
+      if (!result || !result.openid) {
+        console.error('获取 openid 失败')
+        wx.showToast({
+          title: '初始化失败，请重试',
+          icon: 'none'
+        })
+        return false
+      }
+
+      // 保存 openid 到全局数据
+      getApp().globalData.openid = result.openid
+      console.log('获取 openid 成功:', result.openid)
+
+      // 检查登录状态
+      console.log('当前登录状态:', {
+        globalData: getApp().globalData,
+        isLoggedIn: getApp().globalData.isLoggedIn
+      })
+
+      // 初始化数据管理器
+      console.log('正在初始化数据管理器...')
+      await syncManager.initialize()
+      
+      // 检查初始化后的状态
+      console.log('数据管理器初始化完成:', {
+        isLoggedIn: syncManager.isLoggedIn,
+        globalData: getApp().globalData,
+        localData: syncManager.getLocalData()
+      })
+
+      // 获取本地数据
+      const localData = syncManager.getLocalData()
+      console.log('本地数据:', localData)
+
+      // 根据用户状态决定跳转
+      if (!localData.userAvatar) {
+        console.log('新用户，跳转到引导页')
+        wx.redirectTo({
+          url: '/pages/guide/guide'
+        })
+      } else if (!localData.currentCity || !localData.targetCity) {
+        console.log('已选择头像但未选择城市，跳转到城市选择页')
+        wx.redirectTo({
+          url: '/pages/city/city'
+        })
+      } else {
+        console.log('已初始化完成，跳转到主页')
+        wx.redirectTo({
+          url: '/pages/index/index'
+        })
+      }
+
+      return true
+    } catch (err) {
+      console.error('初始化数据管理器失败：', err)
+      wx.showToast({
+        title: '初始化失败，请重试',
+        icon: 'none'
+      })
+      return false
+    }
+  },
+
   onLoad: async function() {
     const app = getApp()
     try {
       console.log('开始加载流程')
 
-      // 获取用户openid
-      console.log('正在获取用户openid...')
-      const { result } = await wx.cloud.callFunction({
-        name: 'login'
+      // 检查登录状态
+      console.log('当前登录状态:', {
+        globalData: app.globalData,
+        isLoggedIn: app.globalData.isLoggedIn
       })
-      app.globalData.openid = result.openid
-      console.log('获取openid成功:', result.openid)
+
+      // 如果已登录，获取用户openid
+      if (app.globalData.isLoggedIn) {
+        console.log('用户已登录，正在获取用户openid...')
+        const { result } = await wx.cloud.callFunction({
+          name: 'login'
+        })
+        app.globalData.openid = result.openid
+        console.log('获取openid成功:', result.openid)
+      } else {
+        console.log('用户未登录，跳过云函数调用')
+      }
 
       // 初始化数据管理器
       console.log('正在初始化数据管理器...')
       await syncManager.initialize()
-      console.log('数据管理器初始化完成')
+      console.log('数据管理器初始化完成:', {
+        isLoggedIn: syncManager.isLoggedIn,
+        globalData: app.globalData
+      })
 
       // 预加载用户信息
       console.log('正在加载用户信息...')

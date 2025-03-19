@@ -25,27 +25,27 @@ Component({
     currentBadge: {
       icon: ''
     },
-    showBadgeSection: false  // 控制勋章部分显示
+    showBadgeSection: true,
+    isLoggedIn: false
   },
 
   lifetimes: {
     attached() {
-      // 初始化功能开关状态
+      this.checkLoginStatus()
+      this.loadUserData()
       this.setData({
         showBadgeSection: functionManager.isEnabled('userBadge')
       })
-      this.updateUserInfo()
     }
   },
 
   observers: {
     'show': function(show) {
       if (show) {
-        this.updateUserInfo()
+        this.loadUserData()
       }
     },
     'selectedBadgeId': function(badgeId) {
-      // 当选中的徽章ID变化时，更新显示的徽章
       if (badgeId) {
         const selectedBadge = this.data.badges.find(b => b.id === badgeId)
         if (selectedBadge) {
@@ -58,43 +58,42 @@ Component({
   },
 
   methods: {
-    async updateUserInfo() {
+    checkLoginStatus() {
+      const app = getApp()
+      const isLoggedIn = app.globalData.openid !== null
+      this.setData({ isLoggedIn })
+    },
+
+    async loadUserData() {
       const localData = syncManager.getLocalData()
-      
-      // 获取用户头像
+      if (!localData) return
+
       const userAvatar = localData.userAvatar
 
-      // 格式化注册日期
       let registerDateStr = '暂无数据'
       if (localData.registerDate) {
         const date = new Date(localData.registerDate)
         registerDateStr = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`
       }
 
-      // 计算加入天数
-      const startDate = new Date(localData.registerDate)
+      const startDate = new Date(localData.startDate)
       const now = new Date()
-      const joinDays = Math.ceil((now - startDate) / (1000 * 60 * 60 * 24))
+      const joinDays = Math.floor((now - startDate) / (1000 * 60 * 60 * 24))
 
-      // 计算步数和公里数
       const totalSteps = localData.totalSteps
       const totalKm = (totalSteps * 0.00075).toFixed(2)
 
-      // 计算城市和省份统计
       const visitedCities = localData.visitedCities.length
       const totalCities = Object.keys(citiesData).length
       const visitedCitiesPercentage = (visitedCities / totalCities * 100).toFixed(2)
 
-      // 获取已访问的省份
       const provinces = new Set()
       const allProvinces = new Set()
       
-      // 遍历所有城市，统计总省份数
       for (const cityName in citiesData) {
         const city = citiesData[cityName]
         allProvinces.add(city.province)
         
-        // 如果是已访问城市，添加到已访问省份集合
         if (localData.visitedCities.includes(cityName)) {
           provinces.add(city.province)
         }
@@ -104,36 +103,36 @@ Component({
       const totalProvinces = allProvinces.size
       const visitedProvincesPercentage = (visitedProvinces / totalProvinces * 100).toFixed(2)
 
-      // 获取徽章列表
       const badges = []
       const badgeList = localData.badges || []
       const currentBadge = localData.currentBadge
 
-      // 获取徽章配置
-      const badgeConfig = await syncManager.getBadgeConfig()
-      if (badgeConfig && badgeConfig.data) {
-        for (const userBadge of badgeList) {
-          const badge = badgeConfig.data.find(b => b.id === userBadge.id)
-          if (badge) {
-            const badgeLevelInfo = badge.levels.find(l => l.level === userBadge.level)
-            if (badgeLevelInfo) {
-              badges.push({
-                id: userBadge.id,
-                level: userBadge.level,
-                icon: badgeLevelInfo.icon
-              })
+      try {
+        const badgeConfig = await syncManager.getBadgeConfig()
+        if (badgeConfig && badgeConfig.data) {
+          for (const userBadge of badgeList) {
+            const badge = badgeConfig.data.find(b => b.id === userBadge.id)
+            if (badge) {
+              const badgeLevelInfo = badge.levels.find(l => l.level === userBadge.level)
+              if (badgeLevelInfo) {
+                badges.push({
+                  id: userBadge.id,
+                  level: userBadge.level,
+                  icon: badgeLevelInfo.icon
+                })
+              }
             }
           }
         }
+      } catch (error) {
+        console.error('加载徽章配置失败：', error)
       }
 
-      // 如果没有选中的徽章但有徽章列表，默认选中第一个
       let selectedBadgeId = currentBadge?.id
       if (!selectedBadgeId && badges.length > 0) {
         selectedBadgeId = badges[0].id
       }
 
-      // 设置当前显示的徽章
       const selectedBadge = badges.find(b => b.id === selectedBadgeId)
       const currentBadgeIcon = selectedBadge ? selectedBadge.icon : ''
 
@@ -153,7 +152,6 @@ Component({
       })
     },
 
-    // 选择徽章
     onBadgeSelect(e) {
       const badgeId = e.currentTarget.dataset.badgeId
       this.setData({
@@ -161,7 +159,6 @@ Component({
       })
     },
 
-    // 前往获取徽章
     onGetBadges() {
       wx.navigateTo({
         url: '/pages/album/album'
@@ -169,29 +166,16 @@ Component({
       this.triggerEvent('close', { detail: { needRefresh: false } })
     },
 
-    // 关闭弹窗
     async onClose() {
       const localData = syncManager.getLocalData()
       const currentBadge = localData.currentBadge
       
-      console.log('关闭弹窗 - 当前状态:', {
-        selectedBadgeId: this.data.selectedBadgeId,
-        currentBadge: currentBadge,
-        localBadges: localData.badges
-      })
-      
-      // 如果选中的徽章与当前徽章不同，则更新
       if (this.data.selectedBadgeId !== currentBadge?.id) {
-        console.log('检测到徽章变更')
         const selectedBadge = this.data.badges.find(b => b.id === this.data.selectedBadgeId)
-        
-        console.log('选中的徽章:', selectedBadge)
         
         if (selectedBadge) {
           try {
-            // 获取用户文档
             const db = wx.cloud.database()
-            console.log('开始查询用户数据...')
             
             const userResult = await db.collection('users').where({
               _openid: getApp().globalData.openid
@@ -199,12 +183,7 @@ Component({
             
             if (userResult.data && userResult.data.length > 0) {
               const userData = userResult.data[0]
-              console.log('获取到用户数据:', userData)
               
-              // 使用 update 更新用户文档
-              console.log('开始更新数据库...')
-              
-              // 提取需要的字段，排除系统字段
               const { _id, _openid, createTime, ...restData } = userData
               
               const result = await db.collection('users').doc(userData._id).set({
@@ -218,127 +197,68 @@ Component({
                 }
               })
               
-              console.log('数据库更新结果:', result)
-              
               if (result.stats.updated > 0) {
-                // 重新从云端获取数据以确保同步
-                console.log('开始从云端同步数据...')
                 await syncManager.syncFromCloud()
-                console.log('从云端同步数据成功')
-                
-                // 再次获取本地数据检查更新结果
-                const updatedData = syncManager.getLocalData()
-                console.log('更新后的状态:', {
-                  currentBadge: updatedData.currentBadge,
-                  badges: updatedData.badges
-                })
-                
-                // 通知父组件关闭并刷新
                 this.triggerEvent('close', { needRefresh: true })
                 return
-              } else {
-                throw new Error('数据库更新失败')
               }
-            } else {
-              throw new Error('未找到用户数据')
             }
           } catch (error) {
-            console.error('更新当前徽章失败，详细错误：', error)
+            console.error('更新徽章失败：', error)
             wx.showToast({
               title: '更新徽章失败',
-              icon: 'error'
+              icon: 'none'
             })
-            this.triggerEvent('close', { needRefresh: false })
-            return
           }
-        } else {
-          console.warn('未找到选中的徽章信息')
-          this.triggerEvent('close', { needRefresh: false })
-          return
         }
-      } else {
-        console.log('徽章未发生变更，无需更新')
       }
       
       this.triggerEvent('close', { needRefresh: false })
     },
 
-    // 处理退出登录
-    async handleLogout() {
-      // 显示确认弹窗
-      wx.showModal({
-        title: '退出登录',
-        content: '确定要退出登录吗？',
-        confirmColor: '#ff4d4f',
-        success: async (res) => {
-          if (res.confirm) {
-            // 显示加载中
-            wx.showLoading({
-              title: '正在退出...',
-              mask: true
-            })
-
-            try {
-              // 清除本地存储
-              wx.removeStorageSync('openid')
-              
-              // 重置 app.globalData
-              const app = getApp()
-              app.globalData.openid = null
-              app.globalData.userInfo = null
-              
-              // 重置 syncManager 数据
-              syncManager.localData = {
-                userAvatar: null,
-                currentCity: null,
-                targetCity: null,
-                startSteps: 0,
-                visitedCities: [],
-                totalSteps: 0,
-                totalStepsTemp: 0,
-                isInitStepInfo: false,
-                lastUpdateStepInfo: {
-                  date: new Date(1900, 0, 1, 0, 0, 0),
-                  steps: 0
-                },
-                startDate: new Date(1900, 0, 1, 0, 0, 0),
-                lastRefreshTime: 0,
-                registerDate: null,
-                albumData: {
-                  currentSeasonId: '',
-                  collectedCards: [],
-                  completedSets: [],
-                  collectionLevel: 1,
-                  stars: 0
-                },
-                dailyTaskData: {
-                  lastCompletedDate: null,
-                  completedTasks: []
-                },
-                badges: null,
-                currentBadge: null
-              }
-              syncManager.isInitialized = false
-              
-              // 关闭用户模态框
-              this.triggerEvent('close', { needRefresh: false })
-              
-              // 跳转到登录页
-              wx.reLaunch({
-                url: '/pages/login/login'
-              })
-            } catch (error) {
-              console.error('退出登录失败：', error)
-              wx.showToast({
-                title: '退出失败，请重试',
-                icon: 'error'
-              })
-            } finally {
-              wx.hideLoading()
-            }
-          }
-        }
+    onLogin() {
+      wx.navigateTo({
+        url: '/pages/login/login'
       })
+      this.triggerEvent('close', { needRefresh: false })
+    },
+
+    async handleLogout() {
+      try {
+        wx.showLoading({
+          title: '正在退出...',
+          mask: true
+        })
+
+        // 清除登录状态
+        const app = getApp()
+        app.globalData.openid = null
+        wx.removeStorageSync('openid')
+
+        // 重置 syncManager 的状态
+        syncManager.localData = null
+        syncManager.isInitialized = false
+
+        wx.hideLoading()
+
+        // 更新登录状态
+        this.setData({ isLoggedIn: false })
+
+        // 关闭模态框并通知父组件需要刷新
+        this.triggerEvent('close', { needRefresh: true })
+
+        // 重定向到引导页
+        wx.reLaunch({
+          url: '/pages/guide/guide'
+        })
+      } catch (error) {
+        console.error('退出登录失败：', error)
+        wx.hideLoading()
+        wx.showToast({
+          title: '退出失败，请重试',
+          icon: 'none'
+        })
+      }
     }
   }
 }) 

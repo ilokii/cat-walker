@@ -17,12 +17,12 @@
         <image class="user-badge" 
                src="{{currentBadge.icon || '/images/nobadge.png'}}" 
                mode="aspectFit"
-               wx:if="{{showBadgeSection}}">
+               wx:if="{{showBadgeSection && isLoggedIn}}">
         </image>
       </view>
 
       <!-- 注册信息 -->
-      <view class="register-info">
+      <view class="register-info" wx:if="{{isLoggedIn}}">
         <text class="register-date">注册日期：{{registerDate}}</text>
         <text class="join-days">行走天数：{{joinDays}}天</text>
       </view>
@@ -49,7 +49,7 @@
     </view>
 
     <!-- 徽章选择区域 -->
-    <view class="badges-section" wx:if="{{showBadgeSection}}">
+    <view class="badges-section" wx:if="{{showBadgeSection && isLoggedIn}}">
       <text class="section-title">我的徽章</text>
       <scroll-view class="badges-list" scroll-y wx:if="{{badges.length > 0}}">
         <view class="badges-grid">
@@ -71,9 +71,15 @@
       </view>
     </view>
 
-    <!-- 退出登录区域 -->
-    <view class="logout-section">
-      <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+    <!-- 登录/退出登录区域 -->
+    <view class="action-section">
+      <block wx:if="{{isLoggedIn}}">
+        <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+      </block>
+      <block wx:else>
+        <button class="login-btn" bindtap="handleLogin">登录账号</button>
+        <text class="login-tip">登录后可以同步数据到云端</text>
+      </block>
     </view>
   </view>
 </view> 

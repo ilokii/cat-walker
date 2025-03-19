@@ -128,10 +128,54 @@ Page({
     }, 500)
   },
 
-  // 跳转到登录页
-  handleStartExperience() {
-    wx.navigateTo({
-      url: '/pages/login/login'
-    })
+  // 跳转到用户信息初始化页面
+  async handleStartExperience() {
+    try {
+      // 初始化本地数据
+      const now = new Date()
+      const localData = {
+        userAvatar: null,
+        startDate: now.toISOString(),
+        registerDate: now.toISOString(),
+        totalSteps: 0,
+        totalStepsTemp: 0,
+        isInitStepInfo: false,
+        lastUpdateStepInfo: {
+          date: new Date(1900, 0, 1, 0, 0, 0).toISOString(),
+          steps: 0
+        },
+        visitedCities: [],
+        currentCity: null,
+        targetCity: null,
+        badges: [],
+        currentBadge: null,
+        lastRefreshTime: now.toISOString(),
+        albumData: {
+          currentSeasonId: '',
+          collectedCards: [],
+          completedSets: [],
+          collectionLevel: 1,
+          stars: 0
+        },
+        dailyTaskData: {
+          lastCompletedDate: null,
+          completedTasks: []
+        }
+      }
+      
+      // 保存数据到本地
+      await syncManager.updateLocalData(localData)
+      
+      // 跳转到用户信息初始化页面
+      wx.redirectTo({
+        url: '/pages/user-init/user-init'
+      })
+    } catch (error) {
+      console.error('初始化数据失败：', error)
+      wx.showToast({
+        title: '初始化失败，请重试',
+        icon: 'none'
+      })
+    }
   }
 }) 

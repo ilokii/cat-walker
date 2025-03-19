@@ -127,14 +127,30 @@ Page({
       // 存储登录状态
       wx.setStorageSync('openid', result.openid)
       
-      // 初始化数据管理器
-      await syncManager.initialize()
+      // 处理登录成功，同步数据
+      await syncManager.handleLogin(result.openid)
       
+      // 获取最新的用户数据
       const userData = syncManager.getLocalData()
       
       // 隐藏登录提示
       wx.hideLoading()
       this.setData({ isLoading: false })
+
+      // 如果是从用户模态框进入的登录页面，返回上一页
+      const pages = getCurrentPages()
+      const prevPage = pages[pages.length - 2]
+      if (prevPage && prevPage.route === 'pages/loading/loading') {
+        wx.navigateBack({
+          success: () => {
+            // 通知上一页刷新数据
+            if (prevPage.refreshData) {
+              prevPage.refreshData()
+            }
+          }
+        })
+        return
+      }
       
       // 根据用户数据状态决定跳转目标
       if (!userData.userAvatar) {

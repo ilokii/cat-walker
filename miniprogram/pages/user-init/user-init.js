@@ -55,18 +55,10 @@ Page({
 
     syncManager.updateUserData(userData)
       .then(() => {
-        return syncManager.getUserData()
-      })
-      .then(currentUserData => {
-        if (!currentUserData.currentCity || !currentUserData.targetCity) {
-          wx.redirectTo({
-            url: '/pages/city/city'
-          })
-        } else {
-          wx.redirectTo({
-            url: '/pages/loading/loading'
-          })
-        }
+        // 新用户直接跳转到城市选择页面
+        wx.redirectTo({
+          url: '/pages/city/city'
+        })
       })
       .catch(error => {
         console.error('保存用户信息失败:', error)
